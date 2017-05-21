@@ -551,13 +551,15 @@ if( $t_show_attachments ) {
 		</td>
 	</tr>
 <?php
-    # Custom field configuration
+    # Custom fields: configuration, version_bk, version_sa
 	$t_custom_fields_found = false;
 	$t_related_custom_field_ids = custom_field_get_linked_ids( $t_project_id );
 
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
- 		if( $t_def['name'] == 'configuration' ) {
+ 		if( $t_def['name'] == 'configuration' ||
+            $t_def['name'] == 'version_bk' ||
+            $t_def['name'] == 'version_sa' ) {
             if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
                 $t_custom_fields_found = true;
 
@@ -634,7 +636,9 @@ if( $t_show_attachments ) {
 
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
-		if( $t_def['name'] != 'configuration' ) {
+		if( $t_def['name'] != 'configuration' &&
+            $t_def['name'] != 'version_bk' &&
+            $t_def['name'] != 'version_sa' ) {
             if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
                 $t_custom_fields_found = true;
 
