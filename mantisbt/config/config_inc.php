@@ -32,9 +32,22 @@ $g_return_path_email = 'help@icom-nn.ru';
  */
 $g_severity_enum_string = '10:Immediate, 30:Urgent, 50:Hight, 70:Low, 100:Enhancement';
 
-
-#########################
-# MantisBT Lang Strings #
-#########################
-$s_configuration = "Конфигурация";
-$s_severity_enum_string = '10:Немедленный,30:Срочный,50:Высокий,70:Низкий,80:Доработка';
+/*
+ * @global array $g_bug_report_page_fields
+ */
+$g_bug_report_page_fields = array(
+	'additional_info',
+	'attachments',
+	'category_id',
+	'due_date',
+	'handler',
+	'priority',
+	'product_build',
+	'product_version',
+	'reproducibility',
+	'severity',
+	'steps_to_reproduce',
+	'tags',
+	'target_version',
+	'view_state',
+);

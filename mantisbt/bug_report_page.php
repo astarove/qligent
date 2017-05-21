@@ -198,7 +198,14 @@ $t_show_category = in_array( 'category_id', $t_fields );
 $t_show_reproducibility = in_array( 'reproducibility', $t_fields );
 $t_show_eta = in_array( 'eta', $t_fields );
 $t_show_severity = in_array( 'severity', $t_fields );
-$t_show_priority = in_array( 'priority', $t_fields );
+
+if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR) {
+    $t_show_priority = in_array( 'priority', $t_fields );
+}
+else {
+    $t_show_priority = False;
+}
+
 $t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
 $t_show_handler = in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
 $t_show_profiles = config_get( 'enable_profiles' );
