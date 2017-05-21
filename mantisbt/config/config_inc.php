@@ -44,10 +44,8 @@ $g_bug_report_page_fields = array(
 	'priority',
 	'product_build',
 	'product_version',
-	'reproducibility',
 	'severity',
 	'steps_to_reproduce',
-	'tags',
 	'target_version',
 	'view_state',
 );
