@@ -203,7 +203,7 @@ if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR) {
     $t_show_priority = in_array( 'priority', $t_fields );
 }
 else {
-    $t_show_priority = False;
+    $t_show_priority = null;
 }
 
 $t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
@@ -672,7 +672,7 @@ if( $t_show_attachments ) {
 ?>
 	<tr>
 		<th class="category">
-			<label for="ufile[]"><?php echo lang_get( $t_file_upload_max_num == 1 ? 'upload_file' : 'upload_files' ) ?></label>
+			<span class="required">*</span><label for="ufile[]"><?php echo lang_get( $t_file_upload_max_num == 1 ? 'upload_file' : 'upload_files' ) ?></label>
 			<br />
 			<?php print_max_filesize( $t_max_file_size ); ?>
 		</th>
