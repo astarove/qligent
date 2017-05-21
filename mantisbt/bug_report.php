@@ -211,6 +211,10 @@ if( $f_files !== null ) {
 
 	file_process_posted_files_for_bug( $t_bug_id, $f_files );
 }
+else {
+    trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
+}
+
 
 # Handle custom field submission
 foreach( $t_related_custom_field_ids as $t_id ) {
