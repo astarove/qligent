@@ -22,3 +22,19 @@ $g_administrator_email = 'help@icom-nn.ru';
 $g_webmaster_email = 'help@icom-nn.ru';
 $g_from_email = 'help@icom-nn.ru';
 $g_return_path_email = 'help@icom-nn.ru';
+
+#########################
+# MantisBT Enum Strings #
+#########################
+/**
+ *
+ * @global string $g_severity_enum_string
+ */
+$g_severity_enum_string = '10:Immediate, 30:Urgent, 50:Hight, 70:Low, 100:Enhancement';
+
+
+#########################
+# MantisBT Lang Strings #
+#########################
+$s_configuration = "Конфигурация";
+$s_severity_enum_string = '10:Немедленный,30:Срочный,50:Высокий,70:Низкий,80:Доработка';

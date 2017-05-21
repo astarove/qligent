@@ -1763,3 +1763,9 @@ $s_dropzone_remove_file = 'Remove file';
 $s_dropzone_remove_file_confirmation = '';
 $s_dropzone_max_files_exceeded = 'You cannot upload any more files.';
 $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
+
+/*******************
+ * custom settings
+ *******************/
+$s_configuration = "Configuration";
+$s_severity_enum_string = '10:Immediate,30:Urgent,50:Hight,70:Low,100:Enhancement';
