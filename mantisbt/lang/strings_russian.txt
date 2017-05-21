@@ -1398,3 +1398,5 @@ $s_dropzone_cancel_upload_confirmation = 'Вы уверены, что хотит
 $s_dropzone_remove_file = 'Удалить файл';
 $s_dropzone_max_files_exceeded = 'Вы не можете загрузить больше файлов.';
 $s_dropzone_not_supported = 'Dropzone.js не поддерживает старые браузеры!';
+
+$s_configuration = "Конфигурация";
