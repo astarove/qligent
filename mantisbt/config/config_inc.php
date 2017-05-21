@@ -23,14 +23,14 @@ $g_webmaster_email = 'help@icom-nn.ru';
 $g_from_email = 'help@icom-nn.ru';
 $g_return_path_email = 'help@icom-nn.ru';
 
-#########################
-# MantisBT Enum Strings #
-#########################
+##########################
+# Mantis global settings #
+##########################
 /**
- *
- * @global string $g_severity_enum_string
+ * Default Bug View Status (VS_PUBLIC or VS_PRIVATE)
+ * @global integer $g_default_bug_view_status
  */
-$g_severity_enum_string = '10:Immediate, 30:Urgent, 50:Hight, 70:Low, 100:Enhancement';
+$g_default_bug_view_status = VS_PRIVATE;
 
 /*
  * @global array $g_bug_report_page_fields
@@ -51,3 +51,13 @@ $g_bug_report_page_fields = array(
 	'target_version',
 	'view_state',
 );
+
+#########################
+# MantisBT Enum Strings #
+#########################
+/**
+ *
+ * @global string $g_severity_enum_string
+ */
+$g_severity_enum_string = '10:Immediate, 30:Urgent, 50:Hight, 70:Low, 100:Enhancement';
+
