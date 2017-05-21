@@ -58,3 +58,9 @@ $g_bug_report_page_fields = array(
  */
 $g_severity_enum_string = '10:Immediate, 30:Urgent, 50:Hight, 70:Low, 100:Enhancement';
 
+/**
+ * @global array $g_default_notify_flags
+ */
+ 
+$g_notify_flags['new']['threshold_min'] = DEVELOPER;
+$g_notify_flags['new']['threshold_max'] = DEVELOPER;
