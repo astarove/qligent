@@ -101,6 +101,8 @@ if( $t_project_id != helper_get_current_project() ) {
 access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
 if( isset( $_GET['posted'] ) && empty( $_FILE ) && empty( $_POST ) ) {
+	$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
+    error_parameters( $t_max_file_size );
 	trigger_error( ERROR_FILE_TOO_BIG, ERROR );
 }
 
