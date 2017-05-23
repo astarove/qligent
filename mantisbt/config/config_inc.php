@@ -32,6 +32,12 @@ $g_return_path_email = 'help@icom-nn.ru';
  */
 $g_default_bug_view_status = VS_PRIVATE;
 
+/**
+ * Allow a bug to have no category
+ * @global integer $g_allow_no_category
+ */
+$g_allow_no_category = ON;
+
 /*
  * @global array $g_bug_report_page_fields
  */

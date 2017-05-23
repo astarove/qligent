@@ -199,13 +199,16 @@ $t_show_reproducibility = in_array( 'reproducibility', $t_fields );
 $t_show_eta = in_array( 'eta', $t_fields );
 $t_show_severity = in_array( 'severity', $t_fields );
 
+# Custom settings
+$t_show_category = null;
+
 if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR) {
     $t_show_priority = in_array( 'priority', $t_fields );
 }
 else {
     $t_show_priority = null;
 }
-
+# end
 $t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
 $t_show_handler = in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
 $t_show_profiles = config_get( 'enable_profiles' );
@@ -312,21 +315,6 @@ if( $t_show_attachments ) {
 		<td>
 			<select <?php echo helper_get_tab_index() ?> id="eta" name="eta" class="input-sm">
 				<?php print_enum_string_option_list( 'eta', $f_eta ) ?>
-			</select>
-		</td>
-	</tr>
-<?php
-	}
-
-	if( $t_show_severity ) {
-?>
-	<tr>
-		<th class="category">
-			<label for="severity"><?php print_documentation_link( 'severity' ) ?></label>
-		</th>
-		<td>
-			<select <?php echo helper_get_tab_index() ?> id="severity" name="severity" class="input-sm">
-				<?php print_enum_string_option_list( 'severity', $f_severity ) ?>
 			</select>
 		</td>
 	</tr>
@@ -551,6 +539,20 @@ if( $t_show_attachments ) {
 		</td>
 	</tr>
 <?php
+	if( $t_show_severity ) {
+?>
+	<tr>
+		<th class="category">
+			<label for="severity"><?php print_documentation_link( 'severity' ) ?></label>
+		</th>
+		<td>
+			<select <?php echo helper_get_tab_index() ?> id="severity" name="severity" class="input-sm">
+				<?php print_enum_string_option_list( 'severity', $f_severity ) ?>
+			</select>
+		</td>
+	</tr>
+<?php
+    } 
     # Custom fields: configuration, version_bk, version_sa
 	$t_custom_fields_found = false;
 	$t_related_custom_field_ids = custom_field_get_linked_ids( $t_project_id );
