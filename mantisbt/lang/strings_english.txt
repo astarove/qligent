@@ -1768,4 +1768,6 @@ $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
  * custom settings
  *******************/
 $s_configuration = "Configuration";
-$s_severity_enum_string = '10:Immediate,30:Urgent,50:Hight,70:Low,100:Enhancement';
+$s_severity_enum_string = '10:Immediate,30:Urgent,50:High,70:Low,100:Enhancement';
+$s_version_bk = "Probe version";
+$s_version_sa = "Server version";
