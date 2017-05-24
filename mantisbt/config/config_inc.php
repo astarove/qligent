@@ -51,8 +51,7 @@ $g_bug_report_page_fields = array(
 	'product_build',
 	'product_version',
 	'severity',
-	'target_version',
-	'view_state',
+	'target_version'
 );
 
 #########################

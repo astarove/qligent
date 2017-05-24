@@ -198,13 +198,6 @@ if( $t_bug_data->handler_id == NO_USER && $t_bug_data->status >= config_get( 'bu
 	$t_bug_data->handler_id = auth_get_current_user_id();
 }
 
-# Create the bug
-$t_bug_id = $t_bug_data->create();
-$t_bug_data->process_mentions();
-
-# Mark the added issue as visited so that it appears on the last visited list.
-last_visited_issue( $t_bug_id );
-
 # Handle the file upload
 if( $f_files !== null ) {
 	if( !file_allow_bug_upload( $t_bug_id ) ) {
@@ -217,6 +210,12 @@ else {
     trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
 }
 
+# Create the bug
+$t_bug_id = $t_bug_data->create();
+$t_bug_data->process_mentions();
+
+# Mark the added issue as visited so that it appears on the last visited list.
+last_visited_issue( $t_bug_id );
 
 # Handle custom field submission
 foreach( $t_related_custom_field_ids as $t_id ) {
