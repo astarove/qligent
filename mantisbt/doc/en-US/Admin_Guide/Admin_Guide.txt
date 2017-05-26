@@ -181,41 +181,43 @@ tasks required to operate the software.
 
       5.25. Cookies
 
-      5.26. Speed Optimisation
+      5.26. Database Tables
 
-      5.27. Reminders
+      5.27. Speed Optimisation
 
-      5.28. Bug History
+      5.28. Reminders
 
-      5.29. Sponsorship
+      5.29. Bug History
 
-      5.30. Custom Fields
+      5.30. Sponsorship
 
-      5.31. My View Settings
+      5.31. Custom Fields
 
-      5.32. Relationship Graphs
+      5.32. My View Settings
 
-      5.33. Wiki Integration
+      5.33. Relationship Graphs
 
-      5.34. Sub-Projects
+      5.34. Wiki Integration
 
-      5.35. Field Visibility
+      5.35. Sub-Projects
 
-      5.36. System Logging and Debugging
+      5.36. Field Visibility
 
-      5.37. Time Tracking
+      5.37. System Logging and Debugging
 
-      5.38. API
+      5.38. Time Tracking
 
-            5.38.1. Disabling the webservice API
+      5.39. SOAP API
 
-      5.39. Anti-Spam Configuration
+            5.39.1. Disabling the SOAP API
 
-      5.40. Due Date
+      5.40. Anti-Spam Configuration
 
-      5.41. User Management
+      5.41. Due Date
 
-      5.42. View Page Settings
+      5.42. User Management
+
+      5.43. View Page Settings
 
 6. Page descriptions
 
@@ -665,8 +667,8 @@ use (open source). Please refer to the table in Section 2.2.2.1,
 
     Mandatory extensions
 
-            *  The extension for the RDBMS being used ( mysqli, pgsql,
-              oci8, sqlsrv )
+            *  The extension for the RDBMS being used ( mysql/mysqli,
+              pgsql, oci8, sqlsrv )
 
             * mbstring - Required for Unicode (UTF-8) support.
 
@@ -1764,41 +1766,43 @@ Chapter 5. Configuration
 
 5.25. Cookies
 
-5.26. Speed Optimisation
+5.26. Database Tables
 
-5.27. Reminders
+5.27. Speed Optimisation
 
-5.28. Bug History
+5.28. Reminders
 
-5.29. Sponsorship
+5.29. Bug History
 
-5.30. Custom Fields
+5.30. Sponsorship
 
-5.31. My View Settings
+5.31. Custom Fields
 
-5.32. Relationship Graphs
+5.32. My View Settings
 
-5.33. Wiki Integration
+5.33. Relationship Graphs
 
-5.34. Sub-Projects
+5.34. Wiki Integration
 
-5.35. Field Visibility
+5.35. Sub-Projects
 
-5.36. System Logging and Debugging
+5.36. Field Visibility
 
-5.37. Time Tracking
+5.37. System Logging and Debugging
 
-5.38. API
+5.38. Time Tracking
 
-      5.38.1. Disabling the webservice API
+5.39. SOAP API
 
-5.39. Anti-Spam Configuration
+      5.39.1. Disabling the SOAP API
 
-5.40. Due Date
+5.40. Anti-Spam Configuration
 
-5.41. User Management
+5.41. Due Date
 
-5.42. View Page Settings
+5.42. User Management
+
+5.43. View Page Settings
 
 
 5.1. Introduction
@@ -1875,6 +1879,12 @@ $g_db_type
 
       default
 
+      mysql
+
+      mysql
+
+      Deprecated as of PHP 5.5.0
+
       PostgreSQL
 
       pgsql
@@ -1892,37 +1902,6 @@ $g_db_type
       oci8
 
       oci8
-
-MantisBT allows administrators to configure a prefix and a suffix for its
-tables. This is enables multiple MantisBT installation in the same
-database or schema.
-
-Warning
-
-Use of long strings for these configuration options may cause issues on
-RDBMS restricting the size of its identifiers, such as Oracle (which
-imposed a maximum size of 30 characters until version 12.1; starting with
-12cR2 this limit has been increased to 128).
-
-$g_db_table_prefix
-      Specifies the prefix to be used for all table names. The default
-      value is 'mantis'. The prefix can be used to help make sure table
-      names are unique. This is useful for users who are limited to a
-      single database or schema.
-
-$g_db_table_suffix
-      Specifies the prefix to be appended to all table names. The default
-      value is 'table'. The suffix can be used to help make sure table
-      names are unique. This is useful for users who are limited to one
-      database.
-
-$g_db_table_plugin_prefix
-      Specifies the prefix to be used to differentiate tables belonging
-      to a plugin's schema from MantisBT's base tables. The default value
-      is 'plugin'. Plugin table names are built using the plugin's
-      basename, e.g. for a table named 'foo' in the 'Example' plugin
-      (with default values for prefixes and suffix), the physical table
-      name would be mantis_plugin_Example_foo_table.
 
 
 5.3. Path
@@ -2174,7 +2153,7 @@ $g_email_notifications_verbose
       When enabled, the email notifications will include the full issue
       with a hint about the change type at the top, rather than using
       dedicated notifications that are focused on what changed. This
-      change can be overridden in the database per user. Default is OFF.
+      change can be overridden in the database per user. Default is ON.
 
 $g_default_notify_flags
       Associates a default notification flag with each action, to control
@@ -2289,13 +2268,12 @@ $g_email_ensure_unique
       can be duplicate emails before this option was turned ON. Default
       is ON.
 
-$g_limit_email_domains
-      Only allow and send email to addresses in the given domain(s). This
-      is useful as a security feature and it is also useful in cases like
+$g_limit_email_domain
+      Only allow and send email to addresses in the given domain. This is
+      useful as a security feature and it is also useful in cases like
       Sourceforge where its servers are only limited to send emails to
       SourceForge email addresses in order to avoid spam.
-      $g_limit_email_domains = array( 'users.sourceforge.net',
-      'sourceforge.net' );
+      $g_limit_email_domain = 'users.sourceforge.net';
 
 $g_show_user_email_threshold
       This specifies the access level that is needed to have user names
@@ -2409,7 +2387,7 @@ eliminated:
 
 $g_show_version
       Whether to show the MantisBT version at the bottom of each page or
-      not. Default is OFF.
+      not. Default is ON.
 
 
 5.10. Language
@@ -2479,6 +2457,10 @@ $g_logo_url
       set to $g_default_home_page (which defaults to My View page).
       Clicking on the logo from any page in the bug tracker will navigate
       to the URL specified in this configuration option.
+
+$g_show_footer_menu
+      Show the menu at the bottom of the page as well as at the top.
+      Default value is OFF.
 
 $g_show_project_menu_bar
       This option specifies whether to add menu at the top of the page
@@ -2592,9 +2574,9 @@ $g_show_avatar_threshold
 ----------
 
 $g_cookie_time_length
-      Time for long lived cookie to live in seconds. It is also used as
-      the default for permanent logins if $g_allow_permanent_cookie is
-      enabled and selected. Default is 1 year.
+      Time for 'permanent' cookie to live in seconds. This is what is
+      used when a user selects "save login". Default is the equivalent of
+      1 year (30000000).
 
 $g_allow_permanent_cookie
       Allow users to opt for a 'permanent' cookie when logging in.
@@ -3295,9 +3277,9 @@ $g_bug_resolved_status_threshold
 
 $g_bug_resolution_fixed_threshold
       Threshold resolution which denotes that a bug has been resolved and
-      successfully fixed by developers. Resolutions above and including
-      this threshold and below $g_bug_resolution_not_fixed_threshold are
-      considered to be resolved successfully. Default value is FIXED.
+      successfully fixed by developers. Resolutions above this threshold
+      and below $g_bug_resolution_not_fixed_threshold are considered to
+      be resolved successfully. Default value is FIXED.
 
 $g_bug_resolution_not_fixed_threshold
       Threshold resolution which denotes that a bug has been resolved
@@ -3378,7 +3360,8 @@ $g_filter_by_custom_fields
       Defaults to ON.
 
 $g_filter_custom_fields_per_row
-      The number of filter fields to display per row. The default is 8.
+      The number of custom fields to display per row. The default is 8.
+      The value should be greater than or equal to 8.
 
 $g_view_filters = SIMPLE_DEFAULT;
       Controls the display of the filter pages. Possible values are:
@@ -3488,6 +3471,10 @@ $g_bugnote_link_tag
 
         *  'bugnote:' a link would be bugnote:98
 
+$g_register_globals
+      If your register_globals is Off then set this to OFF. Check your
+      register_globals setting in php.ini or phpinfo().
+
 $g_enable_project_documentation
       Specifies whether to enable support for project documents or not.
       Default is OFF. This feature is deprecated and is expected to be
@@ -3571,7 +3558,34 @@ $g_cookie_prefix
         *  $g_bug_list_cookie
 
 
-5.26. Speed Optimisation
+5.26. Database Tables
+---------------------
+
+MantisBT enables users to configure a table prefix for all its tables.
+This is useful to be able to have multiple MantisBT installation in the
+same database. The advantage of that is for users who are limited by
+their ISP to have one database.
+
+$g_db_table_prefix
+      Specifies the prefix to be use for all table names. The default
+      value is 'mantis'. If you override the default prefix, make sure to
+      update doc/db_generate.sql file before generating your database.
+      The other option is to import db_generate.sql as is, then rename
+      the tables to match the new prefix. The prefix is used to help make
+      sure table names are unique. This is useful for users who are
+      limited to one database.
+
+      Note
+
+      The table name for each of the tables is stored in a variable which
+      is calculated based on this configuration option. If you change the
+      prefix you have to make sure these variables are re-calculated (by
+      adding these calculation statements to config_inc.php after
+      assigning the new prefix). An example of these variables is:
+      $g_mantis_bug_file_table
+
+
+5.27. Speed Optimisation
 ------------------------
 
 $g_compress_html
@@ -3596,7 +3610,7 @@ $g_use_persistent_connections
       defaulted to OFF.
 
 
-5.27. Reminders
+5.28. Reminders
 ---------------
 
 Sending reminders is a feature where a user can notify / remind other
@@ -3629,7 +3643,7 @@ $g_mentions_tag
       The tag to use for prefixing mentions. Default is '@'.
 
 
-5.28. Bug History
+5.29. Bug History
 -----------------
 
 Bug history is a feature where MantisBT tracks all modifications that are
@@ -3649,7 +3663,7 @@ $g_history_order
       value is 'ASC'.
 
 
-5.29. Sponsorship
+5.30. Sponsorship
 -----------------
 
 $g_enable_sponsorship
@@ -3689,7 +3703,7 @@ $g_assign_sponsored_bugs_threshold
       'handle_sponsored_bugs_threshold'. The default is MANAGER.
 
 
-5.30. Custom Fields
+5.31. Custom Fields
 -------------------
 
 $g_manage_custom_fields_threshold
@@ -3706,7 +3720,7 @@ $$g_custom_field_edit_after_create
       The default is ON (edit the custom field after creating).
 
 
-5.31. My View Settings
+5.32. My View Settings
 ----------------------
 
 $g_my_view_boxes
@@ -3734,7 +3748,7 @@ $g_default_home_page
       'view_all_bugs_page.php' or 'main_page.php'.
 
 
-5.32. Relationship Graphs
+5.33. Relationship Graphs
 -------------------------
 
 $g_relationship_graph_enable
@@ -3784,7 +3798,7 @@ $g_neato_tool
       default value is '/usr/bin/neato'.
 
 
-5.33. Wiki Integration
+5.34. Wiki Integration
 ----------------------
 
 $g_wiki_enable
@@ -3817,7 +3831,7 @@ $g_wiki_engine_url
       wiki URL will be 'http://example.com/dokuwiki/').
 
 
-5.34. Sub-Projects
+5.35. Sub-Projects
 ------------------
 
 $g_subprojects_enabled
@@ -3837,7 +3851,7 @@ $g_subprojects_inherit_categories
       have categories from X, A and B. The default value is ON.
 
 
-5.35. Field Visibility
+5.36. Field Visibility
 ----------------------
 
 $g_enable_eta
@@ -3909,7 +3923,7 @@ $g_bug_change_status_page_fields
       => Manage Configuration administrator page.
 
 
-5.36. System Logging and Debugging
+5.37. System Logging and Debugging
 ----------------------------------
 
 This section describes settings which can be used to troubleshoot
@@ -4099,7 +4113,7 @@ $g_show_log_threshold
       rather than the one from the currently active project.
 
 
-5.37. Time Tracking
+5.38. Time Tracking
 -------------------
 
 $g_time_tracking_enabled
@@ -4135,19 +4149,17 @@ $g_time_tracking_reporting_threshold
       MANAGER.
 
 
-5.38. API
----------
+5.39. SOAP API
+--------------
 
-MantisBT exposes a webservice API which allows remote clients to interact
-with MantisBT and perform many of the usual tasks, such as reporting
-issues, running filtered searches and retrieving attachments. The SOAP
-API is enabled by default and available at /api/soap/mantisconnect.php
-below the MantisBT root. A WSDL file which describes the web service is
-available at /api/soap/mantisconnect.php?wsdl below the MantisBT root.
-The REST API is experimental and is disabled by default. A Swagger
-sandbox and documentation for REST API is available at /api/rest/swagger/
-below the MantisBT root. The following options are used to control the
-behaviour of the MantisBT SOAP API:
+MantisBT exposes a SOAP API which allows remote clients to interact with
+MantisBT and perform many of the usual tasks, such as reporting issues,
+running filtered searches and retrieving attachments. The SOAP API is
+enabled by default and available at /api/soap/mantisconnect.php below
+your installation root. A WSDL file which describes the web service is
+available at /api/soap/mantisconnect.php?wsdl below your installation
+root. The following options are used to control the behaviour of the
+MantisBT SOAP API:
 
 $g_webservice_readonly_access_level_threshold
       Minimum global access level required to access webservice for
@@ -4166,17 +4178,11 @@ $g_webservice_specify_reporter_on_add_access_level_threshold
       specify reporter when adding issues or issue notes. Defaults to
       DEVELOPER.
 
-$g_webservice_rest_enabled
-      Whether the REST API (experimental) is enabled or not. Note that
-      this flag only impacts API Token based auth. Hence, even if the API
-      is disabled, it can still be used from the Web UI using cookie
-      based authentication. Default OFF.
 
+5.39.1. Disabling the SOAP API
 
-5.38.1. Disabling the webservice API
-
-If you wish to temporarily disable the webservice API it is sufficient to
-set the specific access thresholds to NOBODY:
+If you wish to temporarily disable the SOAP API it is sufficient to set
+the specific access thresholds to NOBODY:
 $g_webservice_readonly_access_level_threshold =
 $g_webservice_readwrite_access_level_threshold =
 $g_webservice_admin_access_level_threshold = NOBODY; While the SOAP API
@@ -4184,7 +4190,7 @@ will still be accessible, it will not allow users to retrieve or modify
 data.
 
 
-5.39. Anti-Spam Configuration
+5.40. Anti-Spam Configuration
 -----------------------------
 
 $g_antispam_max_event_count
@@ -4197,7 +4203,7 @@ $g_antispam_time_window_in_seconds
       (1 hour).
 
 
-5.40. Due Date
+5.41. Due Date
 --------------
 
 $g_due_date_update_threshold
@@ -4212,7 +4218,7 @@ $g_due_date_default
       'today' or '+2 days'. Default is ''.
 
 
-5.41. User Management
+5.42. User Management
 ---------------------
 
 $g_impersonate_user_threshold
@@ -4224,7 +4230,7 @@ $g_manage_user_threshold
       ADMINISTRATOR.
 
 
-5.42. View Page Settings
+5.43. View Page Settings
 ------------------------
 
 $g_issue_activity_note_attachments_seconds_threshold
@@ -4592,7 +4598,7 @@ minimum length, and less than or equal to the minimum length, unless
 these values are 0. If the values are 0, the check is skipped. All fields
 are also compared against the regular expression. If the value matches
 the expression, then the value is stored. For example, the expression
-"^-?([0-9])*$" can be used to constrain an integer.The table below
+"/^-?([0-9])*$/" can be used to constrain an integer.The table below
 describes the field types and the value constraints.
 
 Type
@@ -5179,14 +5185,8 @@ customized or translated differently. This is achieved by overriding them
 in the Custom Strings File (in config/custom_strings_inc.php), which is
 automatically detected and included by MantisBT code. Defining custom
 strings here provides a simple upgrade path, and avoids having to re-do
-the changes when upgrading to the next release.
-
-Note
-
-The standard MantisBT language strings are sometimes reused in different
-contexts. If you are planning to override some strings to meet your
-specific requirements, make sure to analyze where they are used to avoids
-unexpected issues. Two formats are supported within this file:
+the changes when upgrading to the next release. Two formats are supported
+within this file:
 
 New Format
       Define a $s_custom_messages array as follows:
@@ -5710,7 +5710,7 @@ See Section 5.8, “Email” in the Configuration section. Examples:
     involved in them. Don't send mail people already know about. Also
     send new issue notifications to managers so they can screen them.
 
-    $g_email_receive_own = OFF;
+    $g_mail_receive_own = OFF;
     $g_default_notify_flags = array(
             'reporter'      => ON,
             'handler'       => ON,
@@ -5962,7 +5962,7 @@ Prints the custom buttons on the current view page
 None
 
 custom_function_default_print_column_title( $p_column, $p_columns_target
-= COLUMNS_TARGET_VIEW_PAGE, array $p_sort_properties = null )
+= COLUMNS_TARGET_VIEW_PAGE )
 
 Print a column's title based on its name
 
@@ -6530,78 +6530,6 @@ Revision History
 ================
 
 Revision History
-
-Revision 2.4-0
-
-Sun Apr 30 2017
-
-Victor Boctor
-
-Release 2.4.0
-
-Revision 2.3-3
-
-Sun Apr 30 2017
-
-Victor Boctor
-
-Release 2.3.2
-
-Revision 2.3-2
-
-Sun Apr 17 2017
-
-Victor Boctor
-
-Release 2.3.1
-
-Revision 2.3-1
-
-Fri Mar 31 2017
-
-Victor Boctor
-
-Release 2.3.0
-
-Revision 2.2-3
-
-Wed Mar 22 2017
-
-Damien Regad
-
-Release 2.2.2
-
-Revision 2.2-2
-
-Sun Mar 12 2017
-
-Victor Boctor
-
-Release 2.2.1
-
-Revision 2.2-1
-
-Sun Feb 26 2017
-
-Victor Boctor
-
-Release 2.2.0
-
-Revision 2.1-2
-
-Sun Feb 26 2017
-
-Victor Boctor
-
-Release 2.1.1
-
-Revision 2.1-1
-
-Tue Jan 31 2017
-
-Victor Boctor
-
-Release 2.1.0
 
 Revision 2.0-2
 

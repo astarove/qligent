@@ -47,8 +47,6 @@
  * @author Kongr43gpen
  * @author Omnipaedista
  * @author Protnet
- * @author Thodoris
- * @author Ανώνυμος Βικιπαιδιστής
  */
 
 $s_actiongroup_menu_move = 'Μετακίνηση';
@@ -104,6 +102,7 @@ $s_stays_on_top = 'Παραμονή στο Προσκήνιο';
 $s_delete_bugnote_button = 'Διαγραφή Σημείωσης';
 $s_delete_bugnote_sure_msg = 'Είστε σίγουρος πως θέλετε να διαγράψετε το θέμα;';
 $s_bug_relationships = 'Σχέσεις';
+$s_bug_relationships_label = 'Σχέσεις:';
 $s_empty_password_sure_msg = 'Ο χρήστης έχει κενό κωδικό. Είστε σίγουρος;';
 $s_empty_password_button = 'Χρήση Κενού Κωδικού';
 $s_reauthenticate_title = 'Επικυρώστε';
@@ -257,6 +256,7 @@ $s_delete_bug_sure_msg = 'Είστε σίγουρος πως θέλετε να �
 $s_delete_bug_button = 'Διαγραφή';
 $s_monitor_bug_button = 'Παρακολούθηση';
 $s_unmonitor_bug_button = 'Τέλος Παρακ/σης';
+$s_file_upload_msg = 'Η Φόρτωση του Αρχείου ήταν επιτυχής';
 $s_upload_file = 'Φόρτωση Αρχείου';
 $s_select_file = 'Επιλογή Αρχείου';
 $s_upload_file_button = 'Φόρτωση Αρχείου';
@@ -329,7 +329,6 @@ $s_choose_project = 'Εφαρμογή';
 $s_login_button = 'Είσοδος';
 $s_signup_link = 'Νέος χρήστης';
 $s_lost_password_link = 'Ξεχάσατε τον κωδικό;';
-$s_enter_password = 'Εισάγετε τον κωδικό για \'%s\'';
 $s_select_project_button = 'Επιλογή Εφαρμογής';
 $s_lost_password_title = 'Ακύρωση Κωδικού';
 $s_lost_password_done_title = 'Αποστολή Μηνύματος Κωδικού';
@@ -607,7 +606,6 @@ $s_changed = 'Μεταβολή(ώρες)';
 $s_viewing_bugs_title = 'Προβολή Θεμάτων';
 $s_updated = 'Ενημέρωση';
 $s_sticky = 'Προβολή Σημειωμένων Θεμάτων';
-$s_sort = 'Ιεράρχηση';
 $s_recently_visited = 'Πρόσφατες επισκέψεις';
 $s_none = 'Κανένα';
 $s_current = 'Παρόν';
@@ -695,6 +693,7 @@ $s_relationship_deleted = 'Διαγραφή σχέσης';
 $s_no_relationship = 'καμία σχέση';
 $s_relationship_replaced = 'Αντικατάσταση σχέσης';
 $s_replace_relationship_button = 'Αντικατάσταση';
+$s_replace_relationship_sure_msg = 'Υπάρχει ήδη σχέση μεταξύ των δυο θεμάτων. Είστε σίγουρος πως θέλετε να την αντικαταστείσετε;';
 $s_relationship_with_parent = 'Σχέση με πατρικό θέμα';
 $s_delete_relationship_button = 'Διαγραφή';
 $s_create_child_bug_button = 'Κλώνος';
@@ -805,6 +804,3 @@ $MANTIS_ERROR[ERROR_BUG_READ_ONLY_ACTION_DENIED] = 'The action cannot be perform
 $MANTIS_ERROR[ERROR_RELATIONSHIP_SAME_BUG] = 'An issue can\'t be related to itself.';
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_NOT_ENABLED] = 'The \'lost your password\' feature is not available.';
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_NOT_MATCHING_DATA] = 'Τα δεδομένα δεν ταιριάζουν με κανένα λογαριασμό';
-$s_dropzone_invalid_file_type = 'Δεν μπορείτε να ανεβάσετε τα αρχεία αυτού του τύπου.';
-$s_dropzone_max_files_exceeded = 'Δεν μπορείτε να ανεβάσετε άλλα αρχεία.';
-$s_dropzone_not_supported = 'Το Dropzone.js δεν υποστηρίζει παλαιότερα προγράμματα περιήγησης!';

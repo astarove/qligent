@@ -363,25 +363,33 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	echo '<tr class="hidden"></tr>';
 }
 
-
 #
-# Reporter, Handler, Due Date
+# Reporter
 #
 
-if( $t_show_reporter || $t_show_handler || $t_show_due_date ) {
+if( $t_show_reporter ) {
 	echo '<tr>';
 
-	$t_spacer = 0;
+	$t_spacer = 4;
 
 	# Reporter
-	if( $t_show_reporter ) {
-		echo '<th class="bug-reporter category">', lang_get( 'reporter' ), '</th>';
-		echo '<td class="bug-reporter">';
-		print_user_with_subject( $t_bug->reporter_id, $t_bug_id );
-		echo '</td>';
-	} else {
-		$t_spacer += 2;
-	}
+	echo '<th class="bug-reporter category">', lang_get( 'reporter' ), '</th>';
+	echo '<td class="bug-reporter">';
+	print_user_with_subject( $t_bug->reporter_id, $t_bug_id );
+	echo '</td>';
+	echo '<td colspan="', $t_spacer, '">&#160;</td>';
+
+	echo '</tr>';
+}
+
+#
+# Handler, Due Date
+#
+
+if( $t_show_handler || $t_show_due_date ) {
+	echo '<tr>';
+
+	$t_spacer = 2;
 
 	# Handler
 	if( $t_show_handler ) {
@@ -406,10 +414,7 @@ if( $t_show_reporter || $t_show_handler || $t_show_due_date ) {
 		$t_spacer += 2;
 	}
 
-	if( $t_spacer > 0 ) {
-		echo '<td colspan="', $t_spacer, '">&#160;</td>';
-	}
-
+	echo '<td colspan="', $t_spacer, '">&#160;</td>';
 	echo '</tr>';
 }
 
@@ -471,7 +476,7 @@ if( $t_show_status || $t_show_resolution ) {
 		$t_status_label = html_get_status_css_class( $t_bug->status );
 
 		echo '<td class="bug-status">';
-		echo '<i class="fa fa-square fa-status-box ' . $t_status_label . '"></i> ';
+		echo '<i class="fa fa-square-o fa-xlg ' . $t_status_label . '"></i> ';
 		echo $t_status, '</td>';
 	} else {
 		$t_spacer += 2;

@@ -102,7 +102,7 @@ access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
 if( isset( $_GET['posted'] ) && empty( $_FILE ) && empty( $_POST ) ) {
 	$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
-    error_parameters( $t_max_file_size );
+	error_parameters( $t_max_file_size );
 	trigger_error( ERROR_FILE_TOO_BIG, ERROR );
 }
 
@@ -198,16 +198,8 @@ if( $t_bug_data->handler_id == NO_USER && $t_bug_data->status >= config_get( 'bu
 	$t_bug_data->handler_id = auth_get_current_user_id();
 }
 
-# Handle the file upload
-if( $f_files !== null ) {
-	if( !file_allow_bug_upload( $t_bug_id ) ) {
-		access_denied();
-	}
-
-	file_process_posted_files_for_bug( $t_bug_id, $f_files );
-}
-else {
-    trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
+if( $f_files === null ) {
+	trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
 }
 
 # Create the bug
@@ -216,6 +208,15 @@ $t_bug_data->process_mentions();
 
 # Mark the added issue as visited so that it appears on the last visited list.
 last_visited_issue( $t_bug_id );
+
+# Handle the file upload
+if( $f_files !== null ) {
+	if( !file_allow_bug_upload( $t_bug_id ) ) {
+		access_denied();
+	}
+
+	file_process_posted_files_for_bug( $t_bug_id, $f_files );
+}
 
 # Handle custom field submission
 foreach( $t_related_custom_field_ids as $t_id ) {
@@ -240,6 +241,21 @@ if( $f_master_bug_id > 0 ) {
 	# Add log line to record the cloning action
 	history_log_event_special( $t_bug_id, BUG_CREATED_FROM, '', $f_master_bug_id );
 	history_log_event_special( $f_master_bug_id, BUG_CLONED_TO, '', $t_bug_id );
+
+	if( $f_rel_type > BUG_REL_ANY ) {
+		# Add the relationship
+		relationship_add( $t_bug_id, $f_master_bug_id, $f_rel_type );
+
+		# Add log line to the history (both issues)
+		history_log_event_special( $f_master_bug_id, BUG_ADD_RELATIONSHIP, relationship_get_complementary_type( $f_rel_type ), $t_bug_id );
+		history_log_event_special( $t_bug_id, BUG_ADD_RELATIONSHIP, $f_rel_type, $f_master_bug_id );
+
+		# Send the email notification
+		email_relationship_added( $f_master_bug_id, $t_bug_id, relationship_get_complementary_type( $f_rel_type ) );
+
+		# update relationship target bug last updated
+		bug_update_date( $t_bug_id );
+	}
 
 	# copy notes from parent
 	if( $f_copy_notes_from_parent ) {
@@ -272,15 +288,6 @@ if( $f_master_bug_id > 0 ) {
 	}
 }
 
-# log status and resolution changes if they differ from the default
-if( $t_bug_data->status != config_get( 'bug_submit_status' ) ) {
-	history_log_event( $t_bug_id, 'status', config_get( 'bug_submit_status' ) );
-}
-
-if( $t_bug_data->resolution != config_get( 'default_bug_resolution' ) ) {
-	history_log_event( $t_bug_id, 'resolution', config_get( 'default_bug_resolution' ) );
-}
-
 helper_call_custom_function( 'issue_create_notify', array( $t_bug_id ) );
 
 # Allow plugins to post-process bug data with the new bug ID
@@ -288,8 +295,13 @@ event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 
 email_bug_added( $t_bug_id );
 
-if( $f_master_bug_id > 0 && $f_rel_type > BUG_REL_ANY ) {
-	relationship_add( $t_bug_id, $f_master_bug_id, $f_rel_type, /* email for source */ false );
+# log status and resolution changes if they differ from the default
+if( $t_bug_data->status != config_get( 'bug_submit_status' ) ) {
+	history_log_event( $t_bug_id, 'status', config_get( 'bug_submit_status' ) );
+}
+
+if( $t_bug_data->resolution != config_get( 'default_bug_resolution' ) ) {
+	history_log_event( $t_bug_id, 'resolution', config_get( 'default_bug_resolution' ) );
 }
 
 form_security_purge( 'bug_report' );

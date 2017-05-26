@@ -59,6 +59,7 @@ access_ensure_global_level( config_get( 'manage_user_threshold' ) );
 
 $t_cookie_name = config_get( 'manage_users_cookie' );
 $t_lock_image = '<i class="fa fa-lock fa-lg" alt="' . lang_get( 'protected' ) . '" />';
+$c_filter = '';
 
 $f_save          = gpc_get_bool( 'save' );
 $f_filter        = utf8_strtoupper( gpc_get_string( 'filter', config_get( 'default_manage_user_prefix' ) ) );
@@ -170,7 +171,7 @@ foreach ( $t_prefix_array as $t_prefix => $t_caption ) {
 	} else {
 		$t_title = '';
 	}
-	$t_active = (string)$t_prefix === $f_filter ? 'active' : '';
+	$t_active = $t_prefix === $f_filter ? 'active' : '';
 		print_manage_user_sort_link( 'manage_user_page.php',
 			$t_caption,
 			$c_sort,
@@ -272,7 +273,7 @@ $t_user_count = count( $t_users );
 			<input type="hidden" name="sort" value="<?php echo $c_sort ?>" />
 			<input type="hidden" name="dir" value="<?php echo $c_dir ?>" />
 			<input type="hidden" name="save" value="1" />
-			<input type="hidden" name="filter" value="<?php echo $f_filter ?>" />
+			<input type="hidden" name="filter" value="<?php echo $c_filter ?>" />
 			<label class="inline">
 			<input type="checkbox" class="ace" name="hideinactive" value="<?php echo ON ?>" <?php check_checked( (int)$c_hide_inactive, ON ); ?> />
 			<span class="lbl"> <?php echo lang_get( 'hide_inactive' ) ?></span>
@@ -305,7 +306,7 @@ $t_user_count = count( $t_users );
 		print_manage_user_sort_link( 'manage_user_page.php',
 			lang_get( $t_col ),
 			$t_col,
-			$c_dir, $c_sort, $c_hide_inactive, $f_filter, $c_show_disabled );
+			$c_dir, $c_sort, $c_hide_inactive, $c_filter, $c_show_disabled );
 		print_sort_icon( $c_dir, $c_sort, $t_col );
 		echo "</th>\n";
 	}
@@ -370,7 +371,7 @@ $t_user_count = count( $t_users );
 	<div class="btn-toolbar pull-right">
 		<?php
 		# @todo hack - pass in the hide inactive filter via cheating the actual filter value
-		print_page_links( 'manage_user_page.php', 1, $t_page_count, (int)$f_page_number, $f_filter . $t_hide_inactive_filter . $t_show_disabled_filter . "&amp;sort=$c_sort&amp;dir=$c_dir");
+		print_page_links( 'manage_user_page.php', 1, $t_page_count, (int)$f_page_number, $c_filter . $t_hide_inactive_filter . $t_show_disabled_filter . "&amp;sort=$c_sort&amp;dir=$c_dir");
 		?>
 	</div>
 </div>

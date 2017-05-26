@@ -51,17 +51,6 @@ if( LDAP == config_get_global( 'login_method' ) ||
 	trigger_error( ERROR_LOST_PASSWORD_NOT_ENABLED, ERROR );
 }
 
-$f_username = gpc_get_string( 'username', '' );
-$t_username = auth_prepare_username( $f_username );
-
-# Determine whether the username or password field should receive automatic focus.
-$t_username_field_autofocus = 'autofocus';
-$t_email_field_autofocus = '';
-if( $t_username ) {
-	$t_username_field_autofocus = '';
-	$t_email_field_autofocus = 'autofocus';
-}
-
 # don't index lost password page
 html_robots_noindex();
 
@@ -91,14 +80,13 @@ layout_login_page_begin();
 			<?php
 			echo form_security_field( 'lost_pwd' );
 
-			$t_allow_passwd = auth_can_set_password();
+			$t_allow_passwd = helper_call_custom_function( 'auth_can_change_password', array() );
 			if( $t_allow_passwd ) { ?>
 				<label for="username" class="block clearfix">
 				<span class="block input-icon input-icon-right">
 					<input id="username" name="username" type="text"
 						placeholder="<?php echo lang_get( 'username' ) ?>"
-                        value="<?php echo string_html_specialchars( $t_username ) ?>"
-                        size="32" maxlength="<?php echo DB_FIELD_SIZE_USERNAME;?>" class="form-control <?php echo $t_username_field_autofocus ?>">
+						size="32" maxlength="<?php echo DB_FIELD_SIZE_USERNAME;?>" class="form-control autofocus">
 					<i class="ace-icon fa fa-user"></i>
 				</span>
 				</label>
@@ -106,7 +94,7 @@ layout_login_page_begin();
 				<span class="block input-icon input-icon-right">
 					<input id="email-field" name="email" type="text"
 						   placeholder="<?php echo lang_get( 'email' ) ?>"
-						   size="32" maxlength="64" class="form-control <?php echo $t_email_field_autofocus; ?>">
+						   size="32" maxlength="64" class="form-control">
 					<i class="ace-icon fa fa-envelope"></i>
 				</span>
 				</label>
@@ -118,15 +106,15 @@ layout_login_page_begin();
 			} else {
 				echo '<div class="space-10"></div>';
 				echo '<div class="alert alert-danger">';
-				echo auth_password_managed_elsewhere_message();
+				echo lang_get( 'no_password_request' );
 				echo '</div>';
 			} ?>
 		</fieldset>
 	</form>
 	</div>
 		<div class="toolbar center">
-			<a class="back-to-login-link pull-left" href="<?php echo AUTH_PAGE_USERNAME ?>"><?php echo lang_get( 'login_link' ); ?></a>
-			<?php if( auth_signup_enabled() ) { ?>
+			<a class="back-to-login-link pull-left" href="login_page.php"><?php echo lang_get( 'login_link' ); ?></a>
+			<?php if( ON == config_get_global( 'allow_signup' ) ) { ?>
 			<a class="back-to-login-link pull-right" href="signup_page.php"><?php echo lang_get( 'signup_link' ); ?></a>
 			<?php } ?>
 			<div class="clearfix"></div>

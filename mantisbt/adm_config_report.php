@@ -218,17 +218,7 @@ $t_edit_project_id      = gpc_get_int( 'project_id', $t_filter_project_value == 
 $t_edit_option          = gpc_get_string( 'config_option', $t_filter_config_value == META_FILTER_NONE ? '' : $t_filter_config_value );
 $t_edit_type            = gpc_get_string( 'type', CONFIG_TYPE_DEFAULT );
 $t_edit_value           = gpc_get_string( 'value', '' );
-
-$f_edit_action          = gpc_get_string( 'action', MANAGE_CONFIG_ACTION_CREATE );
-# Ensure we exclusively use one of the defined, valid actions (XSS protection)
-$t_valid_actions = array(
-	MANAGE_CONFIG_ACTION_CREATE,
-	MANAGE_CONFIG_ACTION_CLONE,
-	MANAGE_CONFIG_ACTION_EDIT
-);
-$t_edit_action = in_array( $f_edit_action, $t_valid_actions )
-	? $f_edit_action
-	: MANAGE_CONFIG_ACTION_CREATE;
+$t_edit_action          = gpc_get_string( 'action', 'action_create' );
 
 # Apply filters
 
@@ -453,7 +443,7 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 					'config_option' => $v_config_id,
 					'type'          => $v_type,
 					'value'         => $v_value,
-					'action'        => MANAGE_CONFIG_ACTION_EDIT,
+					'action'        => 'action_edit',
 				),
 				OFF );
 			echo '</div>';
@@ -469,7 +459,7 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 					'config_option' => $v_config_id,
 					'type'          => $v_type,
 					'value'         => $v_value,
-					'action'        => MANAGE_CONFIG_ACTION_CLONE,
+					'action'        => 'action_clone',
 				),
 				OFF );
 			echo '</div>';
@@ -515,11 +505,7 @@ if( $t_read_write_access ) {
 <!-- Config Set Form -->
 <div class="space-10"></div>
 
-<?php
-	if( config_can_delete( $t_edit_option ) ) {
-		$t_action_label = lang_get( 'set_configuration_option_action_' . $t_edit_action );
-?>
-
+<?php if( config_can_delete( $t_edit_option ) ){ ?>
 <div id="config-edit-div">
 <form id="config_set_form" method="post" action="adm_config_set.php">
 
@@ -528,7 +514,7 @@ if( $t_read_write_access ) {
 		<div class="widget-header widget-header-small">
 		<h4 class="widget-title lighter">
 			<i class="ace-icon fa fa-sliders"></i>
-			<?php echo $t_action_label; ?>
+			<?php echo lang_get( 'set_configuration_option_' . $t_edit_action ) ?>
 			</h4>
 		</div>
 
@@ -584,7 +570,7 @@ if( $t_read_write_access ) {
 					<input type="text" name="config_option" class="input-sm"
 						   value="<?php echo string_display_line( $t_edit_option ); ?>"
 						   size="64" maxlength="64" />
-					<input type="hidden" name="original_config_option" value="<?php echo string_display_line( $t_edit_option ); ?>" />
+					<input type="hidden" name="original_config_option" value="<?php echo $t_edit_option; ?>" />
 				</td>
 			</tr>
 
@@ -619,20 +605,16 @@ if( $t_read_write_access ) {
 		<div class="widget-toolbox padding-4 clearfix">
 			<input type="hidden" name="action" value="<?php echo $t_edit_action; ?>" />
 			<input type="submit" name="config_set" class="btn btn-primary btn-white btn-round"
-				value="<?php echo $t_action_label; ?>"/>
+				value="<?php echo lang_get( 'set_configuration_option_' . $t_edit_action ) ?>"/>
 		</div>
 	</div>
 	</div>
 	</div>
 </form>
 </div>
+<?php } # end if config_can_delete ?>
 
 <?php
-	} # end if config_can_delete
-} # end if user can change config (read-write access)
-?>
-
-</div>
-
-<?php
+} # end user can change config
+echo '</div>';
 layout_page_end();

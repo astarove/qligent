@@ -41,7 +41,7 @@
  * @link http://www.phpcaptcha.org/Securimage_Docs/ Online Documentation
  * @copyright 2016 Drew Phillips
  * @author Drew Phillips <drew@drew-phillips.com>
- * @version 3.6.5 (Dec 4 2016)
+ * @version 3.6.4 (Mar 3, 2016)
  * @package Securimage
  *
  */
@@ -204,7 +204,8 @@
  * The class contains many options regarding appearance, security, storage of
  * captcha data and image/audio generation options.
  *
-* @package    Securimage
+ * @version    3.5.2
+ * @package    Securimage
  * @subpackage classes
  * @author     Drew Phillips <drew@drew-phillips.com>
  *
@@ -3342,7 +3343,8 @@ class Securimage
 /**
  * Color object for Securimage CAPTCHA
  *
-* @since 2.0
+ * @version 3.0
+ * @since 2.0
  * @package Securimage
  * @subpackage classes
  *

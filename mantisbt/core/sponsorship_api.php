@@ -92,6 +92,10 @@ class SponsorshipData {
 	public $last_updated = '';
 }
 
+# ########################################
+# SECURITY NOTE: cache globals are initialized here to prevent them
+#   being spoofed if register_globals is turned on
+
 $g_cache_sponsorships = array();
 
 /**

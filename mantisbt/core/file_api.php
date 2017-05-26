@@ -721,7 +721,6 @@ function file_add( $p_bug_id, array $p_file, $p_table = 'bug', $p_title = '', $p
 
 	$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
 	if( $t_file_size > $t_max_file_size ) {
-        error_parameters( $t_max_file_size );
 		trigger_error( ERROR_FILE_TOO_BIG, ERROR );
 	}
 
@@ -923,8 +922,6 @@ function file_ensure_uploaded( array $p_file ) {
 	switch( $p_file['error'] ) {
 		case UPLOAD_ERR_INI_SIZE:
 		case UPLOAD_ERR_FORM_SIZE:
-			$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
-            error_parameters( $t_max_file_size );
 			trigger_error( ERROR_FILE_TOO_BIG, ERROR );
 			break;
 		case UPLOAD_ERR_PARTIAL:

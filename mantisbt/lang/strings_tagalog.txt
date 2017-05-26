@@ -39,7 +39,6 @@
  * @file
  *
  * @author AnakngAraw
- * @author Emem.calist
  * @author Jojit fb
  * @author Leeheonjin
  * @author Mirzali
@@ -361,6 +360,7 @@ $s_delete_bug_sure_msg = 'Nakatitiyak ka bang nais mong burahin ang labas na ito
 $s_delete_bug_button = 'Burahin';
 $s_monitor_bug_button = 'Subaybayan';
 $s_unmonitor_bug_button = 'Wakasan ang Pagsubaybay';
+$s_file_upload_msg = 'Matagumpay ang pagkakarga ng talaksan.';
 $s_upload_file = 'Ikarga ang Talaksan';
 $s_upload_files = 'Ikarga ang mga Talaksan';
 $s_select_file = 'Piliin ang Talaksan';
@@ -462,7 +462,6 @@ $s_choose_project = 'Pumili ng Proyekto';
 $s_login_button = 'Mag-login';
 $s_signup_link = 'Magpatala para sa isang bagong kuwenta';
 $s_lost_password_link = 'Naiwala mo ang iyong hudyat?';
-$s_enter_password = 'Gamitin ang nasasaad na \'password\' para sa \'%s\'';
 $s_select_project_button = 'Pumili ng Proyekto';
 $s_lost_password_title = 'Muling Pagtatakda ng Hudyat';
 $s_lost_password_done_title = 'Naipadala na ang Mensahe hinggil sa Hudyat';
@@ -810,10 +809,8 @@ $s_changed = 'Nabago(mga oras)';
 $s_viewing_bugs_title = 'Tinitingnan ang mga Labas';
 $s_updated = 'Naisapanahon na';
 $s_sticky = 'Ipakita ang Madidikit na mga Labas';
-$s_sort = 'Ayusin ayon sa';
 $s_issue_id = 'Labas #';
 $s_recently_visited = 'Kamakailang Dinalaw';
-$s_note_user_id = 'Tala Ni';
 $s_none = 'wala';
 $s_current = 'kasalukuyan';
 $s_search = 'Maghanap';
@@ -936,6 +933,7 @@ $s_relationship_deleted = 'Binura ang kaugnayan';
 $s_no_relationship = 'walang kaugnayan';
 $s_relationship_replaced = 'Pinalitan ang kaugnayan';
 $s_replace_relationship_button = 'Palitan';
+$s_replace_relationship_sure_msg = 'Mayroon nang isang ugnayan sa pagitan ng dalawang mga labas. Nakatitiyak ka bang nais mong palitan ito?';
 $s_relationship_with_parent = 'Kaugnayan sa pinagmulan/magulang na labas';
 $s_delete_relationship_button = 'Burahin';
 $s_delete_relationship_sure_msg = 'Nakatitiyak ka bang nais mong burahin ang ugnayang ito?';
@@ -1175,6 +1173,7 @@ $MANTIS_ERROR[ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW] = 'Tinanggihan an
 $MANTIS_ERROR[ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL] = 'Hindi nagbigay ng isang adres ng e-liham ang tagapagtaguyod. Pakisapanahon ang iyong talaan ng katangian.';
 $MANTIS_ERROR[ERROR_CONFIG_OPT_INVALID] = 'Ang piniling pagkakaayos na "%1$s" ay may hindi tanggap na halagang "%2$s".';
 $MANTIS_ERROR[ERROR_BUG_READ_ONLY_ACTION_DENIED] = 'Hindi maisasagawa ang galaw dahil ang labas na "%1$d" ay mababasa lamang.';
+$MANTIS_ERROR[ERROR_RELATIONSHIP_ALREADY_EXISTS] = 'Mayroon nang isang kaugnayan sa pagitan ng dalawang mga labas na ito.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_NOT_FOUND] = 'Hindi natagpuan ang kaugnayan.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW] = 'Tinanggihan ang pagpasok: Nangangailangan ng mas mataas na kaantasan ng pagpunta ang labas na %1$d.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_SAME_BUG] = 'Hindi maaaring kaugnay ng sarili niya ang isang labas (edisyon).';

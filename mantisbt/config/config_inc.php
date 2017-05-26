@@ -4,11 +4,8 @@ $g_db_type                = 'mysqli';
 $g_database_name          = 'bugtracker';
 $g_db_username            = 'root';
 $g_db_password            = 'Qligent_1!';
-
 $g_default_timezone       = 'Europe/Moscow';
-
 $g_crypto_master_salt     = 'F7cXw5q60zWig1XTPAenhyjr4jeukSbPbW/RRnSTNWQ=';
-
 // e-Mail settings
 //$g_path = 'http://82.208.111.89:1337/mantis/';
 $g_enable_email_notification = ON;
@@ -22,7 +19,6 @@ $g_administrator_email = 'help@icom-nn.ru';
 $g_webmaster_email = 'help@icom-nn.ru';
 $g_from_email = 'help@icom-nn.ru';
 $g_return_path_email = 'help@icom-nn.ru';
-
 ##########################
 # Mantis global settings #
 ##########################
@@ -31,13 +27,11 @@ $g_return_path_email = 'help@icom-nn.ru';
  * @global integer $g_default_bug_view_status
  */
 $g_default_bug_view_status = VS_PRIVATE;
-
 /**
  * Allow a bug to have no category
  * @global integer $g_allow_no_category
  */
 $g_allow_no_category = ON;
-
 /*
  * @global array $g_bug_report_page_fields
  */
@@ -53,7 +47,6 @@ $g_bug_report_page_fields = array(
 	'severity',
 	'target_version'
 );
-
 #########################
 # MantisBT Enum Strings #
 #########################
@@ -62,7 +55,6 @@ $g_bug_report_page_fields = array(
  * @global string $g_severity_enum_string
  */
 $g_severity_enum_string = '10:Immediate, 30:Urgent, 50:High, 70:Low, 100:Enhancement';
-
 /**
  * @global array $g_default_notify_flags
  */

@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.4.0' );
+define( 'MANTIS_VERSION', '2.0.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -368,7 +368,7 @@ define( 'ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW', 1704 );
 define( 'ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL', 1705 );
 
 # ERROR RELATIONSHIP
-define( 'ERROR_RELATIONSHIP_ALREADY_EXISTS', 1800 );  # TODO: remove once no longer used in lang files
+define( 'ERROR_RELATIONSHIP_ALREADY_EXISTS', 1800 );
 define( 'ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW', 1801 );
 define( 'ERROR_RELATIONSHIP_NOT_FOUND', 1802 );
 define( 'ERROR_RELATIONSHIP_SAME_BUG', 1803 );
@@ -462,10 +462,6 @@ define( 'META_FILTER_NONE', - 2 );
 define( 'META_FILTER_CURRENT', - 3 );
 define( 'META_FILTER_ANY', 0 );
 
-# Filter view types
-define( 'FILTER_VIEW_TYPE_SIMPLE', 'simple' );
-define( 'FILTER_VIEW_TYPE_ADVANCED', 'advanced' );
-
 # Custom filter types
 define( 'FILTER_TYPE_STRING', 0 );
 define( 'FILTER_TYPE_INT', 1 );
@@ -545,7 +541,7 @@ define( 'LOG_NONE', 0 );            # no logging
 define( 'LOG_EMAIL', 1 );           # all emails sent
 define( 'LOG_EMAIL_RECIPIENT', 2 ); # details of email recipient determination
 define( 'LOG_FILTERING', 4 );       # logging for filtering.
-define( 'LOG_AJAX', 8 );            # logging for AJAX
+define( 'LOG_AJAX', 8 );            # logging for AJAX / XmlHttpRequests
 define( 'LOG_LDAP', 16 );           # logging for LDAP
 define( 'LOG_DATABASE', 32 );       # logging for Database
 define( 'LOG_WEBSERVICE', 64 );     # logging for Web Service Requests
@@ -600,10 +596,6 @@ define( 'SECONDS_PER_DAY', 86400 );
 define( 'LINKS_SAME_WINDOW', 1 );
 define( 'LINKS_NEW_WINDOW', 2 );
 
-# Auth Related Constants
-define( 'AUTH_COOKIE_LENGTH', 64 );
-define( 'API_TOKEN_LENGTH', 32 );
-
 # Obsolete / deprecated constants
 # Defined below for backwards-compatibility purposes -- Do not use them
 #        Constant                                   # Replaced by
@@ -613,10 +605,12 @@ define( 'LOG_SOAP', 64 );                           # LOG_WEBSERVICE
 define( 'FTP', 1 );                                 # DISK
 define( 'ERROR_FTP_CONNECT_ERROR', 16 );            # N/A
 
-# JQuery
+# JQuery and JQuery UI
 # hashes acquired with command 'cat file.js | openssl dgst -sha256 -binary | openssl enc -base64 -A'
 define( 'JQUERY_VERSION', '2.2.4' );
 define( 'JQUERY_HASH', 'sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' );
+define( 'JQUERY_UI_VERSION', '1.11.4' );
+define( 'JQUERY_UI_HASH', 'sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=' );
 
 # Bootstrap & FontAwesome
 define( 'BOOTSTRAP_VERSION', '3.3.6' );
@@ -634,18 +628,6 @@ define( 'CHARTJS_VERSION', '2.1.6' );
 define( 'CHARTJS_HASH', 'sha256-Emd9qupGNNjtRpaQjhpA4hn+PWAETkO2GB3gzBL3thM=' );
 define( 'CHARTJSBUNDLE_HASH', 'sha256-OBi9RJU9sFk/2JEV23eSQSqe/eUK4km5NxGgo/XMiqY=' );
 
-# Tyeahead JS
-define( 'TYPEAHEAD_VERSION', '1.1.1' );
-define( 'TYPEAHEAD_HASH', 'sha256-qZIhMVBV4/crmcmYXNq5ZE5gPRiiPPMKVYbapf5HDBs=' );
-
-# List JS
-define( 'LISTJS_VERSION', '1.4.1' );
-define( 'LISTJS_HASH', 'sha256-lFOz0Sg8djWQPKOfRce9A9EcYSWhFMsYo+ulRYVnjrw=' );
-
-# Dropzone JS
-define( 'DROPZONE_VERSION', '4.3.0' );
-define( 'DROPZONE_HASH', 'sha256-p2l8VeL3iL1J0NxcXbEVtoyYSC+VbEbre5KHbzq1fq8=' );
-
 # Byte Order Markers
 define( 'UTF8_BOM', "\xEF\xBB\xBF" );
 
@@ -659,37 +641,3 @@ define( 'EXPORT_BLOCK_SIZE', 500 );
 # types, 2^31 is a safe limit to be used for all.
 define( 'DB_MAX_INT', 2147483647 );
 
-# HTTP Status Codes
-define( 'HTTP_STATUS_SUCCESS', 200 );
-define( 'HTTP_STATUS_CREATED', 201 );
-define( 'HTTP_STATUS_NO_CONTENT', 204 );
-define( 'HTTP_STATUS_BAD_REQUEST', 400 );
-define( 'HTTP_STATUS_UNAUTHORIZED', 401 );
-define( 'HTTP_STATUS_FORBIDDEN', 403 );
-define( 'HTTP_STATUS_NOT_FOUND', 404 );
-define( 'HTTP_STATUS_CONFLICT', 409 );
-define( 'HTTP_STATUS_INTERNAL_SERVER_ERROR', 500 );
-define( 'HTTP_STATUS_UNAVAILABLE', 503 );
-
-# HTTP HEADERS
-define( 'HEADER_AUTHORIZATION', 'Authorization' );
-define( 'HEADER_LOGIN_METHOD', 'X-Mantis-LoginMethod' );
-define( 'HEADER_USERNAME', 'X-Mantis-Username' );
-define( 'HEADER_VERSION', 'X-Mantis-Version' );
-
-# LOGIN METHODS
-define( 'LOGIN_METHOD_COOKIE', 'cookie' );
-define( 'LOGIN_METHOD_API_TOKEN', 'api-token' );
-define( 'LOGIN_METHOD_ANONYMOUS', 'anonymous' );
-
-# AUTH PAGES
-define( 'AUTH_PAGE_USERNAME', 'login_page.php' );
-define( 'AUTH_PAGE_CREDENTIAL', 'login_password_page.php' );
-
-# SLIM FRAMEWORK ATTRIBUTES
-define( 'ATTRIBUTE_FORCE_API_ENABLED', 'force_enable_api' );
-
-# Configuration management actions (adm_config_report.php)
-define( 'MANAGE_CONFIG_ACTION_CREATE', 'create' );
-define( 'MANAGE_CONFIG_ACTION_CLONE', 'clone' );
-define( 'MANAGE_CONFIG_ACTION_EDIT', 'edit' );

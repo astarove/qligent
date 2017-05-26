@@ -92,37 +92,31 @@ print_manage_menu( 'manage_proj_page.php' );
 	</div>
 	<div class="widget-body">
 	<div class="widget-main no-padding">
-	<div class="widget-toolbox padding-8 clearfix">
-		<?php
-		# Check the user's global access level before allowing project creation
-		if( access_has_global_level ( config_get( 'create_project_threshold' ) ) ) {
-			print_form_button( 'manage_proj_create_page.php', lang_get( 'create_new_project_link' ), null, null, 'btn btn-primary btn-white btn-round' );
-		} ?>
-	</div>
+
 	<div class="table-responsive">
 	<table class="table table-striped table-bordered table-condensed table-hover">
 		<thead>
 			<tr>
-				<th><?php
+				<td><?php
 					print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'name' ), 'name', $t_direction, $f_sort );
 					print_sort_icon( $t_direction, $f_sort, 'name' ); ?>
-				</th>
-				<th><?php
+				</td>
+				<td><?php
 					print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'status' ), 'status', $t_direction, $f_sort );
 					print_sort_icon( $t_direction, $f_sort, 'status' ); ?>
-				</th>
-				<th><?php
+				</td>
+				<td><?php
 					print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'enabled' ), 'enabled', $t_direction, $f_sort );
 					print_sort_icon( $t_direction, $f_sort, 'enabled' ); ?>
-				</th>
-				<th><?php
+				</td>
+				<td><?php
 					print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'view_status' ), 'view_state', $t_direction, $f_sort );
 					print_sort_icon( $t_direction, $f_sort, 'view_state' ); ?>
-				</th>
-				<th><?php
+				</td>
+				<td><?php
 					print_manage_project_sort_link( 'manage_proj_page.php', lang_get( 'description' ), 'description', $t_direction, $f_sort );
 					print_sort_icon( $t_direction, $f_sort, 'description' ); ?>
-				</th>
+				</td>
 			</tr>
 		</thead>
 
@@ -178,6 +172,13 @@ print_manage_menu( 'manage_proj_page.php' );
 		</tbody>
 	</table>
 </div>
+	</div>
+	<div class="widget-toolbox padding-8 clearfix">
+		<?php
+		# Check the user's global access level before allowing project creation
+		if( access_has_global_level ( config_get( 'create_project_threshold' ) ) ) {
+			print_form_button( 'manage_proj_create_page.php', lang_get( 'create_new_project_link' ), null, null, 'btn btn-primary btn-white btn-round' );
+		} ?>
 	</div>
 	</div>
 	</div>

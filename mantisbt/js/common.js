@@ -48,14 +48,6 @@ $(document).ready( function() {
         ToggleDiv( t_div );
     });
 
-    var options = {
-    	valueNames: [ 'project-link' ]
-    };
-    var list = new List('projects-list', options);
-    if(list.items.length <= 10) {
-    	$('#projects-list .searchbox').hide();
-    }
-
     $('.widget-box').on('shown.ace.widget' , function(event) {
        var t_id = $(this).attr('id');
        var t_cookie = GetCookie( "collapse_settings" );
@@ -97,41 +89,34 @@ $(document).ready( function() {
         SetCookie("collapse_settings", t_cookie);
     });
 
-    $('input[type=text].typeahead').each(function() {
-        var $this = $(this);
-		$(this).typeahead({
-			minLength: 1,
-			highlight: true
-		}, {
-			source: function (query, undefined, callback) {
-				var params = {};
-				params['field'] = $this[0].id;
-				params['prefix'] = query;
-				$.getJSON('api/rest/internal/autocomplete', params, function (data) {
-					var results = [];
-					$.each(data, function (i, value) {
-						results.push(value);
-					});
-	 				callback(results);
+    $('input[type=text].autocomplete').autocomplete({
+		source: function(request, callback) {
+			var fieldName = $(this).attr('element').attr('id');
+			var postData = {};
+			postData['entrypoint']= fieldName + '_get_with_prefix';
+			postData[fieldName] = request.term;
+			$.getJSON('xmlhttprequest.php', postData, function(data) {
+				var results = [];
+				$.each(data, function(i, value) {
+					var item = {};
+					item.label = $('<div/>').text(value).html();
+					item.value = value;
+					results.push(item);
 				});
-			}
-		});
+				callback(results);
+			});
+		}
 	});
 
 	$('a.dynamic-filter-expander').click(function(event) {
 		event.preventDefault();
 		var fieldID = $(this).attr('id');
-		var filter_id = $(this).data('filter_id');
 		var targetID = fieldID + '_target';
 		var viewType = $('#filters_form_open input[name=view_type]').val();
 		$('#' + targetID).html('<span class="dynamic-filter-loading">' + translations['loading'] + "</span>");
-		var params = 'view_type=' + viewType + '&filter_target=' + fieldID;
-		if( undefined !== filter_id ) {
-			params += '&filter_id=' + filter_id;
-		}
 		$.ajax({
 			url: 'return_dynamic_filters.php',
-			data: params,
+			data: 'view_type=' + viewType + '&filter_target=' + fieldID,
 			cache: false,
 			context: $('#' + targetID),
 			success: function(html) {
@@ -245,11 +230,12 @@ $(document).ready( function() {
 		});
 	});
 
-	$( 'form .dropzone' ).each(function(){
-		var classPrefix = 'dropzone';
-		var autoUpload = $(this).hasClass('auto-dropzone');
-		enableDropzone( classPrefix, autoUpload );
-	});
+	if( $( ".dropzone-form" ).length ) {
+		enableDropzone( "dropzone", false );
+	}
+	if( $( ".auto-dropzone-form" ).length ) {
+		enableDropzone( "auto-dropzone", true );
+	}
 
 	$('.bug-jump').find('[name=bug_id]').focus( function() {
 		var bug_label = $('.bug-jump-form').find('[name=bug_label]').val();
@@ -277,11 +263,22 @@ $(document).ready( function() {
 
 	setBugLabel();
 
-	/* Handle standard filter date fields */
-	$(document).on('change', '.js_switch_date_inputs_trigger', function() {
-		$(this).closest('table')
-				.find('select')
-				.prop('disabled', !$(this).prop('checked'));
+	$(document).on('click', 'input[type=checkbox]#use_date_filters', function() {
+		if (!$(this).is(':checked')) {
+			$('div.filter-box select[name=start_year]').prop('disabled', true);
+			$('div.filter-box select[name=start_month]').prop('disabled', true);
+			$('div.filter-box select[name=start_day]').prop('disabled', true);
+			$('div.filter-box select[name=end_year]').prop('disabled', true);
+			$('div.filter-box select[name=end_month]').prop('disabled', true);
+			$('div.filter-box select[name=end_day]').prop('disabled', true);
+		} else {
+			$('div.filter-box select[name=start_year]').prop('disabled', false);
+			$('div.filter-box select[name=start_month]').prop('disabled', false);
+			$('div.filter-box select[name=start_day]').prop('disabled', false);
+			$('div.filter-box select[name=end_year]').prop('disabled', false);
+			$('div.filter-box select[name=end_month]').prop('disabled', false);
+			$('div.filter-box select[name=end_day]').prop('disabled', false);
+		}
 	});
 
 	/* Handle custom field of date type */
@@ -483,38 +480,36 @@ function toggleDisplay(idTag)
 // Dropzone handler
 Dropzone.autoDiscover = false;
 function enableDropzone( classPrefix, autoUpload ) {
-	var zone_class =  '.' + classPrefix;
-	var zone = $( zone_class );
-	var form = zone.closest('form');
 	try {
-		var zone_object = new Dropzone( form[0], {
-			forceFallback: zone.data('force-fallback'),
+		var formClass = "." + classPrefix + "-form";
+		var form = $( formClass );
+		var zone = new Dropzone( formClass, {
+			forceFallback: form.data('force-fallback'),
 			paramName: "ufile",
 			autoProcessQueue: autoUpload,
-			clickable: zone_class,
+			clickable: '.' + classPrefix,
 			previewsContainer: '#' + classPrefix + '-previews-box',
 			uploadMultiple: true,
 			parallelUploads: 100,
-			maxFilesize: zone.data('max-filesize'),
+			maxFilesize: form.data('max-filesize'),
 			addRemoveLinks: !autoUpload,
-			acceptedFiles: zone.data('accepted-files'),
+			acceptedFiles: form.data('accepted-files'),
 			previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"progress progress-small progress-striped active\"><div class=\"progress-bar progress-bar-success\" data-dz-uploadprogress></div></div>\n  <div class=\"dz-success-mark\"><span></span></div>\n  <div class=\"dz-error-mark\"><span></span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n</div>",
-			dictDefaultMessage: zone.data('default-message'),
-			dictFallbackMessage: zone.data('fallback-message'),
-			dictFallbackText: zone.data('fallback-text'),
-			dictFileTooBig: zone.data('file-too-big'),
-			dictInvalidFileType: zone.data('invalid-file-type'),
-			dictResponseError: zone.data('response-error'),
-			dictCancelUpload: zone.data('cancel-upload'),
-			dictCancelUploadConfirmation: zone.data('cancel-upload-confirmation'),
-			dictRemoveFile: zone.data('remove-file'),
-			dictRemoveFileConfirmation: zone.data('remove-file-confirmation'),
-			dictMaxFilesExceeded: zone.data('max-files-exceeded'),
+			dictDefaultMessage: form.data('default-message'),
+			dictFallbackMessage: form.data('fallback-message'),
+			dictFallbackText: form.data('fallback-text'),
+			dictFileTooBig: form.data('file-too-big'),
+			dictInvalidFileType: form.data('invalid-file-type'),
+			dictResponseError: form.data('response-error'),
+			dictCancelUpload: form.data('cancel-upload'),
+			dictCancelUploadConfirmation: form.data('cancel-upload-confirmation'),
+			dictRemoveFile: form.data('remove-file'),
+			dictRemoveFileConfirmation: form.data('remove-file-confirmation'),
+			dictMaxFilesExceeded: form.data('max-files-exceeded'),
 
 			init: function () {
 				var dropzone = this;
-				var form = $( this.options.clickable ).closest('form');
-				form.on('submit', function (e) {
+				$( "input[type=submit]" ).on( "click", function (e) {
 					if( dropzone.getQueuedFiles().length ) {
 						e.preventDefault();
 						e.stopPropagation();
@@ -534,6 +529,6 @@ function enableDropzone( classPrefix, autoUpload ) {
 			}
 		});
 	} catch (e) {
-		alert( zone.data('dropzone-not-supported') );
+		alert( form.data('dropzone-not-supported') );
 	}
 }

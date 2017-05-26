@@ -229,7 +229,7 @@ print_manage_menu( 'manage_user_page.php' );
 # User action buttons: RESET/UNLOCK and DELETE
 
 $t_reset = $t_user['id'] != auth_get_current_user_id()
-	&& auth_can_set_password( $t_user['id'] )
+	&& helper_call_custom_function( 'auth_can_change_password', array() )
 	&& user_is_enabled( $t_user['id'] )
 	&& !user_is_protected( $t_user['id'] );
 $t_unlock = OFF != config_get( 'max_failed_login_count' ) && $t_user['failed_login_count'] > 0;
@@ -311,7 +311,7 @@ if( $t_reset || $t_unlock || $t_delete || $t_impersonate ) {
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 <h4 class="widget-title lighter">
-<i class="ace-icon fa fa-puzzle-piece"></i>
+<i class="ace-icon fa fa-user"></i>
 <?php echo lang_get('add_user_title') ?>
 </h4>
 </div>

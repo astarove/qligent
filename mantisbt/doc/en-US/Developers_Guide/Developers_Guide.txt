@@ -94,17 +94,15 @@ well as the plugin system including an events reference.
 
       4.2. Building a Plugin
 
-            4.2.1. Plugin Structure
+            4.2.1. The Basics
 
-            4.2.2. Properties
+            4.2.2. Pages and Files
 
-            4.2.3. Pages and Files
+            4.2.3. Events
 
-            4.2.4. Events
+            4.2.4. Configuration
 
-            4.2.5. Configuration
-
-            4.2.6. Language and Localization
+            4.2.5. Language and Localization
 
       4.3. Example Plugin Source Listing
 
@@ -845,17 +843,15 @@ Chapter 4. Plugin System
 
 4.2. Building a Plugin
 
-      4.2.1. Plugin Structure
+      4.2.1. The Basics
 
-      4.2.2. Properties
+      4.2.2. Pages and Files
 
-      4.2.3. Pages and Files
+      4.2.3. Events
 
-      4.2.4. Events
+      4.2.4. Configuration
 
-      4.2.5. Configuration
-
-      4.2.6. Language and Localization
+      4.2.5. Language and Localization
 
 4.3. Example Plugin Source Listing
 
@@ -917,49 +913,41 @@ along the way, although every part of it will be built up in steps
 throughout this section.
 
 
-4.2.1. Plugin Structure
+4.2.1. The Basics
 
 This section will introduce the general concepts of plugin structure, and
 how to get a barebones plugin working with MantisBT. Not much will be
 mentioned yet on the topic of adding functionality to plugins, just how
-to get the development process rolling. The backbone of every plugin is
-what MantisBT calls the basename, a succinct, and most importantly,
-unique name that identifies the plugin. It may not contain any spacing or
-special characters beyond the ASCII upper- and lowercase alphabet,
-numerals, and underscore. This is used to identify the plugin everywhere
-except for what the end-user sees. For our "Example" plugin, the basename
-we will use should be obvious enough: Example. Every plugin must be
-contained in a single directory, named to match the plugin's basename, as
-well as contain at least a single PHP file, also named to match the
-basename, as such: Note that for plugins that require a database schema
-to operate, the basename is also used to build the table names, using the
-MantisBT table prefixes and suffix (please refer to the Admin Guide's
-Configuration section for further information). If our Example plugin
-were to create a table named 'foo', assuming default values for prefixes
-and suffix in MantisBT configuration, the physical table name would be
-mantis_plugin_Example_foo_table.
+to get the development process rolling.
+
+4.2.1.1. Plugin Structure
+
+The backbone of every plugin is what MantisBT calls the "basename", a
+succinct, and most importantly, unique name that identifies the plugin.
+It may not contain any spacing or special characters beyond the ASCII
+upper- and lowercase alphabet, numerals, and underscore. This is used to
+identify the plugin everywhere except for what the end-user sees. For our
+"Example" plugin, the basename we will use should be obvious enough:
+"Example". Every plugin must be contained in a single directory named to
+match the plugin's basename, as well as contain at least a single PHP
+file, also named to match the basename, as such:
 
 Example/
         Example.php
 
-Warning
-
-Depending on case sensitivity of the underlying file system, these names
-must exactly match the plugin's base name, i.e. example will not work.
 This top-level PHP file must then contain a concrete class deriving from
 the MantisPlugin class, which must be named in the form of
 %Basename%Plugin, which for our purpose becomes ExamplePlugin. Because of
 how MantisPlugin declares the register() method as abstract, our plugin
 must implement that method before PHP will find it semantically valid.
 This method is meant for one simple purpose, and should never be used for
-any other task: setting the plugin's information properties including the
-plugin's name, description, version, and more. Please refer to Section
-4.2.2, “Properties” below for details about available properties. Once
-your plugin defines its class, implements the register() method, and sets
-at least the name and version properties, it is then considered a
-"complete" plugin, and can be loaded and installed within MantisBT's
-plugin manager. At this stage, our Example plugin, with all the possible
-plugin properties set at registration, looks like this:
+any other task: setting the plugin's information properties, including
+the plugin's name, description, version, and more. Once your plugin
+defines its class, implements the register() method, and sets at least
+the name and version properties, it is then considered a "complete"
+plugin, and can be loaded and installed within MantisBT's plugin manager.
+At this stage, our Example plugin, with all the possible plugin
+properties set at registration, looks like this:
 
 Example/Example.php
 <?php
@@ -970,10 +958,9 @@ class ExamplePlugin extends MantisPlugin {
         $this->page = '';           # Default plugin page
 
         $this->version = '1.0';     # Plugin version string
-        $this->requires = array(    # Plugin dependencies
-            'MantisCore' => '2.0',  # Should always depend on an appropriate
-                                    # version of MantisBT
-        );
+        $this->requires = array(    # Plugin dependencies, array of basename => version pairs
+            'MantisCore' => '1.2.0, <= 1.2.0',  #   Should always depend on an appropriate version of MantisBT
+            );
 
         $this->author = '';         # Author/team name
         $this->contact = '';        # Author/team e-mail address
@@ -986,109 +973,7 @@ and is the foundation of any plugin. More of the plugin development
 process will be continued in the next sections.
 
 
-4.2.2. Properties
-
-This section describes the properties that can be defined when
-registering the plugin.
-
-name  
-      Your plugin's full name. Required value.
-
-description
-      A full description of your plugin.
-
-page  
-      The name of a plugin page for further information and
-      administration of the plugin. This is used to create a link to the
-      specified page on Mantis' manage plugin page.
-
-version
-      Your plugin's version string. Required value. We recommend
-      following the Semantic Versioning specification, but you are free
-      to use any versioning scheme that can be handled by PHP's
-      version_compare() function.
-
-requires
-      An array of key/value pairs of basename/version plugin
-      dependencies.
-
-      Note
-
-      The special, reserved basename MantisCore can be used to specify
-      the minimum requirement for MantisBT core. The version string can
-      be defined as:
-
-        * Minimum requirement: the plugin specified by the given basename
-          must be installed, and its version must be equal or higher than
-          the indicated one.
-
-        * Maximum requirement: prefixing a version number with '<' will
-          allow the plugin to specify the highest version (non-inclusive)
-          up to which the required dependency is supported.
-
-          Note
-
-          If the plugin's minimum dependency for MantisCore is
-          unspecified or lower than the current release (i.e. it does not
-          specifically list the current core version as supported) and
-          the plugin does not define a maximum dependency, a default one
-          will be set to the next major release of MantisBT. (i.e. for
-          2.x.y we would add '<2'). This effectively disables plugins
-          which have not been specifically designed for a new major
-          Mantis release, thus forcing authors to review their code,
-          adapt it if necessary, and release a new version of the plugin
-          with updated dependencies.
-
-        * Both minimum and maximum: the two version numbers must be
-          separated by a comma.
-
-      Here are a few examples to illustrate the above explanations,
-      assuming that the current Mantis release (MantisCore version) is
-      2.1:
-
-        *  Old release without a maximum version specified
-
-          $this->requires = array( 'MantisCore' => '1.3.1' );
-
-          The plugin is compatible with MantisBT >= 1.3.1 and < 2.0.0 -
-          note that the maximum version (<2) was added by the system.
-
-        *  Current release without a maximum version specified
-
-          $this->requires = array( 'MantisCore' => '2.0' );
-
-          The plugin is compatible with MantisBT >= 2.0 and < 3.0 (the
-          latter is implicit); code supporting older releases (e.g. 1.3)
-          must be maintained separately (i.e. in a different branch).
-
-        *  Only specify a maximum version
-
-          $this->requires = array( 'MantisCore' => '< 3.1' );
-
-          The plugin is compatible up to MantisBT 3.1 (not inclusive).
-
-        *  Old release with a maximum version
-
-          $this->requires = array( 'MantisCore' => '1.3, < 4.0' );
-
-          The plugin is compatible with MantisBT >= 1.3 and < 4.0.
-
-uses  
-      An array of key/value pairs of basename/version optional (soft)
-      plugin dependencies. See requires above for details on how to
-      specify versions.
-
-author
-      Your name, or an array of names.
-
-contact
-      An email address where you can be contacted.
-
-url   
-      A web address for your plugin.
-
-
-4.2.3. Pages and Files
+4.2.2. Pages and Files
 
 The plugin API provides a standard hierarchy and process for adding new
 pages and files to your plugin. For strict definitions, pages are PHP
@@ -1138,7 +1023,7 @@ Example/
                 foo.css
 
 
-4.2.4. Events
+4.2.3. Events
 
 Plugins have an integrated method for both declaring and hooking events,
 without needing to directly call the event API functions. These take the
@@ -1241,7 +1126,7 @@ vice versa, depending on the loading order of plugins. The page then
 echos the modified string that was returned from the event.
 
 
-4.2.5. Configuration
+4.2.4. Configuration
 
 Similar to events, plugins have a simplified method for declaring
 configuration options, as well as API functions for retrieving or setting
@@ -1308,7 +1193,7 @@ Note that the form_security_*() functions are part of the form API, and
 prevent CSRF attacks against forms that make changes to the system.
 
 
-4.2.6. Language and Localization
+4.2.5. Language and Localization
 
 MantisBT has a very advanced set of localization tools, which allow all
 parts of of the application to be localized to the user's preferred
@@ -1414,10 +1299,9 @@ class ExamplePlugin extends MantisPlugin {
         $this->page = '';           # Default plugin page
 
         $this->version = '1.0';     # Plugin version string
-        $this->requires = array(    # Plugin dependencies
-            'MantisCore' => '2.0',  # Should always depend on an appropriate
-                                    # version of MantisBT
-        );
+        $this->requires = array(    # Plugin dependencies, array of basename => version pairs
+            'MantisCore' => '1.2.0, <= 1.2.0',  #   Should always depend on an appropriate version of MantisBT
+            );
 
         $this->author = '';         # Author/team name
         $this->contact = '';        # Author/team e-mail address
@@ -1671,22 +1555,6 @@ functionality to simplify plugin development.
     first point in page execution where the entire system is
     considered loaded and ready.
 
-  EVENT_REST_API_ROUTES (Execute)
-
-    This event is triggered by MantisBT to enable plugins to register
-    their own routes to be accessible via the REST API. All APIs
-    belonging to a plugin named 'Example', MUST live under
-    'https://.../api/rest/plugins/Example/'. The route registration
-    is done using the Slim Framework app instance that is passed as a
-    parameter. A route group should be used to include all routes for
-    the plugin. The name of the route group should be retrieved via
-    calling plugin_route_group(). See MantisGraph core plugin for an
-    example and Slim Framework router documentation. Before calling
-    into the plugin routes, the user would be already authenticated
-    and authorized for API access in general. However, it is the
-    responsibility of the plugin to do its own plugin specific
-    authorization.
-
   EVENT_LOG (Execute)
 
     This event is triggered by MantisBT to log a message. The
@@ -1700,21 +1568,6 @@ functionality to simplify plugin development.
     Parameters
 
       *  <String>: the logging string
-
-  EVENT_AUTH_USER_FLAGS (First)
-
-    An event that enables plugins to return a set of flags that
-    control the authentication behaviors for the user who is logging
-    in or logged in. In some cases, the user will be in the system,
-    but there will be cases where the username provided by the user
-    doesn't exist. In case the user doesn't exist, it is up to the
-    authentication plugin whether to fail the login, validate
-    credentials then fail, or validate credentials then
-    auto-provision the user based on information the plugin is aware
-    of (e.g. IDP or some db of accounts). If no plugin is registered
-    for events, then defaults are used. If plugin sets a subset of
-    the options, then the default will be used for the rest. Checkout
-    SampleAuth plugin for more details.
 
 
 5.3. Output Modifier Events
@@ -2761,78 +2614,6 @@ Revision History
 ================
 
 Revision History
-
-Revision 2.4-0
-
-Sun Apr 30 2017
-
-Victor Boctor
-
-Release 2.4.0
-
-Revision 2.3-3
-
-Sun Apr 30 2017
-
-Victor Boctor
-
-Release 2.3.2
-
-Revision 2.3-2
-
-Sun Apr 17 2017
-
-Victor Boctor
-
-Release 2.3.1
-
-Revision 2.3-1
-
-Fri Mar 31 2017
-
-Victor Boctor
-
-Release 2.3.0
-
-Revision 2.2-3
-
-Wed Mar 22 2017
-
-Damien Regad
-
-Release 2.2.2
-
-Revision 2.2-2
-
-Sun Mar 12 2017
-
-Victor Boctor
-
-Release 2.2.1
-
-Revision 2.2-1
-
-Sun Feb 26 2017
-
-Victor Boctor
-
-Release 2.2.0
-
-Revision 2.1-2
-
-Sun Feb 26 2017
-
-Victor Boctor
-
-Release 2.1.1
-
-Revision 2.1-1
-
-Tue Jan 31 2017
-
-Victor Boctor
-
-Release 2.1.0
 
 Revision 2.0-2
 

@@ -39,7 +39,6 @@
  * @file
  *
  * @author Milicevic01
- * @author Obsuser
  * @author Rancher
  * @author Сербијана
  */
@@ -358,6 +357,7 @@ $s_delete_bug_sure_msg = 'Želite li da obrišete ovaj problem?';
 $s_delete_bug_button = 'Obriši';
 $s_monitor_bug_button = 'Nadgledaj';
 $s_unmonitor_bug_button = 'Prekini nadgledanje';
+$s_file_upload_msg = 'Datoteka je otpremljena.';
 $s_upload_file = 'Otpremanje';
 $s_upload_files = 'Otpremanje datoteka';
 $s_select_file = 'Izaberi datoteku';
@@ -452,7 +452,7 @@ $s_error_database_version_out_of_date_2 = '<strong>Upozorenje:</strong> struktur
 $s_error_code_version_out_of_date = '<strong>Upozorenje:</strong> struktura baze podataka je novija od instaliranog koda. Dogradite kod.';
 $s_login_page_info = 'Dobro došli u sistem za praćenje problema.';
 $s_login_title = 'Prijava';
-$s_save_login = 'Ostavi me prijavljenim';
+$s_save_login = 'Zapamti lozinku na ovom pregledaču';
 $s_secure_session = 'Zaštićena sesija';
 $s_secure_session_long = 'Dozvoli pristup mojoj sesiji samo preko ove IP adrese.';
 $s_choose_project = 'Izaberite projekat';
@@ -807,12 +807,9 @@ $s_changed = 'Izmenjeno';
 $s_viewing_bugs_title = 'Pregled problema';
 $s_updated = 'Ažurirano';
 $s_sticky = 'Prikaži lepljive probleme';
-$s_sort = 'Poređaj po';
 $s_issue_id = 'Broj problema';
 $s_recently_visited = 'Nedavno posećeno';
 $s_priority_abbreviation = 'V';
-$s_note_user_id = 'Beleška od';
-$s_filter_match_type = 'Vrsta poklapanja';
 $s_filter_match_all = 'Svi uslovi';
 $s_filter_match_any = 'Bilo koji uslov';
 $s_none = 'nema';
@@ -937,6 +934,7 @@ $s_relationship_deleted = 'Odnos je obrisan';
 $s_no_relationship = 'nema odnosa';
 $s_relationship_replaced = 'Odnos je zamenjen';
 $s_replace_relationship_button = 'Zameni';
+$s_replace_relationship_sure_msg = 'Već postoji odnos između dva problema. Želite li da ga zamenite?';
 $s_relationship_with_parent = 'Odnos s nadređenim problemom';
 $s_delete_relationship_button = 'Obriši';
 $s_delete_relationship_sure_msg = 'Želite li da obrišete ovaj odnos?';
@@ -1179,6 +1177,7 @@ $MANTIS_ERROR[ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW] = 'Pristup je odb
 $MANTIS_ERROR[ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL] = 'Pokrovitelj nije naveo e-adresu. Ažurirajte svoj profil.';
 $MANTIS_ERROR[ERROR_CONFIG_OPT_INVALID] = 'Postavka „%1$s“ ima neispravnu vrednost „%2$s“.';
 $MANTIS_ERROR[ERROR_BUG_READ_ONLY_ACTION_DENIED] = 'Radnja ne može da se izvrši jer je problem „%1$d“ zatvoren za uređivanje.';
+$MANTIS_ERROR[ERROR_RELATIONSHIP_ALREADY_EXISTS] = 'Već postoji odnos između ova dva problema.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_NOT_FOUND] = 'Ne mogu da pronađem odnos.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW] = 'Pristup je odbijen. Problem %1$d zahteva viši stepen pristupa.';
 $MANTIS_ERROR[ERROR_RELATIONSHIP_SAME_BUG] = 'Problem ne može biti povezan sam sa sobom.';

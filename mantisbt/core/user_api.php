@@ -77,20 +77,16 @@ $g_user_accessible_subprojects_cache = null;
 function user_cache_row( $p_user_id, $p_trigger_errors = true ) {
 	global $g_cache_user;
 
-	$c_user_id = (int)$p_user_id;
-
-	if( !isset( $g_cache_user[$c_user_id] ) ) {
-		user_cache_array_rows( array( $c_user_id ) );
+	if( !isset( $g_cache_user[$p_user_id] ) ) {
+		user_cache_array_rows( array( $p_user_id ) );
 	}
-
-	$t_user_row = $g_cache_user[$c_user_id];
+	$t_user_row = $g_cache_user[$p_user_id];
 
 	if( !$t_user_row ) {
 		if( $p_trigger_errors ) {
 			error_parameters( (integer)$p_user_id );
 			trigger_error( ERROR_USER_BY_ID_NOT_FOUND, ERROR );
 		}
-
 		return false;
 	}
 
@@ -456,7 +452,10 @@ function user_is_administrator( $p_user_id ) {
  * @access public
  */
 function user_is_protected( $p_user_id ) {
-	return user_is_anonymous( $p_user_id ) || ON == user_get_field( $p_user_id, 'protected' );
+	if( user_is_anonymous( $p_user_id ) || ON == user_get_field( $p_user_id, 'protected' ) ) {
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -468,7 +467,10 @@ function user_is_protected( $p_user_id ) {
  * @access public
  */
 function user_is_anonymous( $p_user_id ) {
-	return auth_anonymous_enabled() && user_get_field( $p_user_id, 'username' ) == auth_anonymous_account();
+	if( ON == config_get( 'allow_anonymous_login' ) && user_get_field( $p_user_id, 'username' ) == config_get( 'anonymous_account' ) ) {
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -659,7 +661,7 @@ function user_signup( $p_username, $p_email = null ) {
 	# Create random password
 	$t_password = auth_generate_random_password();
 
-	return user_create( $p_username, $t_password, $p_email, auth_signup_access_level() );
+	return user_create( $p_username, $t_password, $p_email );
 }
 
 /**
@@ -1395,27 +1397,14 @@ function user_get_bug_filter( $p_user_id, $p_project_id = null ) {
 
 	$t_view_all_cookie_id = filter_db_get_project_current( $t_project_id, $p_user_id );
 	$t_view_all_cookie = filter_db_get_filter( $t_view_all_cookie_id, $p_user_id );
+	$t_cookie_detail = explode( '#', $t_view_all_cookie, 2 );
 
-	$t_filter = filter_deserialize( $t_view_all_cookie );
-	if( !$t_filter ) {
+	if( !isset( $t_cookie_detail[1] ) ) {
 		return filter_get_default();
 	}
 
-	# when the user specific filter references a stored filter id, get that filter instead
-	if( isset( $t_filter['_source_query_id'] ) && $t_view_all_cookie_id != $t_filter['_source_query_id'] ) {
-		$t_source_query_id = $t_filter['_source_query_id'];
-		# check if filter id is a proper stored filter, and is accesible
-		if( filter_is_named_filter( $t_source_query_id ) && filter_is_accessible( $t_source_query_id ) ){
-			# the actual stored filter can be retrieved
-			$t_filter_row = filter_cache_row( $t_source_query_id, /* trigger_errors */ false );
-			$t_filter = filter_deserialize( filter_db_get_filter( $t_source_query_id ) );
-			# update the referenced stored filter id
-			$t_filter['_source_query_id'] = $t_source_query_id;
-		} else {
-			# If the filter id is not valid, clean the referenced filter id
-			unset( $t_filter['_source_query_id'] );
-		}
-	}
+	$t_filter = json_decode( $t_cookie_detail[1], true );
+
 	$t_filter = filter_ensure_valid_filter( $t_filter );
 
 	return $t_filter;

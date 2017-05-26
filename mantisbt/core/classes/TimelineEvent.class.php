@@ -77,7 +77,7 @@ class TimelineEvent {
 		$t_html = '<div class="profile-activity clearfix">';
 
 		if( !empty( $t_avatar ) ) {
-			$t_html .= prepare_avatar( $t_avatar, 'profile-activity', 40 );
+			$t_html .= '<img class="pull-left" src="' . htmlspecialchars( $t_avatar->image ) . '"/>';
 		} else {
 			$t_html .= '<i class="pull-left thumbicon fa ' . $p_action_icon . ' btn-primary no-hover"></i>';
 		}
