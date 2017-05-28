@@ -54,7 +54,7 @@ $g_bug_report_page_fields = array(
  *
  * @global string $g_severity_enum_string
  */
-$g_severity_enum_string = '10:Immediate, 30:Urgent, 50:High, 70:Low, 100:Enhancement';
+$g_severity_enum_string = '10:Enhancement, 50:Low, 60:High, 70:Urgent, 80:Immediate';
 /**
  * @global array $g_default_notify_flags
  */
