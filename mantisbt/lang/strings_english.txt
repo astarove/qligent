@@ -272,7 +272,8 @@ $s_view_state_enum_string = '10:public,50:private';
 $s_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
 $s_severity_enum_string = '10:feature,20:trivial,30:text,40:tweak,50:minor,60:major,70:crash,80:block';
 $s_reproducibility_enum_string = '10:always,30:sometimes,50:random,70:have not tried,90:unable to reproduce,100:N/A';
-$s_status_enum_string = '10:new,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
+#$s_status_enum_string = '10:new,20:feedback,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
+$s_status_enum_string = '10:new,20:more info,30:acknowledged,40:confirmed,50:assigned,80:resolved,90:closed';
 $s_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to reproduce,50:not fixable,60:duplicate,70:no change required,80:suspended,90:won\'t fix';
 $s_projection_enum_string = '10:none,30:tweak,50:minor fix,70:major rework,90:redesign';
 $s_eta_enum_string = '10:none,20:< 1 day,30:2-3 days,40:< 1 week,50:< 1 month,60:> 1 month';
@@ -295,7 +296,8 @@ If you requested this verification, visit the following URL to change your passw
 $s_reset_request_in_progress_msg = 'If you supplied the correct username and e-mail address for your account, we will now have sent a confirmation message to that e-mail address. Once the message has been received, follow the instructions provided to change the password on your account.';
 
 $s_email_notification_title_for_status_bug_new = 'The following issue is now in status NEW (again)';
-$s_email_notification_title_for_status_bug_feedback = 'The following issue requires your FEEDBACK.';
+#$s_email_notification_title_for_status_bug_feedback = 'The following issue requires your FEEDBACK.';
+$s_email_notification_title_for_status_bug_feedback = 'The following issue requires MORE INFO from you.';
 $s_email_notification_title_for_status_bug_acknowledged = 'The following issue has been ACKNOWLEDGED.';
 $s_email_notification_title_for_status_bug_confirmed = 'The following issue has been CONFIRMED.';
 $s_email_notification_title_for_status_bug_assigned = 'The following issue has been ASSIGNED.';
@@ -403,7 +405,8 @@ $s_bugnote_order_asc = 'Ascending';
 $s_bugnote_order_desc = 'Descending';
 $s_email_on_new = 'E-mail on New';
 $s_email_on_assigned = 'E-mail on Change of Handler';
-$s_email_on_feedback = 'E-mail on Feedback';
+#$s_email_on_feedback = 'E-mail on Feedback';
+$s_email_on_feedback = 'E-mail on More Info';
 $s_email_on_resolved = 'E-mail on Resolved';
 $s_email_on_closed = 'E-mail on Closed';
 $s_email_on_reopened = 'E-mail on Reopened';
@@ -482,12 +485,14 @@ $s_multiple_projects = 'The issues you have selected are from different projects
 
 # bug_change_status_page.php
 $s_new_bug_title = 'New Issue';
-$s_feedback_bug_title = 'Request Feedback on Issue';
+#$s_feedback_bug_title = 'Request Feedback on Issue';
+$s_feedback_bug_title = 'Request More Info on Issue';
 $s_acknowledged_bug_title = 'Acknowledge Issue';
 $s_confirmed_bug_title = 'Confirm Issue';
 $s_assigned_bug_title = 'Assign Issue';
 $s_new_bug_button = 'New Issue';
-$s_feedback_bug_button = 'Request Feedback';
+#$s_feedback_bug_button = 'Request Feedback';
+$s_feedback_bug_button = 'Request More Info';
 $s_acknowledged_bug_button = 'Acknowledge Issue';
 $s_confirmed_bug_button = 'Confirm Issue';
 $s_assigned_bug_button = 'Assign Issue';
@@ -550,7 +555,8 @@ $s_reminder_list_truncated = 'recipients list truncated';
 $s_bug_send_button = 'Send';
 $s_reminder = 'Reminder';
 $s_reminder_mentions = 'You can now mention users to trigger notifications for them instead of using reminders feature.  For example, others can mention you by writing %1s in issues and notes and you will get an email notification.';
-$s_reminder_explain = 'This note will be sent to the selected recipients, requesting feedback on this issue.';
+#$s_reminder_explain = 'This note will be sent to the selected recipients, requesting feedback on this issue.';
+$s_reminder_explain = 'This note will be sent to the selected recipients, requesting more info on this issue.';
 $s_reminder_monitor = 'These recipients will also begin monitoring the issue; they can unsubscribe using the "End Monitoring" button.';
 $s_reminder_store = 'The note will be stored with the issue.';
 
@@ -1042,7 +1048,8 @@ $s_my_view_title_reported = 'Reported by Me';
 $s_my_view_title_assigned = 'Assigned to Me (Unresolved)';
 $s_my_view_title_resolved = 'Resolved';
 $s_my_view_title_monitored = 'Monitored by Me';
-$s_my_view_title_feedback = 'Awaiting Feedback from Me';
+#$s_my_view_title_feedback = 'Awaiting Feedback from Me';
+$s_my_view_title_feedback = 'Awaiting More Info from Me';
 $s_my_view_title_verify = 'Awaiting Confirmation of Resolution from Me';
 $s_my_view_title_my_comments = 'Issues I Have Commented On';
 
@@ -1790,6 +1797,6 @@ $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
  * custom settings
  *******************/
 $s_configuration = "Configuration";
-$s_severity_enum_string = '10:Immediate,30:Urgent,50:High,70:Low,100:Enhancement';
+$s_severity_enum_string = '10:Enhancement, 50:Low, 60:High, 70:Urgent, 80:Immediate';
 $s_version_bk = "Probe version";
 $s_version_sa = "Server version";
