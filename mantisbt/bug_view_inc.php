@@ -728,7 +728,7 @@ if( $t_can_attach_tag ) {
 echo '<tr class="spacer"><td colspan="6"></td></tr>';
 echo '<tr class="hidden"></tr>';
 
-# Custom Fields exsept configuration, version_bk, version_sa
+# Custom Fields except configuration, version_bk, version_sa
 $t_custom_fields_found = false;
 $t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
 custom_field_cache_values( array( $t_bug->id ) , $t_related_custom_field_ids );

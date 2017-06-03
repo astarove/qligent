@@ -95,7 +95,6 @@ $g_bug_update_page_fields = array (
 	'resolution',
 	'severity',
 	'status',
-#	'steps_to_reproduce',
 	'summary',
 	'target_version',
 	'view_state',
