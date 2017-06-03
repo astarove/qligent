@@ -47,6 +47,61 @@ $g_bug_report_page_fields = array(
 	'severity',
 	'target_version'
 );
+
+/*
+ * @global array $g_bug_view_page_fields
+ */
+$g_bug_view_page_fields = array (
+	'additional_info',
+	'attachments',
+	'date_submitted',
+	'description',
+	'due_date',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	'product_build',
+	'product_version',
+	'project',
+	'priority',
+	'reporter',
+	'resolution',
+	'severity',
+	'status',
+	'summary',
+	'target_version',
+	'view_state',
+);
+
+/*
+ * @global array $g_bug_update_page_fields
+ */
+$g_bug_update_page_fields = array (
+	'additional_info',
+	'attachments',
+	'date_submitted',
+	'description',
+	'due_date',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	'product_build',
+	'product_version',
+	'project',
+	'priority',
+	'reporter',
+	'resolution',
+	'severity',
+	'status',
+#	'steps_to_reproduce',
+	'summary',
+	'target_version',
+	'view_state',
+);
+
+
 #########################
 # MantisBT Enum Strings #
 #########################

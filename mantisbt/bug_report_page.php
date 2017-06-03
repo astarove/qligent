@@ -202,7 +202,7 @@ $t_show_severity = in_array( 'severity', $t_fields );
 # Custom settings
 $t_show_category = null;
 
-if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR) {
+if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR ) {
     $t_show_priority = in_array( 'priority', $t_fields );
 }
 else {

@@ -329,8 +329,8 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	# Labels
 	echo '<tr class="bug-header">';
 	echo '<th class="bug-id category" width="15%">', $t_show_id ? lang_get( 'id' ) : '', '</th>';
-	echo '<th class="bug-project category" width="20%">', $t_show_project ? lang_get( 'email_project' ) : '', '</th>';
-	echo '<th class="bug-category category" width="15%">', $t_show_category ? lang_get( 'category' ) : '', '</th>';
+	echo '<th class="bug-project category" width="20%" colspan=2>', $t_show_project ? lang_get( 'email_project' ) : '', '</th>';
+	# echo '<th class="bug-category category" width="15%">', $t_show_category ? lang_get( 'category' ) : '', '</th>';
 	echo '<th class="bug-view-status category" width="15%">', $t_show_view_state ? lang_get( 'view_status' ) : '', '</th>';
 	echo '<th class="bug-date-submitted category" width="15%">', $t_show_date_submitted ? lang_get( 'date_submitted' ) : '', '</th>';
 	echo '<th class="bug-last-modified category" width="20%">', $t_show_last_updated ? lang_get( 'last_update' ) : '','</th>';
@@ -342,10 +342,10 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 	echo '<td class="bug-id">', $t_formatted_bug_id, '</td>';
 
 	# Project
-	echo '<td class="bug-project">', $t_project_name, '</td>';
+	echo '<td class="bug-project" colspan=2>', $t_project_name, '</td>';
 
 	# Category
-	echo '<td class="bug-category">', $t_category, '</td>';
+	# echo '<td class="bug-category">', $t_category, '</td>';
 
 	# View Status
 	echo '<td class="bug-view-status">', $t_bug_view_state_enum, '</td>';
@@ -370,16 +370,15 @@ if( $t_show_id || $t_show_project || $t_show_category || $t_show_view_state || $
 if( $t_show_reporter ) {
 	echo '<tr>';
 
-	$t_spacer = 4;
+	$t_spacer = 0;
 
 	# Reporter
 	echo '<th class="bug-reporter category">', lang_get( 'reporter' ), '</th>';
-	echo '<td class="bug-reporter">';
+	echo '<td class="bug-reporter" colspan=5>';
 	print_user_with_subject( $t_bug->reporter_id, $t_bug_id );
 	echo '</td>';
-	echo '<td colspan="', $t_spacer, '">&#160;</td>';
-
-	echo '</tr>';
+#	echo '<td colspan="', $t_spacer, '">&#160;</td>';
+#	echo '</tr>';
 }
 
 #
@@ -394,7 +393,7 @@ if( $t_show_handler || $t_show_due_date ) {
 	# Handler
 	if( $t_show_handler ) {
 		echo '<th class="bug-assigned-to category">', lang_get( 'assigned_to' ), '</th>';
-		echo '<td class="bug-assigned-to">';
+		echo '<td class="bug-assigned-to" colspan=2>';
 		print_user_with_subject( $t_bug->handler_id, $t_bug_id );
 		echo '</td>';
 	} else {
@@ -425,12 +424,12 @@ if( $t_show_handler || $t_show_due_date ) {
 if( $t_show_priority || $t_show_severity || $t_show_reproducibility ) {
 	echo '<tr>';
 
-	$t_spacer = 0;
+	$t_spacer = -2;
 
 	# Priority
 	if( $t_show_priority ) {
 		echo '<th class="bug-priority category">', lang_get( 'priority' ), '</th>';
-		echo '<td class="bug-priority">', $t_priority, '</td>';
+		echo '<td class="bug-priority" colspan=2>', $t_priority, '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -438,7 +437,7 @@ if( $t_show_priority || $t_show_severity || $t_show_reproducibility ) {
 	# Severity
 	if( $t_show_severity ) {
 		echo '<th class="bug-severity category">', lang_get( 'severity' ), '</th>';
-		echo '<td class="bug-severity">', $t_severity, '</td>';
+		echo '<td class="bug-severity" colspan=2>', $t_severity, '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -466,7 +465,7 @@ if( $t_show_priority || $t_show_severity || $t_show_reproducibility ) {
 if( $t_show_status || $t_show_resolution ) {
 	echo '<tr>';
 
-	$t_spacer = 2;
+	$t_spacer = 0;
 
 	# Status
 	if( $t_show_status ) {
@@ -475,7 +474,7 @@ if( $t_show_status || $t_show_resolution ) {
 		# choose color based on status
 		$t_status_label = html_get_status_css_class( $t_bug->status );
 
-		echo '<td class="bug-status">';
+		echo '<td class="bug-status" colspan=2>';
 		echo '<i class="fa fa-square-o fa-xlg ' . $t_status_label . '"></i> ';
 		echo $t_status, '</td>';
 	} else {
@@ -485,7 +484,7 @@ if( $t_show_status || $t_show_resolution ) {
 	# Resolution
 	if( $t_show_resolution ) {
 		echo '<th class="bug-resolution category">', lang_get( 'resolution' ), '</th>';
-		echo '<td class="bug-resolution">', $t_resolution, '</td>';
+		echo '<td class="bug-resolution" colspan=2>', $t_resolution, '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -653,6 +652,36 @@ if( $t_show_summary ) {
 	echo '</tr>';
 }
 
+# Custom Fields version_bk, version_sa, configuration
+$t_custom_fields_found = false;
+$t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
+custom_field_cache_values( array( $t_bug->id ) , $t_related_custom_field_ids );
+
+foreach( $t_related_custom_field_ids as $t_id ) {
+	if( !custom_field_has_read_access( $t_id, $f_bug_id ) ) {
+		continue;
+	} # has read access
+	$t_def = custom_field_get_definition( $t_id );
+	if( $t_def['name'] == 'configuration' ||
+		$t_def['name'] == 'version_bk' ||
+		$t_def['name'] == 'version_sa' ) {
+		$t_custom_fields_found = true;
+		$t_def = custom_field_get_definition( $t_id );
+
+		echo '<tr>';
+		echo '<th class="bug-custom-field category">', string_display( lang_get_defaulted( $t_def['name'] ) ), '</th>';
+		echo '<td class="bug-custom-field" colspan="5">';
+		print_custom_field_value( $t_def, $t_id, $f_bug_id );
+		echo '</td></tr>';
+	}
+}
+
+if( $t_custom_fields_found ) {
+	# spacer
+	echo '<tr class="spacer"><td colspan="6"></td></tr>';
+	echo '<tr class="hidden"></tr>';
+}
+
 # Description
 if( $t_show_description ) {
 	echo '<tr>';
@@ -699,7 +728,7 @@ if( $t_can_attach_tag ) {
 echo '<tr class="spacer"><td colspan="6"></td></tr>';
 echo '<tr class="hidden"></tr>';
 
-# Custom Fields
+# Custom Fields exsept configuration, version_bk, version_sa
 $t_custom_fields_found = false;
 $t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
 custom_field_cache_values( array( $t_bug->id ) , $t_related_custom_field_ids );
@@ -709,14 +738,20 @@ foreach( $t_related_custom_field_ids as $t_id ) {
 		continue;
 	} # has read access
 
-	$t_custom_fields_found = true;
 	$t_def = custom_field_get_definition( $t_id );
+	if( $t_def['name'] != 'configuration' &&
+		$t_def['name'] != 'version_bk' &&
+		$t_def['name'] != 'version_sa' ) {
 
-	echo '<tr>';
-	echo '<th class="bug-custom-field category">', string_display( lang_get_defaulted( $t_def['name'] ) ), '</th>';
-	echo '<td class="bug-custom-field" colspan="5">';
-	print_custom_field_value( $t_def, $t_id, $f_bug_id );
-	echo '</td></tr>';
+		$t_custom_fields_found = true;
+		$t_def = custom_field_get_definition( $t_id );
+
+		echo '<tr>';
+		echo '<th class="bug-custom-field category">', string_display( lang_get_defaulted( $t_def['name'] ) ), '</th>';
+		echo '<td class="bug-custom-field" colspan="5">';
+		print_custom_field_value( $t_def, $t_id, $f_bug_id );
+		echo '</td></tr>';
+	}
 }
 
 if( $t_custom_fields_found ) {
