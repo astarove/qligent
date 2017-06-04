@@ -58,6 +58,7 @@ define( 'VIEWER', 10 );
 define( 'REPORTER', 25 );
 define( 'UPDATER', 40 );
 define( 'DEVELOPER', 55 );
+define( 'SUPPORT', 60 );
 define( 'MANAGER', 70 );
 define( 'ADMINISTRATOR', 90 );
 define( 'NOBODY', 100 );

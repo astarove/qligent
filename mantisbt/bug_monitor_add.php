@@ -43,6 +43,7 @@ require_api( 'authentication_api.php' );
 require_api( 'bug_api.php' );
 require_api( 'config_api.php' );
 require_api( 'constant_inc.php' );
+require_api( 'custom_function_api.php' );
 require_api( 'error_api.php' );
 require_api( 'form_api.php' );
 require_api( 'gpc_api.php' );
@@ -68,8 +69,11 @@ if( $t_bug->project_id != helper_get_current_project() ) {
 
 $t_logged_in_user_id = auth_get_current_user_id();
 
+$t_group_user_ids = custom_function_check_group_name( $f_usernames );
 if( is_blank( $f_usernames ) ) {
 	$t_user_ids = array( $t_logged_in_user_id );
+} elseif ( $t_group_user_ids ) {
+	$t_user_ids = $t_group_user_ids;
 } else {
 	$t_usernames = preg_split( '/[,|]/', $f_usernames, -1, PREG_SPLIT_NO_EMPTY );
 	$t_usernames = array_unique( $t_usernames );

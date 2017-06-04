@@ -56,6 +56,7 @@ require_api( 'icon_api.php' );
 require_api( 'lang_api.php' );
 require_api( 'prepare_api.php' );
 require_api( 'print_api.php' );
+require_api( 'project_api.php' );
 require_api( 'string_api.php' );
 require_api( 'utility_api.php' );
 require_api( 'version_api.php' );
@@ -532,4 +533,26 @@ function custom_function_default_enum_categories() {
  * @return void
  */
 function custom_function_default_print_bug_view_page_custom_buttons( $p_bug_id ) {
+}
+
+/**
+ * This function checks the input name on GROUP name
+* @param string  $p_name         Name of field to show in the col
+ */
+ function custom_function_check_group_name( $p_name ) {
+	$t_group_names = config_get( 'group_names' );
+	if( in_array( strtolower( $p_name ), $t_group_names) ) {
+		$t_user_ids = array();
+		if( in_array( strtolower( $p_name ), $t_group_names) ) {
+			switch ( strtolower($p_name) ) {
+				case 'support':
+					foreach( array_keys( project_get_all_user_rows( helper_get_current_project(), SUPPORT, false ) ) as $key => $value) {
+						$t_user_ids[$value] = $value;
+					}
+					break;
+			}
+		}
+		return $t_user_ids;
+	}
+	return false;
 }

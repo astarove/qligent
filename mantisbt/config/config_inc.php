@@ -100,10 +100,23 @@ $g_bug_update_page_fields = array (
 	'view_state',
 );
 
+/*
+ * @gloabl array $g_group_names
+ */
+ $g_group_names = array (
+	'support',
+);
 
 #########################
 # MantisBT Enum Strings #
 #########################
+/**
+ * status from $g_status_index-1 to 79 are used for the onboard customization
+ * (if enabled) directly use MantisBT to edit them.
+ * @global string $g_access_levels_enum_string
+ */
+$g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60: support,70:manager,90:administrator';
+
 /**
  * @global string $g_resolution_enum_string
  */
@@ -117,5 +130,5 @@ $g_severity_enum_string = '10:Enhancement, 50:Low, 60:High, 70:Urgent, 80:Immedi
 /**
  * @global array $g_default_notify_flags
  */
-$g_notify_flags['new']['threshold_min'] = DEVELOPER;
-$g_notify_flags['new']['threshold_max'] = DEVELOPER;
+$g_notify_flags['new']['threshold_min'] = SUPPORT;
+$g_notify_flags['new']['threshold_max'] = SUPPORT;
