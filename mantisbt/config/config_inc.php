@@ -110,6 +110,14 @@ $g_bug_update_page_fields = array (
 #########################
 # MantisBT Enum Strings #
 #########################
+
+/**
+ * Threshold needed to update the view status while updating a bug or a bug note.
+ * This threshold should be greater or equal to $g_set_view_status_threshold.
+ * @global integer $g_change_view_status_threshold
+ */
+$g_change_view_status_threshold = ADMINISTRATOR;
+
 /**
  * status from $g_status_index-1 to 79 are used for the onboard customization
  * (if enabled) directly use MantisBT to edit them.
