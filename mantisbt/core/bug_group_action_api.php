@@ -222,7 +222,8 @@ function bug_group_action_get_commands( array $p_project_ids = null ) {
 		}
 
 		if( !isset( $t_commands['UP_PRIOR'] ) &&
-			access_has_project_level( config_get( 'update_bug_threshold', null, null, $t_project_id ), $t_project_id ) ) {
+			access_has_project_level( config_get( 'update_bug_threshold', null, null, $t_project_id ), $t_project_id ) &&
+			user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR ) {
 			$t_commands['UP_PRIOR'] = lang_get( 'actiongroup_menu_update_priority' );
 		}
 
@@ -236,11 +237,12 @@ function bug_group_action_get_commands( array $p_project_ids = null ) {
 			$t_commands['UP_STATUS'] = lang_get( 'actiongroup_menu_update_status' );
 		}
 
-		if( !isset( $t_commands['UP_CATEGORY'] ) &&
+/*		
+	if( !isset( $t_commands['UP_CATEGORY'] ) &&
 			access_has_project_level( config_get( 'update_bug_threshold', null, null, $t_project_id ), $t_project_id ) ) {
 			$t_commands['UP_CATEGORY'] = lang_get( 'actiongroup_menu_update_category' );
 		}
-
+ */
 		if( !isset( $t_commands['VIEW_STATUS'] ) &&
 			access_has_project_level( config_get( 'change_view_status_threshold', null, null, $t_project_id ), $t_project_id ) ) {
 			$t_commands['VIEW_STATUS'] = lang_get( 'actiongroup_menu_update_view_status' );

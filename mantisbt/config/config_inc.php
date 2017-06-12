@@ -112,6 +112,24 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
+ * Access level required to attach tags to a bug
+ * @global integer $g_tag_attach_threshold
+ */
+$g_tag_attach_threshold = NOBODY;
+
+/**
+ * Move bug threshold
+ * @global integer $g_move_bug_threshold
+ */
+$g_move_bug_threshold = NOBODY;
+
+/**
+ * access level needed to set a bug sticky
+ * @global integer $g_set_bug_sticky_threshold
+ */
+$g_set_bug_sticky_threshold = NOBODY;
+
+/**
  * Default Bugnote View Status (VS_PUBLIC or VS_PRIVATE)
  * @global integer $g_default_bugnote_view_status
  */
