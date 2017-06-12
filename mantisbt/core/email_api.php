@@ -1525,6 +1525,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 		$t_message = vsprintf( $t_message, $p_header_optional_params );
 	}
 
+# Add name of user here
 	if( ( $t_message !== null ) && ( !is_blank( $t_message ) ) ) {
 		$t_message .= " \n";
 	}

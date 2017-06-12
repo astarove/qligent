@@ -112,6 +112,12 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
+ *
+ * @global string $g_default_bugnote_order
+ */
+$g_default_bugnote_order = 'DESC';
+
+/**
  * Position of the filter box, can be: POSITION_*
  * POSITION_TOP, POSITION_BOTTOM, or POSITION_NONE for none.
  * @global integer $g_filter_position
