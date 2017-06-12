@@ -112,6 +112,18 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
+ * Default Bugnote View Status (VS_PUBLIC or VS_PRIVATE)
+ * @global integer $g_default_bugnote_view_status
+ */
+$g_default_bugnote_view_status = VS_PRIVATE;
+
+/**
+ * Threshold needed to set the view status while reporting a bug or a bug note.
+ * @global integer $g_set_view_status_threshold
+ */
+$g_set_view_status_threshold = DEVELOPER;
+
+/**
  * Threshold needed to update the view status while updating a bug or a bug note.
  * This threshold should be greater or equal to $g_set_view_status_threshold.
  * @global integer $g_change_view_status_threshold

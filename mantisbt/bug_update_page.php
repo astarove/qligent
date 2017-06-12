@@ -784,7 +784,7 @@ if( access_has_bug_level( config_get( 'private_bugnote_threshold' ), $t_bug_id )
 	$t_default_bugnote_view_status = config_get( 'default_bugnote_view_status' );
 	if( access_has_bug_level( config_get( 'set_view_status_threshold' ), $t_bug_id ) ) {
 		echo '<label>';
-		echo '<input ', helper_get_tab_index(), ' type="checkbox" class="ace" id="private" name="private" ', check_checked( config_get( 'default_bugnote_view_status' ), VS_PRIVATE ), ' />';
+		echo '<input disabled ', helper_get_tab_index(), ' type="checkbox" class="ace" id="private" name="private" ', check_checked( config_get( 'default_bugnote_view_status' ), VS_PRIVATE ), ' />';
 		echo '<span class="lbl"></span>';
 		echo '</label>';
 	} else {
