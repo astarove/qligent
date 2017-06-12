@@ -522,7 +522,7 @@ $s_file_upload_msg = 'File upload successful.';
 
 # bug_file_upload_inc.php
 $s_upload_file = 'Upload File';
-$s_upload_files = 'Upload Files';
+$s_upload_files = 'Upload Files (screenshots, logs, configuration files)';
 $s_select_file = 'Select File';
 $s_select_files = 'Select Files';
 $s_upload_file_button = 'Upload File';

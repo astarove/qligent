@@ -112,6 +112,13 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
+ * Position of the filter box, can be: POSITION_*
+ * POSITION_TOP, POSITION_BOTTOM, or POSITION_NONE for none.
+ * @global integer $g_filter_position
+ */
+$g_filter_position = FILTER_POSITION_NONE;
+
+/**
  * Access level required to attach tags to a bug
  * @global integer $g_tag_attach_threshold
  */
