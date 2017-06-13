@@ -2308,6 +2308,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		<div id="filter" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
 		<div class="widget-header widget-header-small">
+		<?php /* ?>
 			<h4 class="widget-title lighter">
 				<i class="ace-icon fa fa-filter"></i>
 				<?php echo lang_get( 'filters' ) ?>
@@ -2375,7 +2376,9 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 				</div>
 			<?php } ?>
 			<div id="filter-bar-search" class="widget-toolbar no-border" style="display: <?php echo $t_collapse_block ? 'block' : 'none' ?>">
-				<div class="widget-menu margin-left-8 margin-right-8">
+		<?php */ ?>
+			<div id="filter-bar-search" class="widget-toolbar no-border" style="float: left; display: <?php echo $t_collapse_block ? 'block' : 'none' ?>">
+				<div class="widget-menu margin-left-8 margin-left-8">
 					<input id="filter-bar-search-txt" type="text" size="16" class="input-xs"
 						   placeholder="<?php echo lang_get( 'search' ) ?>"
 						   value="<?php echo string_attribute( $t_filter[FILTER_PROPERTY_SEARCH] ); ?>" />

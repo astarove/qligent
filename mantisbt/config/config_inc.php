@@ -122,7 +122,7 @@ $g_default_bugnote_order = 'DESC';
  * POSITION_TOP, POSITION_BOTTOM, or POSITION_NONE for none.
  * @global integer $g_filter_position
  */
-$g_filter_position = FILTER_POSITION_NONE;
+$g_filter_position = FILTER_POSITION_TOP;
 
 /**
  * Access level required to attach tags to a bug
