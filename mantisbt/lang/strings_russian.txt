@@ -1632,3 +1632,6 @@ $s_version_sa = "Версия СА";
 $s_version_bk = "Версия БК";
 $s_severity_enum_string = '10:Доработка, 30:Консультация, 50:Низкий, 60:Высокий, 70:Срочный, 80:Немедленный';
 $s_access_levels_enum_string = '10:наблюдатель,25:автор,40:редактор,55:разработчик,60: группа поддержки,70:руководитель,90:администратор';
+$s_actiongroup_menu_update_field_configuration = "Изменить конфигурацию";
+$s_actiongroup_menu_update_field_version_sa = "Изменить версию СА";
+$s_actiongroup_menu_update_field_version_bk = "Изменить версию БК";
