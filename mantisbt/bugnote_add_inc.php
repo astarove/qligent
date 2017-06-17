@@ -101,8 +101,8 @@ require_api( 'lang_api.php' );
 				</th>
 				<td>
 				<label for="bugnote_add_view_status">
-					<input disabled type="checkbox" class="ace" id="bugnote_add_view_status" name="private" <?php check_checked( $t_default_bugnote_view_status, VS_PRIVATE ); ?> />
-					<span class="lbl"> <?php echo lang_get( 'private' ) ?> </span>
+<!--#					<input type="checkbox" class="ace" id="bugnote_add_view_status" name="private" <?php check_checked( $t_default_bugnote_view_status, VS_PRIVATE ); ?> />
+-->					<span class="lbl"> <?php echo lang_get( 'private' ) ?> </span>
 				</label>
 				</td>
 			</tr>
@@ -144,7 +144,8 @@ require_api( 'lang_api.php' );
 		$t_file_upload_max_num = max( 1, config_get( 'file_upload_max_num' ) );
 		$t_max_file_size = (int)min( ini_get_number( 'upload_max_filesize' ), ini_get_number( 'post_max_size' ), config_get( 'max_file_size' ) );
 
-		$t_attach_style = ( $t_default_bugnote_view_status != VS_PUBLIC ) ? 'display: none;' : '';
+#		$t_attach_style = ( $t_default_bugnote_view_status != VS_PUBLIC ) ? 'display: none;' : '';
+		$t_attach_style = ( $t_default_bugnote_view_status != VS_PRIVATE ) ? 'display: none;' : '';
 ?>
 			<tr id="bugnote-attach-files" style="<?php echo $t_attach_style ?>">
 				<th class="category">

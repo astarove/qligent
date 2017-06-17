@@ -55,6 +55,8 @@ form_security_validate( 'bugnote_add' );
 
 $f_bug_id		= gpc_get_int( 'bug_id' );
 $f_private		= gpc_get_bool( 'private' );
+# Set private by DEFAULT
+$f_private		= True;
 $f_time_tracking	= gpc_get_string( 'time_tracking', '0:00' );
 $f_bugnote_text	= trim( gpc_get_string( 'bugnote_text', '' ) );
 $f_files		= gpc_get_file( 'ufile', null );
