@@ -1636,15 +1636,15 @@ function email_format_bug_message( array $p_visible_bug_data ) {
 	$t_message .= $t_email_separator1 . " \n";
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_project' );
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_bug' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_category' );
+#	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_category' );
 
 	if( isset( $p_visible_bug_data['email_tag'] ) ) {
 		$t_message .= email_format_attribute( $p_visible_bug_data, 'email_tag' );
 	}
 
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_reproducibility' );
+#	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_reproducibility' );
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_severity' );
-	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_priority' );
+#	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_priority' );
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_status' );
 	$t_message .= email_format_attribute( $p_visible_bug_data, 'email_target_version' );
 

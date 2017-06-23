@@ -586,6 +586,11 @@ if( $t_show_attachments ) {
 		</th>
 		<td>
 			<?php print_custom_field_input( $t_def, ( $f_master_bug_id === 0 ) ? null : $f_master_bug_id ) ?>
+			<?php
+				if( $t_def['name'] == 'version_bk' || $t_def['name'] == 'version_sa' ) {
+					echo lang_get('version_bk_sa_note');
+				}
+			?>
 		</td>
 	</tr>
 <?php

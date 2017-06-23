@@ -131,6 +131,17 @@ $g_filter_position = FILTER_POSITION_TOP;
 $g_tag_attach_threshold = NOBODY;
 
 /**
+ * threshold for viewing changelog
+ * @global integer $g_view_changelog_threshold
+ */
+$g_view_changelog_threshold = NOBODY;
+
+/**
+ * threshold for viewing roadmap
+ * @global integer $g_roadmap_view_threshold
+ */
+$g_roadmap_view_threshold = NOBODY;
+/**
  * Move bug threshold
  * @global integer $g_move_bug_threshold
  */

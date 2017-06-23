@@ -28,8 +28,10 @@ $t_start_time = $t_end_time - ( 7 * SECONDS_PER_DAY );
 $t_events = timeline_events( $t_start_time, $t_end_time, $t_max_events );
 
 $t_collapse_block = is_collapsed( 'timeline' );
-$t_block_css = $t_collapse_block ? 'collapsed' : '';
-$t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
+# $t_block_css = $t_collapse_block ? 'collapsed' : '';
+# $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
+$t_block_css = 'collapsed';
+$t_block_icon = 'fa-chevron-down';
 ?>
 
 
