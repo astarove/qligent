@@ -691,6 +691,9 @@ foreach ( $t_related_custom_field_ids as $t_id ) {
 			echo '</label>';
 			echo '</td><td colspan="5">';
 			print_custom_field_input( $t_def, $t_bug_id );
+			if( $t_def['name'] == 'version_bk' || $t_def['name'] == 'version_sa' ) {
+				echo lang_get('version_bk_sa_note');
+			}
 			echo '</td></tr>';
 		}
 	}

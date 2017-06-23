@@ -204,8 +204,7 @@ $t_show_category = null;
 
 if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR ) {
     $t_show_priority = in_array( 'priority', $t_fields );
-}
-else {
+} else {
     $t_show_priority = null;
 }
 # end
@@ -476,7 +475,11 @@ if( $t_show_attachments ) {
 			</select>
 		</td>
 	</tr>
-<?php } ?>
+<?php }
+	else {
+		echo '<input type="hidden" id="handler_id" name="handler_id" value='. user_get_id_by_name($g_default_handler_name).'>';
+	}
+?>
 
 <?php if( $t_show_status ) { ?>
 	<tr>
