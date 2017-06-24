@@ -264,7 +264,7 @@ function print_captcha_input( $p_field_name ) {
  * @param integer       $p_access     An access level.
  * @return void
  */
-function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = ANYBODY ) {
+function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = ANYBODY, $p_selected_id = null ) {
 	$t_current_user = auth_get_current_user_id();
 
 	if( null === $p_project_id ) {
@@ -336,8 +336,12 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 	for( $i = 0;$i < $t_count;$i++ ) {
 		$t_row = $t_users[$i];
 		echo '<option value="' . $t_row['id'] . '" ';
-		check_selected( $p_user_id, (int)$t_row['id'] );
-		echo '>' . $t_display[$i] . '</option>';
+		if( $p_selected_id ){
+			echo $t_row['id'] == $p_selected_id ? 'selected="selected"': '';
+		} else {
+			check_selected( $p_user_id, (int)$t_row['id'] );
+		}
+		echo '>' . $t_display[$i] .'</option>';
 	}
 }
 
@@ -579,12 +583,12 @@ function print_news_string_by_news_id( $p_news_id ) {
  * @param integer        $p_threshold  An access level.
  * @return void
  */
-function print_assign_to_option_list( $p_user_id = '', $p_project_id = null, $p_threshold = null ) {
+function print_assign_to_option_list( $p_user_id = '', $p_project_id = null, $p_threshold = null , $p_selected_id = null) {
 	if( null === $p_threshold ) {
 		$p_threshold = config_get( 'handle_bug_threshold' );
 	}
 
-	print_user_option_list( $p_user_id, $p_project_id, $p_threshold );
+	print_user_option_list( $p_user_id, $p_project_id, $p_threshold , $p_selected_id);
 }
 
 /**

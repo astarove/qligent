@@ -112,15 +112,10 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
- * @global string default handler for new issues
- */
-$g_default_handler_name = "pirogov";
-
-/**
  * access level needed to be able to be listed in the assign to field.
  * @global integer $g_handle_bug_threshold
  */
-$g_handle_bug_threshold = SUPPORT;
+#$g_update_bug_assign_threshold = SUPPORT;
 
 /**
  *
@@ -206,7 +201,3 @@ $g_severity_enum_string = '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:
 $g_notify_flags['new']['threshold_min'] = SUPPORT;
 $g_notify_flags['new']['threshold_max'] = SUPPORT;
 
-/**
- * add new config names to global configs list
- */
-array_push($g_public_config_names, $g_default_handler_name);

@@ -180,6 +180,9 @@ if( $f_master_bug_id > 0 ) {
 	$f_view_state			= gpc_get_int( 'view_state', (int)config_get( 'default_bug_view_status' ) );
 	$f_due_date				= gpc_get_string( 'due_date', date_strtotime( config_get( 'due_date_default' ) ) );
 
+	$f_default_handler_id 	= custom_field_get_id_from_name("handler_by_default");
+	$f_default_handler_name = custom_field_get_field($f_default_handler_id, "default_value");
+	
 	if( $f_due_date == '' ) {
 		$f_due_date = date_get_null();
 	}
@@ -209,7 +212,13 @@ if( user_get_access_level(auth_get_current_user_id()) == ADMINISTRATOR ) {
 }
 # end
 $t_show_steps_to_reproduce = in_array( 'steps_to_reproduce', $t_fields );
-$t_show_handler = in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
+# $t_show_handler = in_array( 'handler', $t_fields ) && access_has_project_level( config_get( 'update_bug_assign_threshold' ) );
+if( user_get_access_level(auth_get_current_user_id()) >= SUPPORT ) {
+    $t_show_handler = true;
+} else {
+    $t_show_handler = null;
+}
+
 $t_show_profiles = config_get( 'enable_profiles' );
 $t_show_platform = $t_show_profiles && in_array( 'platform', $t_fields );
 $t_show_os = $t_show_profiles && in_array( 'os', $t_fields );
@@ -470,14 +479,13 @@ if( $t_show_attachments ) {
 		</th>
 		<td>
 			<select <?php echo helper_get_tab_index() ?> id="handler_id" name="handler_id" class="input-sm">
-				<option value="0" selected="selected"></option>
-				<?php print_assign_to_option_list( $f_handler_id ) ?>
+				<?php print_assign_to_option_list( $f_handler_id, null, null ,$f_default_handler_id ) ?>
 			</select>
 		</td>
 	</tr>
 <?php }
 	else {
-		echo '<input type="hidden" id="handler_id" name="handler_id" value='. user_get_id_by_name($g_default_handler_name).'>';
+		echo '<input type="hidden" id="handler_id" name="handler_id" value='. custom_field_get_id_from_name("handler_by_default").'>';
 	}
 ?>
 
