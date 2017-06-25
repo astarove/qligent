@@ -114,7 +114,15 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 			# -- Print and Export links --
 			print_small_button( 'print_all_bug_page.php', lang_get( 'print_all_bug_page_link' ) );
 			print_small_button( 'csv_export.php', lang_get( 'csv_export' ) );
-#			print_small_button( 'excel_xml_export.php', lang_get( 'excel_export' ) );
+?>
+			<table border="0"><tr><td>
+			<select name="action" class="input-sm" id="actionTop">
+				<?php print_all_bug_action_option_list($t_unique_project_ids) ?>
+			</select>
+			</td><td>
+			<input type="submit" class="btn btn-primary btn-white btn-sm btn-round" value="<?php echo lang_get('ok'); ?>"/>
+			<td></tr></table>
+<?php
 
 			$t_event_menu_options = $t_links = event_signal('EVENT_MENU_FILTER');
 
@@ -222,7 +230,7 @@ write_bug_rows( $t_rows );
 		}
 		if( $g_checkboxes_exist ) {
 ?>
-			<select name="action" class="input-sm">
+			<select name="action" class="input-sm" id="actionBottom">
 				<?php print_all_bug_action_option_list($t_unique_project_ids) ?>
 			</select>
 			<input type="submit" class="btn btn-primary btn-white btn-sm btn-round" value="<?php echo lang_get('ok'); ?>"/>
