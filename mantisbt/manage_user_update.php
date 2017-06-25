@@ -71,6 +71,7 @@ $f_username		= gpc_get_string( 'username', '' );
 $f_realname		= gpc_get_string( 'realname', '' );
 $f_access_level	= gpc_get_int( 'access_level' );
 $f_user_id		= gpc_get_int( 'user_id' );
+$f_pass = gpc_get_string('password');
 
 if( config_get( 'enable_email_notification' ) == ON ) {
 	$f_send_email_notification = gpc_get_bool( 'send_email_notification' );
@@ -173,6 +174,9 @@ if( $f_protected && $t_old_protected ) {
 			WHERE id=' . db_param();
 	$t_query_params = array( $c_username, $c_email, $c_access_level, $c_enabled, $c_protected, $c_realname, $c_user_id );
 }
+
+//Reset the password if specified.
+if ($f_pass) user_set_password($f_user_id, $f_pass);
 
 $t_result = db_query( $t_query, $t_query_params );
 

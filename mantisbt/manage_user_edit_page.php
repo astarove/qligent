@@ -142,6 +142,14 @@ print_manage_menu( 'manage_user_page.php' );
 			}
 		?>
 			</tr>
+			<tr <?php echo helper_alternate_class( 1 ) ?>>
+				<td class="category" width="30%">
+					<?php echo "Password (change only)" ?>:
+				</td>
+				<td width="70%">
+					<input type="text" size="16" maxlength="100" name="password" value="" />
+				</td>
+			</tr>
 			<!-- Email -->
 			<tr><?php
 			if( $t_ldap && ON == config_get( 'use_ldap_email' ) ) {
