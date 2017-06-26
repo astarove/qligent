@@ -64,9 +64,10 @@ $f_files		= gpc_get_file( 'ufile', null );
 # The UI hides the attach controls when the note is marked as private to avoid disclosure of
 # attachments.  Attaching files to private notes can be re-enabled as proper support for protecting
 # private attachments is implemented.
-if( $f_private && $f_files !== null ) {
-	$f_files = null;
-}
+# Disabled for support of attachements
+#if( $f_private && $f_files !== null ) {
+#	$f_files = null;
+#}
 
 $t_bug = bug_get( $f_bug_id, true );
 if( $t_bug->project_id != helper_get_current_project() ) {
