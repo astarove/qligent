@@ -2297,7 +2297,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 		<?php
 		$t_filter_cols = config_get( 'filter_custom_fields_per_row' );
 		$t_stored_queries_arr = filter_db_get_available_queries();
-	if( $p_expanded ) {
+	if( !$p_expanded ) {
 		?>
 
 		<?php
@@ -2308,7 +2308,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		<div id="filter" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
 		<div class="widget-header widget-header-small">
-		<?php /* ?>
+		<?php /*?>
 			<h4 class="widget-title lighter">
 				<i class="ace-icon fa fa-filter"></i>
 				<?php echo lang_get( 'filters' ) ?>
@@ -2442,7 +2442,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		$t_dynamic_filter_expander_class = ( config_get( 'use_dynamic_filters' ) ) ? ' class="dynamic-filter-expander"' : '';
 		?>
-
+<!-- <?php /* */?> 
 		<tr>
 			<td class="small-caption category">
 				<a href="<?php echo $t_filters_url . FILTER_PROPERTY_REPORTER_ID . '[]';?>" id="reporter_id_filter"<?php echo $t_dynamic_filter_expander_class ?>><?php echo lang_get( 'reporter_label' )?></a>
@@ -2471,7 +2471,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 			echo '<td class="small-caption" colspan="' . ( $t_filter_cols - 8 ) . '">&#160;</td>';
 		}?>
 		</tr>
-
+<?php /* */ ?><!-- -->
 		<tr>
 			<td class="small-caption" id="reporter_id_filter_target">
 							<?php
