@@ -131,6 +131,12 @@ $g_default_bugnote_order = 'DESC';
 $g_filter_position = FILTER_POSITION_TOP;
 
 /**
+ * Threshold needed to be able to create stored queries
+ * @global integer $g_stored_query_create_threshold
+ */
+$g_stored_query_create_threshold = NOBODY;
+
+/**
  * Access level required to attach tags to a bug
  * @global integer $g_tag_attach_threshold
  */

@@ -2251,7 +2251,7 @@ function filter_cache_result( array $p_rows, array $p_id_array_lastmod ) {
  */
 function filter_draw_selection_area( $p_page_number, $p_for_screen = true ) {
 	echo '<div class="col-md-12 col-xs-12">';
-	filter_draw_selection_area2( $p_page_number, $p_for_screen, true );
+	filter_draw_selection_area2( $p_page_number, $p_for_screen, false );
 	echo '</div>';
 }
 
@@ -2308,7 +2308,6 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 
 		<div id="filter" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
 		<div class="widget-header widget-header-small">
-		<?php /* ?>
 			<h4 class="widget-title lighter">
 				<i class="ace-icon fa fa-filter"></i>
 				<?php echo lang_get( 'filters' ) ?>
@@ -2376,7 +2375,6 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 				</div>
 			<?php } ?>
 			<div id="filter-bar-search" class="widget-toolbar no-border" style="display: <?php echo $t_collapse_block ? 'block' : 'none' ?>">
-		<?php */ ?>
 			<div id="filter-bar-search" class="widget-toolbar no-border" style="float: left; display: <?php echo $t_collapse_block ? 'block' : 'none' ?>">
 				<div class="widget-menu margin-left-8 margin-left-8">
 					<input id="filter-bar-search-txt" type="text" size="16" class="input-xs"
@@ -3643,11 +3641,11 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 		<?php
 	}
 
-	echo '<div class="widget-toolbox padding-8 clearfix">';
+	echo '<div class="widget-toolbox padding-8 clearfix" style="background: #5090C1;">';
 	echo '<div class="btn-toolbar pull-left">';
 
 	# expanded
-	echo '<div class="form-inline">';
+	echo '<div class="form-inline" style="background">';
 	echo '<input type="text" id="filter-search-txt" class="input-sm" size="16" name="', FILTER_PROPERTY_SEARCH, '" 
 		placeholder="' . lang_get( 'search' ) . '" value="', string_attribute( $t_filter[FILTER_PROPERTY_SEARCH] ), '" />';
 	?>
@@ -3656,7 +3654,7 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 	<?php
 
 	echo '</form></div>';
-	echo '<div class="btn-toolbar pull-right">';
+	echo '<div class="btn-toolbar pull-left">';
 	echo '<div class="btn-group">';
 
 	if( access_has_project_level( config_get( 'stored_query_create_threshold' ) ) ) { ?>
@@ -3697,8 +3695,6 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 	?>
 
 
-	</div>
-	</div>
 	</div>
 	</div>
 	</div>
