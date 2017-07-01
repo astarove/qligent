@@ -1,11 +1,13 @@
 <?php
 $g_hostname               = 'localhost';
 $g_db_type                = 'mysqli';
-$g_database_name          = 'bugtracker';
+$g_database_name          = 'qligent_mantisbt';
 $g_db_username            = 'root';
-$g_db_password            = 'Qligent_1!';
+$g_db_password            = 'mysql_pwd';
+
 $g_default_timezone       = 'Europe/Moscow';
-$g_crypto_master_salt     = 'F7cXw5q60zWig1XTPAenhyjr4jeukSbPbW/RRnSTNWQ=';
+
+$g_crypto_master_salt     = 'u6hCMkwm73EmQlWF2zNFCKiECTVlRqLLxwWAszd8iM8=';
 // e-Mail settings
 //$g_path = 'http://82.208.111.89:1337/mantis/';
 $g_enable_email_notification = ON;
@@ -129,6 +131,12 @@ $g_default_bugnote_order = 'DESC';
  * @global integer $g_filter_position
  */
 $g_filter_position = FILTER_POSITION_TOP;
+
+/**
+ * Threshold needed to be able to create stored queries
+ * @global integer $g_stored_query_create_threshold
+ */
+$g_stored_query_create_threshold = NOBODY;
 
 /**
  * Access level required to attach tags to a bug
