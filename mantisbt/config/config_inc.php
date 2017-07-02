@@ -207,3 +207,38 @@ $g_severity_enum_string = '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:
 $g_notify_flags['new']['threshold_min'] = SUPPORT;
 $g_notify_flags['new']['threshold_max'] = SUPPORT;
 
+/**
+ * System logging
+ * This controls the type of logging information recorded.
+ * The available log channels are:
+ *
+ * LOG_NONE, LOG_EMAIL, LOG_EMAIL_RECIPIENT, LOG_EMAIL_VERBOSE, LOG_FILTERING,
+ * LOG_AJAX, LOG_LDAP, LOG_DATABASE, LOG_WEBSERVICE, LOG_ALL
+ *
+ * and can be combined using
+ * {@link http://php.net/language.operators.bitwise PHP bitwise operators}
+ * Refer to {@link $g_log_destination} for details on where to save the logs.
+ *
+ * @global integer $g_log_level
+ */
+$g_log_level = LOG_EMAIL;
+
+/**
+ * @global bool $g_show_stat_by_priority
+ */
+$g_show_stat_by_priority = false;
+
+/**
+ * @global bool $g_show_stat_by_reporters
+ */
+$g_show_stat_by_reporters = false;
+
+/**
+ * @global bool $g_show_stat_most_active
+ */
+$g_show_stat_most_active = false;
+
+/**
+ * add new settings to gloabl settings' list
+ */
+array_push($g_public_config_names, $g_show_stat_by_priority, $g_show_stat_by_reporters, $g_show_stat_most_active);

@@ -150,6 +150,10 @@ print_summary_submenu();
 	<!-- BY PROJECT -->
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
+	<form name="select_date" action="summary_page.php" method="post">
+		<input type="text" id="stat_by_project_datepicker" name="period" value="<?php echo gpc_get_string('period', ''); ?>"></input>
+		<input type="submit" value="Select"></input>
+	</form>
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
 			<tr>
@@ -157,7 +161,7 @@ print_summary_submenu();
 				<?php echo $t_orcttab ?>
 			</tr>
 		</thead>
-		<?php summary_print_by_project(); ?>
+		<?php summary_print_by_project(array(), 0, null,  gpc_get_string('period', '')); ?>
 	</table>
 	</div>
 	<?php } ?>
@@ -271,19 +275,20 @@ print_summary_submenu();
 	</div>
 
 	<!-- MOST ACTIVE -->
-	<div class="space-10"></div>
-	<div class="widget-box table-responsive">
-		<table class="table table-hover table-bordered table-condensed table-striped">
-		<thead>
-			<tr>
-				<th class="width-85"><?php echo lang_get( 'most_active' ) ?></th>
-				<th class="align-right"><?php echo lang_get( 'score' ); ?></th>
-			</tr>
-		</thead>
-		<?php summary_print_by_activity() ?>
-	</table>
-	</div>
-
+	<?php
+	if( $g_show_stat_most_active ) {
+		echo '<div class="space-10"></div>';
+		echo '<div class="widget-box table-responsive">';
+		echo '<table class="table table-hover table-bordered table-condensed table-striped">';
+		echo '<thead><tr>';
+		echo '<th class="width-85">'. lang_get( 'most_active' ) .'</th>';
+		echo '<th class="align-right">'. lang_get( 'score' ) .'</th>';
+		echo '</tr></thead>'; 
+		summary_print_by_activity();
+		echo '</table>';
+		echo '</div>';
+	}
+	?>
 	<!-- LONGEST OPEN -->
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
@@ -313,33 +318,37 @@ print_summary_submenu();
 	</div>
 
 	<!-- BY PRIORITY -->
-	<div class="space-10"></div>
-	<div class="widget-box table-responsive">
-		<table class="table table-hover table-bordered table-condensed table-striped">
-		<thead>
-			<tr>
-				<th class="width-35"><?php echo lang_get( 'by_priority' ) ?></th>
-				<?php echo $t_orcttab ?>
-			</tr>
-		</thead>
-		<?php summary_print_by_enum( 'priority' ) ?>
-	</table>
-	</div>
-
-	<!-- REPORTER STATS -->
-	<div class="space-10"></div>
-	<div class="widget-box table-responsive">
-		<table class="table table-hover table-bordered table-condensed table-striped">
-		<thead>
-			<tr>
-				<th class="width-35"><?php echo lang_get( 'reporter_stats' ) ?></th>
-				<?php echo $t_orcttab ?>
-			</tr>
-		</thead>
-		<?php summary_print_by_reporter() ?>
-	</table>
-	</div>
-
+	<?php
+	if( config_get('show_stat_by_priority') ) {
+		echo '<div class="space-10"></div>';
+		echo '<div class="widget-box table-responsive">';
+		echo '<table class="table table-hover table-bordered table-condensed table-striped">';
+		echo '<thead>';
+		echo '<tr>';
+		echo '<th class="width-35">'. lang_get( 'by_priority' ) .'</th>';
+		echo $t_orcttab;
+		echo '</tr>';
+		echo '</thead>';
+		summary_print_by_enum( 'priority' );
+		echo '</table>';
+		echo '</div>';
+	}
+	# REPORTER STATS
+	if( config_get('show_stat_by_reporters') ) {
+		echo '<div class="space-10"></div>';
+		echo '<div class="widget-box table-responsive">';
+		echo '<table class="table table-hover table-bordered table-condensed table-striped">';
+		echo '<thead>';
+		echo '<tr>';
+		echo '<th class="width-35">'. lang_get( 'reporter_stats' ) .'</th>';
+		echo $t_orcttab;
+		echo '</tr>';
+		echo '</thead>';
+		summary_print_by_reporter();
+		echo '</table>';
+		echo '</div>';
+	}
+	?>
 	<!-- REPORTER EFFECTIVENESS -->
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">

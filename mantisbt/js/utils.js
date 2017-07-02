@@ -10,4 +10,13 @@ $(document).ready( function (){
 		var selectedText = $("#actionBottom option:selected").text();
 		$("#actionTop [value=" + selectedValue + "]").attr("selected", "selected");
 	});
-});
+	
+	$( function() {
+		$( "#stat_by_project_datepicker" ).datepicker({
+			defaultDate: "-5d",
+			constrainInput: true,
+			maxDate: "0",
+			showOtherMonths: true,
+		});
+	});
+} );

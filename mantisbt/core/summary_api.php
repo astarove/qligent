@@ -735,7 +735,7 @@ function summary_print_by_category() {
  * @param array   $p_cache    Summary cache.
  * @return void
  */
-function summary_print_by_project( array $p_projects = array(), $p_level = 0, array $p_cache = null ) {
+function summary_print_by_project(array $p_projects = array(), $p_level = 0, array $p_cache = null, $t_days = 0) {
 	$t_project_id = helper_get_current_project();
 
 	if( empty( $p_projects ) ) {
@@ -747,12 +747,15 @@ function summary_print_by_project( array $p_projects = array(), $p_level = 0, ar
 			);
 		}
 	}
+	$today = getdate();
+#	$t_start_date = mktime( 0, 0, 0, date( 'm' ), ( date( 'd' ) - $t_days ), date( 'Y' ) );
+	$t_start_date = strtotime($t_days?$t_days : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
 	# Retrieve statistics one time to improve performance.
 	if( null === $p_cache ) {
-		$t_query = 'SELECT project_id, status, COUNT( status ) AS bugcount
-					FROM {bug}
-					GROUP BY project_id, status';
+		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
+					FROM {bug} WHERE last_updated >= '.$t_start_date .
+					' GROUP BY project_id, status, last_updated';
 
 		$t_result = db_query( $t_query );
 		$p_cache = array();
@@ -764,6 +767,7 @@ function summary_print_by_project( array $p_projects = array(), $p_level = 0, ar
 			$t_project_id = $t_row['project_id'];
 			$t_status = $t_row['status'];
 			$t_bugcount = $t_row['bugcount'];
+			$t_last_updated = $t_row['last_updated'];
 
 			if( $t_closed_val <= $t_status ) {
 				if( isset( $p_cache[$t_project_id]['closed'] ) ) {
