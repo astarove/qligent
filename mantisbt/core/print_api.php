@@ -337,11 +337,11 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 		$t_row = $t_users[$i];
 		echo '<option value="' . $t_row['id'] . '" ';
 		if( $p_selected_id ){
-			echo $t_row['id'] == $p_selected_id ? 'selected="selected"': '';
+			echo ($t_row['id'] == $p_selected_id) ? 'selected="selected"': '';
 		} else {
 			check_selected( $p_user_id, (int)$t_row['id'] );
 		}
-		echo '>' . $t_display[$i] .'</option>';
+		echo '>' . $t_display[$i] . '</option>';
 	}
 }
 

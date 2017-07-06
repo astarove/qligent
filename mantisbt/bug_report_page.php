@@ -180,7 +180,9 @@ if( $f_master_bug_id > 0 ) {
 	$f_view_state			= gpc_get_int( 'view_state', (int)config_get( 'default_bug_view_status' ) );
 	$f_due_date				= gpc_get_string( 'due_date', date_strtotime( config_get( 'due_date_default' ) ) );
 
-	$f_default_handler_id 	= custom_field_get_id_from_name("handler_by_default");
+	
+	$t_def = custom_field_get_definition( custom_field_get_id_from_name("handler_by_default") );
+	$f_default_handler_id 	= user_get_id_by_name($t_def["default_value"]);
 	
 	if( $f_due_date == '' ) {
 		$f_due_date = date_get_null();
