@@ -234,6 +234,11 @@ $g_show_stat_by_priority = false;
 $g_show_stat_by_reporters = false;
 
 /**
+ * @global bool $g_show_stat_by_reporters
+ */
+$g_show_stat_by_category = false;
+
+/**
  * @global bool $g_show_stat_most_active
  */
 $g_show_stat_most_active = false;
@@ -241,4 +246,5 @@ $g_show_stat_most_active = false;
 /**
  * add new settings to gloabl settings' list
  */
-array_push($g_public_config_names, $g_show_stat_by_priority, $g_show_stat_by_reporters, $g_show_stat_most_active);
+array_push($g_public_config_names, $g_show_stat_by_priority, $g_show_stat_by_reporters, $g_show_stat_most_active,
+		   $g_show_stat_by_category);

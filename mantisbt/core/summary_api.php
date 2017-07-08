@@ -735,7 +735,7 @@ function summary_print_by_category() {
  * @param array   $p_cache    Summary cache.
  * @return void
  */
-function summary_print_by_project(array $p_projects = array(), $p_level = 0, array $p_cache = null, $t_days = 0) {
+function summary_print_by_project(array $p_projects = array(), $p_level = 0, array $p_cache = null, $t_days_from = 0, $t_days_to = 0) {
 	$t_project_id = helper_get_current_project();
 
 	if( empty( $p_projects ) ) {
@@ -749,14 +749,14 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 	}
 	$today = getdate();
 #	$t_start_date = mktime( 0, 0, 0, date( 'm' ), ( date( 'd' ) - $t_days ), date( 'Y' ) );
-	$t_start_date = strtotime($t_days?$t_days : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+	$t_start_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+	$t_finish_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
 	# Retrieve statistics one time to improve performance.
 	if( null === $p_cache ) {
 		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
-					FROM {bug} WHERE last_updated >= '.$t_start_date .
+					FROM {bug} WHERE last_updated BETWEEN '.$t_start_date . ' AND '.$t_finish_date .
 					' GROUP BY project_id, status, last_updated';
-
 		$t_result = db_query( $t_query );
 		$p_cache = array();
 

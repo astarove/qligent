@@ -12,8 +12,16 @@ $(document).ready( function (){
 	});
 	
 	$( function() {
-		$( "#stat_by_project_datepicker" ).datepicker({
+		$( "#stat_by_project_dp_from" ).datepicker({
 			defaultDate: "-5d",
+			constrainInput: true,
+			maxDate: "0",
+			showOtherMonths: true,
+		});
+	});
+	$( function() {
+		$( "#stat_by_project_dp_to" ).datepicker({
+			defaultDate: null,
 			constrainInput: true,
 			maxDate: "0",
 			showOtherMonths: true,

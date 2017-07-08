@@ -151,8 +151,11 @@ print_summary_submenu();
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 	<form name="select_date" action="summary_page.php" method="post">
-		<input type="text" id="stat_by_project_datepicker" name="period" value="<?php echo gpc_get_string('period', ''); ?>"></input>
-		<input type="submit" value="Select"></input>
+		From:
+		<input type="text" size = "8" id="stat_by_project_dp_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+		to:
+		<input type="text" size = "8" id="stat_by_project_dp_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+		<input type="submit" value="Show"></input>
 	</form>
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -161,7 +164,7 @@ print_summary_submenu();
 				<?php echo $t_orcttab ?>
 			</tr>
 		</thead>
-		<?php summary_print_by_project(array(), 0, null,  gpc_get_string('period', '')); ?>
+		<?php summary_print_by_project(array(), 0, null, gpc_get_string('period_from', ''), gpc_get_string('period_to', '')); ?>
 	</table>
 	</div>
 	<?php } ?>
@@ -195,19 +198,16 @@ print_summary_submenu();
 	</div>
 
 	<!-- BY CATEGORY -->
-	<div class="space-10"></div>
-	<div class="widget-box table-responsive">
-		<table class="table table-hover table-bordered table-condensed table-striped">
-		<thead>
-			<tr>
-				<th class="width-35"><?php echo lang_get( 'by_category' ) ?></th>
-				<?php echo $t_orcttab ?>
-			</tr>
-		</thead>
-		<?php summary_print_by_category() ?>
-	</table>
-	</div>
-
+	<?php
+	if( $g_show_stat_by_category ) {
+		echo '<div class="space-10"></div>';
+		echo '<div class="widget-box table-responsive">';
+		echo '<table class="table table-hover table-bordered table-condensed table-striped">';
+		echo '<thead><tr><th class="width-35">'. lang_get( 'by_category' ) .'</th>';
+		echo $t_orcttab;
+		echo '</tr></thead>'. summary_print_by_category() .'</table></div>';
+	}
+	?>
 	<!-- TIME STATS -->
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
