@@ -62,15 +62,34 @@ require_api( 'utility_api.php' );
  * @param string $p_total    Count of total issues - normally string with hyperlink to filter.
  * @return void
  */
-function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p_total ) {
+function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p_total, $t_show_difference = false, $p_label_base = 0, $p_open_base = 0, $p_resolved_base = 0, $p_closed_base = 0 ) {
 	echo '<tr>';
 	printf( '<td class="width50">%s</td>', $p_label );
-	printf( '<td class="width12 align-right">%s</td>', $p_open );
-	printf( '<td class="width12 align-right">%s</td>', $p_resolved );
-	printf( '<td class="width12 align-right">%s</td>', $p_closed );
-	printf( '<td class="width12 align-right">%s</td>', $p_total );
+	if( $t_show_difference ){
+		$p_open_dif = $p_open - $p_open_base;
+		$p_resolved_dif = $p_resolved - $p_resolved_base;
+		$p_closed_dif = $p_closed - $p_closed_base;
+		$p_total_dif = $p_open - $p_open_base + $p_resolved - $p_resolved_base + $p_closed - $p_closed_base;
+		printf( '<td class="width12 align-right">%s (%s)</td>', $p_open, add_mark($p_open_dif) );
+		printf( '<td class="width12 align-right">%s (%s)</td>', $p_resolved, add_mark($p_resolved_dif) );
+		printf( '<td class="width12 align-right">%s (%s)</td>', $p_closed, add_mark($p_closed_dif) );
+		printf( '<td class="width12 align-right">%s (%s)</td>', $p_total, add_mark($p_total_dif) );
+	} else {
+		printf( '<td class="width12 align-right">%s</td>', $p_open);
+		printf( '<td class="width12 align-right">%s</td>', $p_resolved);
+		printf( '<td class="width12 align-right">%s</td>', $p_closed);
+		printf( '<td class="width12 align-right">%s</td>', $p_total);
+	}
 	echo '</tr>';
 }
+
+function add_mark($val){
+	if ( $val > 0 ) {
+		return sprintf('+%s',$val);
+	}
+	return sprintf($val);
+}
+
 
 /**
  * Returns a string representation of the user, together with a link to the issues
@@ -750,7 +769,8 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 	$today = getdate();
 #	$t_start_date = mktime( 0, 0, 0, date( 'm' ), ( date( 'd' ) - $t_days ), date( 'Y' ) );
 	$t_start_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
-	$t_finish_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+	$t_finish_date = strtotime("+1 day", strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']));
+	$t_base_date = strtotime("-1 day", $t_start_date);
 
 	# Retrieve statistics one time to improve performance.
 	if( null === $p_cache ) {
@@ -768,7 +788,6 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 			$t_status = $t_row['status'];
 			$t_bugcount = $t_row['bugcount'];
 			$t_last_updated = $t_row['last_updated'];
-
 			if( $t_closed_val <= $t_status ) {
 				if( isset( $p_cache[$t_project_id]['closed'] ) ) {
 					$p_cache[$t_project_id]['closed'] += $t_bugcount;
@@ -789,19 +808,60 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 				}
 			}
 		}
-	}
+	# Retrieve statistics one time to improve performance - base for comparison.
+		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
+					FROM {bug} WHERE last_updated >= '.$t_base_date . ' AND last_updated < ' .$t_start_date. 
+					' GROUP BY project_id, status, last_updated';
+		$t_result = db_query( $t_query );
+		$p_cache_base = array();
+		$t_resolved_val = config_get( 'bug_resolved_status_threshold' );
+		$t_closed_val = config_get( 'bug_closed_status_threshold' );
 
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			$t_project_id = $t_row['project_id'];
+			$t_status = $t_row['status'];
+			$t_bugcount = $t_row['bugcount'];
+			$t_last_updated = $t_row['last_updated'];
+
+			if( $t_closed_val <= $t_status ) {
+				if( isset( $p_cache_base[$t_project_id]['closed'] ) ) {
+					$p_cache_base[$t_project_id]['closed'] += $t_bugcount;
+				} else {
+					$p_cache_base[$t_project_id]['closed'] = $t_bugcount;
+				}
+			} else if( $t_resolved_val <= $t_status ) {
+				if( isset( $p_cache_base[$t_project_id]['resolved'] ) ) {
+					$p_cache_base[$t_project_id]['resolved'] += $t_bugcount;
+				} else {
+					$p_cache_base[$t_project_id]['resolved'] = $t_bugcount;
+				}
+			} else {
+				if( isset( $p_cache_base[$t_project_id]['open'] ) ) {
+					$p_cache_base[$t_project_id]['open'] += $t_bugcount;
+				} else {
+					$p_cache_base[$t_project_id]['open'] = $t_bugcount;
+				}
+			}
+		}
+	}
+/* */	
 	foreach( $p_projects as $t_project ) {
 		$t_name = str_repeat( '&raquo; ', $p_level ) . project_get_name( $t_project );
 
 		$t_pdata = isset( $p_cache[$t_project] ) ? $p_cache[$t_project] : array( 'open' => 0, 'resolved' => 0, 'closed' => 0 );
+		$t_pdata_base = isset( $p_cache_base[$t_project] ) ? $p_cache_base[$t_project] : array( 'open' => 0, 'resolved' => 0, 'closed' => 0 );
 
 		$t_bugs_open = isset( $t_pdata['open'] ) ? $t_pdata['open'] : 0;
 		$t_bugs_resolved = isset( $t_pdata['resolved'] ) ? $t_pdata['resolved'] : 0;
 		$t_bugs_closed = isset( $t_pdata['closed'] ) ? $t_pdata['closed'] : 0;
 		$t_bugs_total = $t_bugs_open + $t_bugs_resolved + $t_bugs_closed;
 
-		summary_helper_print_row( string_display_line( $t_name ), $t_bugs_open, $t_bugs_resolved, $t_bugs_closed, $t_bugs_total );
+		$t_bugs_open_base = isset( $t_pdata_base['open'] ) ? $t_pdata_base['open'] : 0;
+		$t_bugs_resolved_base = isset( $t_pdata_base['resolved'] ) ? $t_pdata_base['resolved'] : 0;
+		$t_bugs_closed_base = isset( $t_pdata_base['closed'] ) ? $t_pdata_base['closed'] : 0;
+
+		summary_helper_print_row( string_display_line( $t_name ), $t_bugs_open, $t_bugs_resolved, $t_bugs_closed, $t_bugs_total, true,
+																  $t_bugs_open_base, $t_bugs_resolved_base, $t_bugs_closed_base );
 
 		if( count( project_hierarchy_get_subprojects( $t_project ) ) > 0 ) {
 			$t_subprojects = current_user_get_accessible_subprojects( $t_project );
