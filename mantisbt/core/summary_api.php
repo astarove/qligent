@@ -62,7 +62,7 @@ require_api( 'utility_api.php' );
  * @param string $p_total    Count of total issues - normally string with hyperlink to filter.
  * @return void
  */
-function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p_total, $t_show_difference = false, $p_label_base = 0, $p_open_base = 0, $p_resolved_base = 0, $p_closed_base = 0 ) {
+function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p_total, $t_show_difference = false, $p_project_id = null, $p_start_date = null, $p_end_date = null, $p_open_base = 0, $p_resolved_base = 0, $p_closed_base = 0 ) {
 	echo '<tr>';
 	printf( '<td class="width50">%s</td>', $p_label );
 	if( $t_show_difference ){
@@ -70,10 +70,26 @@ function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p
 		$p_resolved_dif = $p_resolved - $p_resolved_base;
 		$p_closed_dif = $p_closed - $p_closed_base;
 		$p_total_dif = $p_open - $p_open_base + $p_resolved - $p_resolved_base + $p_closed - $p_closed_base;
+
+		$p_begin_date = preg_split("/-/", date('Y-m-d', $p_start_date) );
+		$p_finish_date = preg_split("/-/", date('Y-m-d', $p_end_date) );
+		
+		$t_bug_link = '<a class="subtle" href="view_all_set.php?type=1&amp;temporary=y';
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_FILTER_BY_DATE . '=y';
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_START_DAY . '='. $p_begin_date[2];
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_END_DAY . '='. $p_finish_date[2];
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_START_MONTH . '='. $p_begin_date[1];
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_END_MONTH . '='. $p_finish_date[1];
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_START_YEAR . '='. $p_begin_date[0];
+		$t_bug_link .= '&amp;'. FILTER_PROPERTY_END_YEAR . '='. $p_finish_date[0];
+#		$t_bug_link .= '&amp;'. FILTER_PROPERTY_PROJECT_ID . '=' . $p_project_id; 
+#		$t_bug_link .= '">sss</a>';
+#		echo $t_bug_link;
 		printf( '<td class="width12 align-right">%s (%s)</td>', $p_open, add_mark($p_open_dif) );
 		printf( '<td class="width12 align-right">%s (%s)</td>', $p_resolved, add_mark($p_resolved_dif) );
 		printf( '<td class="width12 align-right">%s (%s)</td>', $p_closed, add_mark($p_closed_dif) );
-		printf( '<td class="width12 align-right">%s (%s)</td>', $p_total, add_mark($p_total_dif) );
+#		printf( '<td class="width12 align-right">%s (%s)</td>', $p_total, add_mark($p_total_dif) );
+		echo '<td class="width12 align-right">'.$t_bug_link.'">'.$p_total.'('.add_mark($p_total_dif).')</a></td>';
 	} else {
 		printf( '<td class="width12 align-right">%s</td>', $p_open);
 		printf( '<td class="width12 align-right">%s</td>', $p_resolved);
@@ -769,13 +785,13 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 	$today = getdate();
 #	$t_start_date = mktime( 0, 0, 0, date( 'm' ), ( date( 'd' ) - $t_days ), date( 'Y' ) );
 	$t_start_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
-	$t_finish_date = strtotime("+1 day", strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']));
+	$t_finish_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 	$t_base_date = strtotime("-1 day", $t_start_date);
 
 	# Retrieve statistics one time to improve performance.
 	if( null === $p_cache ) {
 		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
-					FROM {bug} WHERE last_updated BETWEEN '.$t_start_date . ' AND '.$t_finish_date .
+					FROM {bug} WHERE last_updated BETWEEN '.$t_start_date . ' AND '. strtotime("+1 day", $t_finish_date) .
 					' GROUP BY project_id, status, last_updated';
 		$t_result = db_query( $t_query );
 		$p_cache = array();
@@ -860,7 +876,8 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 		$t_bugs_resolved_base = isset( $t_pdata_base['resolved'] ) ? $t_pdata_base['resolved'] : 0;
 		$t_bugs_closed_base = isset( $t_pdata_base['closed'] ) ? $t_pdata_base['closed'] : 0;
 
-		summary_helper_print_row( string_display_line( $t_name ), $t_bugs_open, $t_bugs_resolved, $t_bugs_closed, $t_bugs_total, true,
+		summary_helper_print_row( string_display_line( $t_name ), $t_bugs_open, $t_bugs_resolved, $t_bugs_closed, $t_bugs_total,
+																  true, $t_project, $t_start_date, $t_finish_date,
 																  $t_bugs_open_base, $t_bugs_resolved_base, $t_bugs_closed_base );
 
 		if( count( project_hierarchy_get_subprojects( $t_project ) ) > 0 ) {
