@@ -486,7 +486,7 @@ if( $t_show_attachments ) {
 	</tr>
 <?php }
 	else {
-		echo '<input type="hidden" id="handler_id" name="handler_id" value='. custom_field_get_id_from_name("handler_by_default").'>';
+		echo '<input type="hidden" id="handler_id" name="handler_id" value='. $f_default_handler_id .'>';
 	}
 ?>
 
