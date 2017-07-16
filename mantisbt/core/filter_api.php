@@ -514,6 +514,7 @@ function filter_ensure_valid_filter( array $p_filter_arr ) {
 	}
 	if( !isset( $p_filter_arr[FILTER_PROPERTY_SORT_FIELD_NAME] ) ) {
 		$p_filter_arr[FILTER_PROPERTY_SORT_FIELD_NAME] = 'last_updated';
+//		$p_filter_arr[FILTER_PROPERTY_SORT_FIELD_NAME] = 'id';
 	}
 	if( !isset( $p_filter_arr[FILTER_PROPERTY_SORT_DIRECTION] ) ) {
 		$p_filter_arr[FILTER_PROPERTY_SORT_DIRECTION] = 'DESC';
@@ -691,6 +692,7 @@ function filter_ensure_valid_filter( array $p_filter_arr ) {
 		$p_filter_arr['dir'] = implode( ',', $t_dir_fields );
 	} else {
 		$p_filter_arr['sort'] = 'last_updated';
+//		$p_filter_arr['sort'] = 'id';
 		$p_filter_arr['dir'] = 'DESC';
 	}
 
@@ -830,7 +832,8 @@ function filter_get_default() {
 		FILTER_PROPERTY_MONITOR_USER_ID => array(
 			'0' => META_FILTER_ANY,
 		),
-		FILTER_PROPERTY_SORT_FIELD_NAME => 'last_updated',
+#		FILTER_PROPERTY_SORT_FIELD_NAME => 'last_updated',
+		FILTER_PROPERTY_SORT_FIELD_NAME => 'id',
 		FILTER_PROPERTY_SORT_DIRECTION => 'DESC',
 		FILTER_PROPERTY_ISSUES_PER_PAGE => config_get( 'default_limit_view' ),
 		FILTER_PROPERTY_MATCH_TYPE => FILTER_MATCH_ALL

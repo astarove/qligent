@@ -769,6 +769,7 @@ if( $t_show_sponsorships_box ) {
 	include( $t_mantis_dir . 'bug_sponsorship_list_view_inc.php' );
 }
 
+/*
 # Bug Relationships
 if( $t_show_relationships_box ) {
 	relationship_view_box( $t_bug->id );
@@ -788,15 +789,36 @@ if( 'ASC' == current_user_get_pref( 'bugnote_order' ) ) {
 	if( !$t_force_readonly ) {
 		define( 'BUGNOTE_ADD_INC_ALLOW', true );
 		include( $t_mantis_dir . 'bugnote_add_inc.php' );
+		# User list monitoring the bug
 	}
 } else {
 	if( !$t_force_readonly ) {
 		define( 'BUGNOTE_ADD_INC_ALLOW', true );
 		include( $t_mantis_dir . 'bugnote_add_inc.php' );
+		# User list monitoring the bug
 	}
 
 	define( 'BUGNOTE_VIEW_INC_ALLOW', true );
 	include( $t_mantis_dir . 'bugnote_view_inc.php' );
+}
+*/
+# Bugnotes and "Add Note" box
+if( !$t_force_readonly ) {
+	define( 'BUGNOTE_ADD_INC_ALLOW', true );
+	include( $t_mantis_dir . 'bugnote_add_inc.php' );
+	# User list monitoring the bug
+}
+# User list monitoring the bug
+if( $t_show_monitor_box ) {
+	define( 'BUG_MONITOR_LIST_VIEW_INC_ALLOW', true );
+	include( $t_mantis_dir . 'bug_monitor_list_view_inc.php' );
+}
+define( 'BUGNOTE_VIEW_INC_ALLOW', true );
+include( $t_mantis_dir . 'bugnote_view_inc.php' );
+
+# Bug Relationships
+if( $t_show_relationships_box ) {
+	relationship_view_box( $t_bug->id );
 }
 
 # Allow plugins to display stuff after notes

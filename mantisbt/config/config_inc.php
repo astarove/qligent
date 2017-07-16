@@ -112,6 +112,13 @@ $g_bug_update_page_fields = array (
 #########################
 
 /**
+ * bugnote ordering
+ * change to ASC or DESC
+ * @global string $g_bugnote_order
+ */
+$g_bugnote_order = 'DESC';
+
+/**
  * access level needed to be able to be listed in the assign to field.
  * @global integer $g_handle_bug_threshold
  */
@@ -121,7 +128,7 @@ $g_bug_update_page_fields = array (
  *
  * @global string $g_default_bugnote_order
  */
-$g_default_bugnote_order = 'DESC';
+$g_default_bugnote_order = 'ASC';
 
 /**
  * Position of the filter box, can be: POSITION_*
