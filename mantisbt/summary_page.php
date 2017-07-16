@@ -190,13 +190,41 @@ print_summary_submenu();
 		<thead>
 			<tr>
 				<th class="width-35"><?php echo lang_get( 'by_severity' ) ?></th>
-				<?php echo $t_orcttab ?>
+				<?php
+					if ( !helper_get_current_project() ) {
+						$t_severities = MantisEnum::getValues( config_get( 'severity_enum_string' ) );
+						foreach ( $t_severities as $t_severity ) {
+							echo '<th class="align-right">', get_enum_element( 'severity', $t_severity ), "</th>\n";
+						}
+					} else {
+						echo $t_orcttab;
+					}
+				?>
 			</tr>
 		</thead>
-		<?php summary_print_by_enum( 'severity' ) ?>
+		<?php
+			if ( !helper_get_current_project() ) {
+				summary_print_by_severity(); #summary_print_by_enum( 'severity' );
+			} else {
+				summary_print_by_enum( 'severity' );
+			}
+		?>
 	</table>
 	</div>
 
+<!--	<div class="space-10"></div>
+	<div class="widget-box table-responsive">
+		<table class="table table-hover table-bordered table-condensed table-striped">
+		<thead>
+			<tr>
+				<th class="width-35"><?php # echo lang_get( 'by_severity' ) ?></th>
+				<?php # echo $t_orcttab ?>
+			</tr>
+		</thead>
+
+		<?php # summary_print_by_enum( 'severity' ) ?>
+	</table>
+	</div>
 	<!-- BY CATEGORY -->
 	<?php
 	if( $g_show_stat_by_category ) {

@@ -125,6 +125,32 @@ function summary_helper_get_developer_label ( $p_user_id ) {
 
 }
 
+function summary_print_by_severity() {
+
+	$p_projects = current_user_get_accessible_projects();
+	$t_filter_prefix = config_get( 'bug_count_hyperlink_prefix' );	
+	$t_severities = MantisEnum::getValues( config_get( 'severity_enum_string' ) );
+	foreach( $p_projects as $p_project ){
+		$t_query = 'SELECT project_id, severity, COUNT(id) AS bugcount '
+					.'FROM {bug} WHERE project_id='. $p_project .' GROUP BY project_id, severity';
+
+		$t_result = db_query( $t_query );
+		$t_severities_count = array();
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			foreach($t_severities as $t_severity)
+				$t_severities_count[$t_severity] += ($t_severity == $t_row['severity']?$t_row['bugcount']:'0'); 
+		}
+		echo '<tr><td>'. project_get_name($p_project) .'</td>';
+		foreach($t_severities as $t_severity) {
+			echo '<td>';
+			echo '<a class="subtle" href="' . $t_filter_prefix . '&amp;' . FILTER_PROPERTY_SEVERITY . '=' . $t_severity;
+			echo '&amp;'. FILTER_PROPERTY_PROJECT_ID . '=' . $p_project;
+			echo '">'. $t_severities_count[$t_severity] .'</a></td>'; 
+		}
+		echo '</tr>';
+	}
+}
+
 /**
  * Used in summary reports - this function prints out the summary for the given enum setting
  * The enum field name is passed in through $p_enum
