@@ -1283,7 +1283,7 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 		echo '<div class="pull-left padding-right-2">';
 		html_button_bug_create_child( $p_bug_id );
 		echo '</div>';
-	}
+}
 
 	# REOPEN button
 	echo '<div class="pull-left padding-right-2">';
