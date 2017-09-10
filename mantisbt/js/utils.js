@@ -28,3 +28,15 @@ $(document).ready( function (){
 		});
 	});
 } );
+
+addEventListener("submit", function (event){
+	var bugnoteText = document.getElementsByName("bugnote_text")[0].value;
+	if( bugnoteText != "" ){
+		if( event.target.id != "bugnoteadd" ){
+			alert( "Пожалуйста, сохраните комментарий прежде, чем продолжить!" );
+			event.preventDefault();
+			return false;
+		};
+	}
+	return true;
+});
