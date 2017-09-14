@@ -71,6 +71,18 @@ $g_columns = helper_get_columns_to_view( COLUMNS_TARGET_VIEW_PAGE );
 
 bug_cache_columns_data( $t_rows, $g_columns );
 
+$t_bug_ids = array();
+foreach($t_rows as $t_row){
+//        $t_rows = count( $p_rows );
+//        for( $i=0; $i < $t_rows; $i++ ) {
+//                $t_row = $p_rows[$i];
+	if( ( $t_row->status == 90 ) &&
+	    ( $t_row->resolution == 10 ) )
+		array_push($t_bug_ids, $t_row->id);
+}
+if( $t_bug_ids )
+	echo "<div align=center><font size=+2 color=red>Следующие заявки имеют статус 'закрыто' и решение 'открыто': " .implode(", ", $t_bug_ids). "</font></div>";
+
 $t_filter_position = config_get( 'filter_position' );
 
 # -- ====================== FILTER FORM ========================= --
