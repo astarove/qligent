@@ -38,5 +38,13 @@ addEventListener("submit", function (event){
 			return false;
 		};
 	}
+	if ( event.target.id == "bug-change-status-form" ){
+		var selectedValue = $("#resolution option:selected").val();
+		if( selectedValue == 10 ){ //"открыта"
+			alert( "Пожалуйста выберите корректный результат" );
+			event.preventDefault();
+			return false;
+		};
+	}
 	return true;
 });

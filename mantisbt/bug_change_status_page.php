@@ -170,7 +170,7 @@ layout_page_begin();
 					<?php echo lang_get( 'resolution' ) ?>
 				</th>
 				<td>
-					<select name="resolution" class="input-sm">
+					<select id="resolution" name="resolution" class="input-sm">
 			<?php
 				$t_resolution = $t_bug_is_open ? config_get( 'bug_resolution_fixed_threshold' ) : $t_current_resolution;
 
@@ -390,7 +390,7 @@ layout_page_begin();
 </div>
 </div>
 <div class="widget-toolbox padding-8 clearfix">
-	<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
+	<input id="change_status_btn" type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
 </div>
 </div>
 </div>
