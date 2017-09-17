@@ -198,9 +198,9 @@ if( $t_bug_data->handler_id == NO_USER && $t_bug_data->status >= config_get( 'bu
 	$t_bug_data->handler_id = auth_get_current_user_id();
 }
 
-if( $f_files === null ) {
-	trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
-}
+// if( $f_files === null ) {
+//	trigger_error( ERROR_NO_FILE_SPECIFIED, ERROR );
+// }
 
 # Create the bug
 $t_bug_id = $t_bug_data->create();

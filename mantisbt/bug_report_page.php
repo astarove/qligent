@@ -697,7 +697,8 @@ if( $t_show_attachments ) {
 ?>
 	<tr>
 		<th class="category">
-			<span class="required">*</span><label for="ufile[]"><?php echo lang_get( $t_file_upload_max_num == 1 ? 'upload_file' : 'upload_files' ) ?></label>
+			<!--<span class="required">*</span>-->
+			<label for="ufile[]"><?php echo lang_get( $t_file_upload_max_num == 1 ? 'upload_file' : 'upload_files' ) ?></label>
 			<br />
 			<?php print_max_filesize( $t_max_file_size ); ?>
 		</th>
