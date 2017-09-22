@@ -81,7 +81,8 @@ foreach($t_rows as $t_row){
 		array_push($t_bug_ids, $t_row->id);
 }
 if( $t_bug_ids )
-	echo "<div align=center><font size=+2 color=red>Следующие заявки имеют статус 'закрыто' и решение 'открыто': " .implode(", ", $t_bug_ids). "</font></div>";
+	if( user_get_access_level( auth_get_current_user_id()) >= MANAGER )
+		echo "<div align=center><font size=+2 color=red>Следующие заявки имеют статус 'закрыто' и решение 'открыто': " .implode(", ", $t_bug_ids). "</font></div>";
 
 $t_filter_position = config_get( 'filter_position' );
 
