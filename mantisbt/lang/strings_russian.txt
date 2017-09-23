@@ -1637,3 +1637,5 @@ $s_actiongroup_menu_update_field_configuration = "Изменить конфиг�
 $s_actiongroup_menu_update_field_version_sa = "Изменить версию СА";
 $s_actiongroup_menu_update_field_version_bk = "Изменить версию БК";
 $s_version_bk_sa_note = "Если вы не нашли вашу версию в списке, пожалуйста добавьте её в описание.";
+$s_project = "Проект";
+$s_opened_days = "Открыт";

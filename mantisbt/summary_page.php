@@ -50,6 +50,7 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'summary_api.php' );
 require_api( 'user_api.php' );
+require_api( 'custom_func.php' );
 
 $f_project_id = gpc_get_int( 'project_id', helper_get_current_project() );
 
@@ -285,7 +286,9 @@ print_summary_submenu();
 
 <!-- RIGHT COLUMN -->
 <div class="col-md-6 col-xs-12">
-
+<?php
+summary_by_severity( $f_project_id );
+?>
 	<!-- DEVELOPER STATS -->
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">

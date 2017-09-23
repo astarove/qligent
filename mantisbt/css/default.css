@@ -88,3 +88,20 @@ td.overdue        	{ background-color: #d15b47; color: #ffffff; font-weight: bol
 td.print-overdue    { font-weight: bold; }
 
 .collapse-link { cursor: pointer; }
+
+/* custom css settings */
+
+    .scrolling-table tbody {
+          display: block;
+          height: 300px;
+          width: 100%;
+          overflow: hidden;
+          overflow-y: auto;
+    }
+
+    .scrolling-table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
