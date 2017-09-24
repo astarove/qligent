@@ -91,17 +91,17 @@ td.print-overdue    { font-weight: bold; }
 
 /* custom css settings */
 
-    .scrolling-table tbody {
-          display: block;
-          height: 300px;
-          width: 100%;
-          overflow: hidden;
-          overflow-y: auto;
-    }
+.scrolling-table tbody {
+	display: block;
+	height: 300px;
+	width: 100%;
+	overflow: hidden;
+	overflow-y: auto;
+}
 
-    .scrolling-table tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-    }
+.scrolling-table tr {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
 

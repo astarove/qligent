@@ -287,7 +287,7 @@ print_summary_submenu();
 <!-- RIGHT COLUMN -->
 <div class="col-md-6 col-xs-12">
 <?php
-summary_by_severity( $f_project_id );
+summary_by_severity_form( $f_project_id );
 ?>
 	<!-- DEVELOPER STATS -->
 	<div class="space-10"></div>
