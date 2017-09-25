@@ -10,7 +10,7 @@ $(document).ready( function (){
 		var selectedText = $("#actionBottom option:selected").text();
 		$("#actionTop [value=" + selectedValue + "]").attr("selected", "selected");
 	});
-	
+
 	$( function() {
 		$( "#stat_by_project_dp_from" ).datepicker({
 			defaultDate: "-5d",
@@ -31,8 +31,9 @@ $(document).ready( function (){
 
 addEventListener("submit", function (event){
 	var bugnoteText = document.getElementsByName("bugnote_text")[0].value;
-	if( bugnoteText != "" ){
-		if( event.target.id != "bugnoteadd" ){
+	if( bugnoteText != "" ) {
+		if( ( event.target.id != "bugnoteadd" ) &&
+		    ( event.target.id != "bug-change-status-form" ) ) {
 			alert( "Пожалуйста, сохраните комментарий прежде, чем продолжить!" );
 			event.preventDefault();
 			return false;
