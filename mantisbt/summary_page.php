@@ -288,6 +288,13 @@ print_summary_submenu();
 <div class="col-md-6 col-xs-12">
 <?php
 summary_by_severity_form( $f_project_id );
+
+summary_life_time( $f_project_id );
+//summary_test_chart();
+echo "<img src='core/tst_gd2.php' alt='' />";
+//echo "<img src='core/draw2DPie2.png'>";
+//echo "<img src='core/tst_gd.php'>";
+//phpinfo();
 ?>
 	<!-- DEVELOPER STATS -->
 	<div class="space-10"></div>
