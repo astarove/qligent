@@ -9,13 +9,12 @@ function summary_by_severity_form( $p_current_project ){
 
 	echo '<table class="table table-hover table-bordered table-condensed table-striped">';
 	echo '<tr><td>';
-        echo '<form name="select_severity" action="summary_page.php" method="post">';
+        echo '<form name="select_severity" id="summary_by_severity_form" action="summary_page.php" method="post">';
 	echo '<select ';
 	echo helper_get_tab_index();
-	echo ' id="severity" name="severity" class="input-sm">';
+	echo ' id="summary_by_severity" name="severity" class="input-sm">';
         print_enum_string_option_list( 'severity', gpc_get_string('severity', 80) );
 	echo '</select>';
-        echo '<input type="submit" value="show"/>';
 	echo '</form>';
 	echo '</td></tr>';
 	echo '<tr><td>';

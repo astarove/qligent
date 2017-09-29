@@ -27,6 +27,11 @@ $(document).ready( function (){
 			showOtherMonths: true,
 		});
 	});
+	$( function() {
+		$('#summary_by_severity').change(function(){
+			$('#summary_by_severity_form').submit();
+		});
+	});
 } );
 
 addEventListener("submit", function (event){
