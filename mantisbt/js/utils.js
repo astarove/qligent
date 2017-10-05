@@ -38,9 +38,11 @@ addEventListener("submit", function (event){
 	var bugnoteText = document.getElementsByName("bugnote_text")[0].value;
 	if( bugnoteText != "" ) {
 		if( ( event.target.id != "bugnoteadd" ) &&
+		    ( event.target.id != "update_bug_form" ) &&
 		    ( event.target.id != "bug-change-status-form" ) ) {
 			alert( "Пожалуйста, сохраните комментарий прежде, чем продолжить!" );
 			event.preventDefault();
+//			alert( event.target.id );
 			return false;
 		};
 	}
