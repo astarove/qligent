@@ -4,6 +4,41 @@ function simple_function(){
 	echo "Here!";
 }
 
+function graph_redmine( $t_days_from = '', $t_days_to = '' ){
+/*
+	$query1 = "select mantis_bug_table.id, mantis_custom_field_string_table.field_id, "\
+		 "mantis_custom_field_string_table.value from mantis_bug_table JOIN mantis_custom_field_string_table "\
+		 "where mantis_bug_table.id=mantis_custom_field_string_table.bug_id;";
+
+
+	SELECT bug.id, bug.date_submitted, custom.field_id, custom.value
+	FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom
+	WHERE bug.id=custom.bug_id AND custom.field_id=5 AND custom.value<>'' AND bug.date_submitted='1499429792'
+
+
+*/
+	$today = getdate();
+
+        $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+//        $t_base_date = strtotime("-1 day", $t_start_date);
+
+	$query = "SELECT bug.id, custom.field_id ".
+		 "FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ".
+		 "WHERE bug.id=custom.bug_id ".
+		 "AND custom.field_id=5 AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date) .";";
+
+	$results = db_query_bound( $query );
+	$res_ids = db_num_rows($results);
+
+	$query ="SELECT id FROM mantis_bug_table;";
+	$results = db_query_bound( $query );
+	$res_total = db_num_rows($results);
+
+	echo "<img src='core/graph_redmine.php?total=". $res_total ."&redmine_id=". $res_ids ."' alt='' />";
+
+}
+
 function summary_life_time( $p_current_project ){
 	$query = "select id, project_id, summary, status, severity, date_submitted, last_updated from {bug} where status=80";
         if( $p_current_project )
@@ -53,25 +88,25 @@ function summary_life_time( $p_current_project ){
 	echo "<p>";
 
         echo '<table class="table table-hover table-bordered table-condensed table-striped">';
-        echo '<thead><tr><td>'. lang_get( 'by_severity' ) .'</td><td>Life time (average)</td></tr></thead><tbody>';
+        echo '<thead><tr><th>'. lang_get( 'by_severity' ) .'</th><th>'. lang_get( 'life_time' ). '</th></tr></thead><tbody>';
 
 	echo "<tr><td>". string_display_line( get_enum_element( 'severity', '80' )) ."</td><td>";
-	echo ($immediate_data['count']?$immediate_data['life_time']/$immediate_data['count']:0) ."</td></tr>";
+	echo round( ($immediate_data['count']?$immediate_data['life_time']/$immediate_data['count']:0), 1) ."</td></tr>";
 
         echo "<tr><td>". string_display_line( get_enum_element( 'severity', '70' )) ."</td><td>";
-	echo ($urgent_data['count']?$urgent_data['life_time']/$urgent_data['count']:0) ."</td></tr>";
+	echo round( ($urgent_data['count']?$urgent_data['life_time']/$urgent_data['count']:0), 1) ."</td></tr>";
 
 	echo "<tr><td>". string_display_line( get_enum_element( 'severity', '60' )) ."</td><td>";
-	echo ($hight_data['count']?$hight_data['life_time']/$hight_data['count']:0) ."</td></tr>";
+	echo round( ($hight_data['count']?$hight_data['life_time']/$hight_data['count']:0), 1) ."</td></tr>";
 
 	echo "<tr><td>". string_display_line( get_enum_element( 'severity', '50' )) ."</td><td>";
-	echo ($low_data['count']?$low_data['life_time']/$low_data['count']:0) ."</td></tr>";
+	echo round( ($low_data['count']?$low_data['life_time']/$low_data['count']:0), 1) ."</td></tr>";
 
         echo "<tr><td>". string_display_line( get_enum_element( 'severity', '30' )) ."</td><td>";
-	echo ($consultation_data['count']?$consultation_data['life_time']/$consultation_data['count']:0) ."</td></tr>";
+	echo round( ($consultation_data['count']?$consultation_data['life_time']/$consultation_data['count']:0), 1) ."</td></tr>";
 
         echo "<tr><td>". string_display_line( get_enum_element( 'severity', '10' )) ."</td><td>";
-	echo ($enhancement_data['count']?$enhancement_data['life_time']/$enhancement_data['count']:'0') ."</td></tr>";
+	echo round( ($enhancement_data['count']?$enhancement_data['life_time']/$enhancement_data['count']:'0'), 1) ."</td></tr>";
 
 	echo "</tbody></table>";
 }
@@ -80,15 +115,15 @@ function summary_by_severity_form( $p_current_project ){
 	echo '<p/>';
 
 	echo '<table class="table table-hover table-bordered table-condensed table-striped">';
-	echo '<tr><td>';
+	echo '<thead><tr><th>';
         echo '<form name="select_severity" id="summary_by_severity_form" action="summary_page.php" method="post">';
-	echo '<select ';
+	echo lang_get( 'by_severity' ).':&#160<select ';
 	echo helper_get_tab_index();
 	echo ' id="summary_by_severity" name="severity" class="input-sm">';
         print_enum_string_option_list( 'severity', gpc_get_string('severity', 80) );
 	echo '</select>';
 	echo '</form>';
-	echo '</td></tr>';
+	echo '</th></tr></thead>';
 	echo '<tr><td>';
 	$affected_rows = summary_by_severity( $p_current_project, gpc_get_string('severity', 80) );
 	echo '</td></tr>';

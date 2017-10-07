@@ -288,12 +288,35 @@ print_summary_submenu();
 <div class="col-md-6 col-xs-12">
 <?php
 summary_by_severity_form( $f_project_id );
-
+echo "\n";
 summary_life_time( $f_project_id );
-//summary_test_chart();
-echo "<img src='core/tst_gd2.php' alt='' />";
-//echo "<img src='core/draw2DPie2.png'>";
-//echo "<img src='core/tst_gd.php'>";
+echo "\n";
+?>
+<p/>
+<!--        <form name="select_date_for_redmine" action="summary_page.php" method="post">
+                From:
+                <input type="text" size = "8" id="stat_by_redmine_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+                to:
+                <input type="text" size = "8" id="stat_by_redmine_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+                <input type="submit" value="Show"></input>
+        </form>-->
+                <table class="table table-hover table-bordered table-condensed table-striped">
+                <thead>
+                        <tr><th>
+        <form name="select_date_for_redmine" action="summary_page.php" method="post">
+                From:
+                <input type="text" size = "10" id="stat_by_redmine_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+                to:
+                <input type="text" size = "10" id="stat_by_redmine_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+                <input type="submit" value="Show"></input>
+        </form>
+                        </th></tr>
+                </thead>
+		<tr><td align='center'>
+                <?php graph_redmine( gpc_get_string('period_from', ''), gpc_get_string('period_to', '') ); ?>
+		</td></tr>
+        </table>
+<?php
 //phpinfo();
 ?>
 	<!-- DEVELOPER STATS -->

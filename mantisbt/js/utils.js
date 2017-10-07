@@ -27,6 +27,24 @@ $(document).ready( function (){
 			showOtherMonths: true,
 		});
 	});
+
+        $( function() {
+                $( "#stat_by_redmine_from" ).datepicker({
+                        defaultDate: "-5d",
+                        constrainInput: true,
+                        maxDate: "0",
+                        showOtherMonths: true,
+                });
+        });
+        $( function() {
+                $( "#stat_by_redmine_to" ).datepicker({
+                        defaultDate: null,
+                        constrainInput: true,
+                        maxDate: "0",
+                        showOtherMonths: true,
+                });
+        });
+
 	$( function() {
 		$('#summary_by_severity').change(function(){
 			$('#summary_by_severity_form').submit();
