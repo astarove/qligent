@@ -87,11 +87,11 @@ $text_y2 = 65; //45
 
 ImageFilledRectangle( $image, $text_x1, $text_y1, $text_x1+35, 60, $green );
 imagestring($image, 5, $text_x1+10, $text_y1, $res_ids, $red);
-imagestring($image, 5, $text_x2, $text_y1, 'With Redmine IDs', $black_text);
+imagestring($image, 5, $text_x2, $text_y1, 'L3', $black_text);
 
 ImageFilledRectangle( $image, $text_x1, $text_y2, $text_x1+35, 80, $blue );
 imagestring($image, 5, $text_x1+10, $text_y2, $total-$res_ids, $yellow);
-imagestring($image, 5, $text_x2, $text_y2, 'Others', $black_text);
+imagestring($image, 5, $text_x2, $text_y2, 'L2', $black_text);
 
 //Сохраняем файл в формате png и выводим его 
 imagepng($image);

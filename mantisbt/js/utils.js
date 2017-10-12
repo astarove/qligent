@@ -57,10 +57,11 @@ addEventListener("submit", function (event){
 	if( bugnoteText != "" ) {
 		if( ( event.target.id != "bugnoteadd" ) &&
 		    ( event.target.id != "update_bug_form" ) &&
+		    ( !( document.URL.indexOf( 'bugnote_edit_page.php' ) +1 ) ) &&
 		    ( event.target.id != "bug-change-status-form" ) ) {
 			alert( "Пожалуйста, сохраните комментарий прежде, чем продолжить!" );
+//                        alert( event.target.id );
 			event.preventDefault();
-//			alert( event.target.id );
 			return false;
 		};
 	}

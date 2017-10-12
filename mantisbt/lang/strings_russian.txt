@@ -1641,3 +1641,4 @@ $s_project = "Проект";
 $s_opened_days = "Открыт";
 $s_opened_comment = "(открытые)";
 $s_life_time = "Время жизни (среднее), дней";
+$s_summary_redmine_title = "Уровни поддержки";

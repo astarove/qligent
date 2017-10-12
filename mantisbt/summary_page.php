@@ -293,16 +293,10 @@ summary_life_time( $f_project_id );
 echo "\n";
 ?>
 <p/>
-<!--        <form name="select_date_for_redmine" action="summary_page.php" method="post">
-                From:
-                <input type="text" size = "8" id="stat_by_redmine_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
-                to:
-                <input type="text" size = "8" id="stat_by_redmine_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
-                <input type="submit" value="Show"></input>
-        </form>-->
-                <table class="table table-hover table-bordered table-condensed table-striped">
-                <thead>
-                        <tr><th>
+	<table class="table table-hover table-bordered table-condensed table-striped">
+        	<thead>
+                	<tr><th>
+			<?php echo lang_get( 'summary_redmine_title' ); ?>
         <form name="select_date_for_redmine" action="summary_page.php" method="post">
                 From:
                 <input type="text" size = "10" id="stat_by_redmine_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
@@ -320,7 +314,7 @@ echo "\n";
 //phpinfo();
 ?>
 	<!-- DEVELOPER STATS -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -334,7 +328,7 @@ echo "\n";
 		<?php summary_print_by_date( config_get( 'date_partitions' ) ) ?>
 	</table>
 	</div>
-
+-->
 	<!-- MOST ACTIVE -->
 	<?php
 	if( $g_show_stat_most_active ) {
@@ -351,7 +345,7 @@ echo "\n";
 	}
 	?>
 	<!-- LONGEST OPEN -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -363,9 +357,9 @@ echo "\n";
 		<?php summary_print_by_age() ?>
 	</table>
 	</div>
-
+-->
 	<!-- BY RESOLUTION -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -377,7 +371,7 @@ echo "\n";
 		<?php summary_print_by_enum( 'resolution' ) ?>
 	</table>
 	</div>
-
+-->
 	<!-- BY PRIORITY -->
 	<?php
 	if( config_get('show_stat_by_priority') ) {
@@ -411,7 +405,7 @@ echo "\n";
 	}
 	?>
 	<!-- REPORTER EFFECTIVENESS -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -427,12 +421,12 @@ echo "\n";
 	</div>
 
 </div>
-
+-->
 <!-- BOTTOM -->
 <div class="col-md-12 col-xs-12">
 
 	<!-- REPORTER BY RESOLUTION -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -452,9 +446,9 @@ echo "\n";
 		<?php summary_print_reporter_resolution( config_get( 'resolution_enum_string' ) ) ?>
 	</table>
 	</div>
-
+-->
 	<!-- DEVELOPER BY RESOLUTION -->
-	<div class="space-10"></div>
+<!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -474,7 +468,7 @@ echo "\n";
 		<?php summary_print_developer_resolution( config_get( 'resolution_enum_string' ) ) ?>
 	</table>
 	</div>
-
+-->
 </div>
 
 </div>
