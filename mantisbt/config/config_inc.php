@@ -218,8 +218,10 @@ $g_resolution_enum_string = '10:open,20:fixed,80:suspended,90:wont fix';
 /**
  * @global string $g_severity_enum_string
  */
-$g_severity_enum_string = '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:Urgent, 80:Immediate';
+$g_severity_enum_string_1 = '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:Urgent, 80:Immediate';
+$g_severity_enum_string_2 = '50:Low, 60:Medium, 70:High, 80:Critical';
 
+$g_severity_enum_string = $g_severity_enum_string_1;
 /**
  * @global array $g_default_notify_flags
  */

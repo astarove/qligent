@@ -165,8 +165,24 @@ function get_percentage_by_status() {
  * @return string
  */
 function get_enum_element( $p_enum_name, $p_val, $p_user = null, $p_project = null ) {
-	$t_config_var = config_get( $p_enum_name . '_enum_string', null, $p_user, $p_project );
-	$t_string_var = lang_get( $p_enum_name . '_enum_string' );
+        $f_custom_prj_arr = custom_field_get_definition( custom_field_get_id_from_name("custom_severity_prj") );
+
+        $t_config_var = config_get( $p_enum_name . '_enum_string', null, $p_user, $p_project );
+
+//        $t_config_var_name = $p_enum_name . '_enum_string';
+        if( $p_enum_name == "severity" ) {
+                if( in_array( project_get_name(helper_get_current_project() ), explode("|", $f_custom_prj_arr['possible_values']) ) ) {
+        		$p_enum_name .= '_enum_string_2';
+//                        $t_config_var_name .= "_2";
+                } else {
+			$p_enum_name .= '_enum_string';
+		}
+        } else {
+		$p_enum_name .= '_enum_string';
+	}
+
+//	$t_config_var = config_get( $p_enum_name . '_enum_string', null, $p_user, $p_project );
+	$t_string_var = lang_get( $p_enum_name );
 
 	return MantisEnum::getLocalizedLabel( $t_config_var, $t_string_var, $p_val );
 }

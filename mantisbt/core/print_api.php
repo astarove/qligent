@@ -969,7 +969,15 @@ function print_build_option_list( $p_build = '' ) {
  * @return void
  */
 function print_enum_string_option_list( $p_enum_name, $p_val = 0 ) {
+
+	$f_custom_prj_arr = custom_field_get_definition( custom_field_get_id_from_name("custom_severity_prj") );
+
 	$t_config_var_name = $p_enum_name . '_enum_string';
+	if( $p_enum_name == "severity" ) {
+	        if( in_array( project_get_name(helper_get_current_project() ), explode("|", $f_custom_prj_arr['possible_values']) ) ) {
+        	        $t_config_var_name .= "_2";
+	        }
+	}
 	$t_config_var_value = config_get( $t_config_var_name );
 
 	if( is_array( $p_val ) ) {
@@ -985,7 +993,7 @@ function print_enum_string_option_list( $p_enum_name, $p_val = 0 ) {
 
 		echo '<option value="' . $t_key . '"';
 		check_selected( $t_val, $t_key );
-		echo '>' . string_html_specialchars( $t_elem2 ) . '</option>';
+		echo '>' . string_html_specialchars( $t_elem2 ) .'</option>';
 	}
 }
 
