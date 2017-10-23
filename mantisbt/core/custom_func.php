@@ -26,17 +26,17 @@ function graph_redmine( $t_days_from = '', $t_days_to = '' ){
 	$query = "SELECT bug.id, custom.field_id ".
 		 "FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ".
 		 "WHERE bug.id=custom.bug_id ".
-		 "AND custom.field_id=5 AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date) .";";
+		 "AND custom.field_id=5 AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 
 	$results = db_query_bound( $query );
 	$res_ids = db_num_rows($results);
 
-	$query ="SELECT id FROM mantis_bug_table;";
+	$query ="SELECT id FROM mantis_bug_table AS bug WHERE bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 	$results = db_query_bound( $query );
 	$res_total = db_num_rows($results);
 
-	echo "<img src='core/graph_redmine.php?total=". $res_total ."&redmine_id=". $res_ids ."' alt='' />";
-
+//	echo "<img src='core/graph_redmine.php?total=". $res_total ."&redmine_id=". $res_ids ."' alt='' />";
+      echo "<img src='cgi-bin/graph_redmine.php?total=". $res_total ."&redmine_id=". $res_ids ."' alt='' />";
 }
 
 function summary_life_time( $p_current_project ){
