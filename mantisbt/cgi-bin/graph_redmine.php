@@ -76,7 +76,8 @@ $rad_2 = 230;
 $ang_start = 0;
 $ang_end = 360;
 
-ImageFilledArc( $image, $center_x, $center_y, $rad_2, $rad_1, $ang_start+round(3.6 * $percent), $ang_end,$green, IMG_ARC_PIE );
+// ImageFilledArc( $image, $center_x, $center_y, $rad_2, $rad_1, $ang_start+round(3.6 * $percent), $ang_end,$green, IMG_ARC_PIE );
+ImageFilledArc( $image, $center_x, $center_y, $rad_2, $rad_1, $ang_start, $ang_end,$green, IMG_ARC_PIE );
 
 ImageFilledArc( $image, $center_x, $center_y, $rad_2, $rad_1, $ang_start, $ang_end-round(3.6 * $percent), $blue, IMG_ARC_PIE );
 
