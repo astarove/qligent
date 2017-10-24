@@ -4,6 +4,93 @@ function simple_function(){
 	echo "Here!";
 }
 
+function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
+
+// $s_status_enum_string = '10:новая,20:запрос информации,30:рассматривается,40:подтверждена,50:назначена,80:решена,90:закрыта';
+
+
+/*
+select bug.id, bug.date_submitted, history.date_modified
+from mantis_bug_table as bug join mantis_bug_history_table as history on bug.id=history.bug_id
+where bug.severity=80 and history.old_value=50 and new_value=80;
+*/
+
+	$p_enum_name = "severity";
+	$p_val = 0;
+	$t_config_var_name = $p_enum_name."_enum_string";
+
+        $t_config_var_value = config_get( $t_config_var_name );
+
+	$t_val = (int)$p_val;
+
+        $t_enum_values = MantisEnum::getValues( $t_config_var_value );
+
+        $today = getdate();
+
+        $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+
+
+	echo "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";
+	echo "<th style='width: 120px;'>". lang_get( 'status' ) ."</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "10") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "20") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "30") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "40") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "50") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "80") . "</th>";
+        echo "<th style='width: 120px;'>" . get_enum_element( "status", "90") . "</th>";
+	echo "<th style='width: 120px;'>" . 'Передано на L3' . "</th>";
+	echo "<th style='width: 120px;'>" . 'SLA' . "</th>";
+	echo "</thead></tr>";
+        foreach ( array_reverse($t_enum_values) as $t_key ) {
+                $t_elem2 = get_enum_element( $p_enum_name, $t_key );
+
+		$query = "SELECT status FROM mantis_bug_table WHERE severity=". $t_key ." AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+
+		$results = db_query_bound( $query );
+		$summary_stat = array(
+			"10" => 0,
+			"20" => 0,
+			"30" => 0,
+			"40" => 0,
+			"50" => 0,
+			"80" => 0,
+			"90" => 0,
+		);
+		while ($row = db_fetch_array($results)) {
+			$summary_stat[$row['status']] ++;
+		}
+
+		echo "<tr><td>". get_enum_element( $p_enum_name, $t_key ) ."</td>";
+		foreach ( array_keys($summary_stat) as $key ){
+			echo "<td style='width: 70px; text-align:center;'>" .$summary_stat[$key]. "</td>";
+		}
+
+		$query = "SELECT custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
+			 "WHERE custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
+			 "AND bug.severity=". $t_key ." AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+		$results = db_query_bound( $query );
+		echo "<td>";
+		echo db_num_rows($results)."</td>";
+
+		$query = "SELECT bug.id, bug.date_submitted, history.date_modified ".
+			 "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
+			 "WHERE bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=50 AND new_value=80 ".
+			 "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+		$results = db_query_bound( $query );
+		echo "<td>";
+		while ($row = db_fetch_array($results) ) {
+//			$bug_interval = DateTime::createFromFormat('Y-m-d', date('Y-m-d', $row['date_modified'])) -> diff(DateTime::createFromFormat('Y-m-d', date('Y-m-d', $row['date_submitted'])));
+			$interval = ($row['date_modified'] - $row['date_submitted'])/3600; // 60 sec * 60 min
+			echo $row['id'].": ".$row['date_submitted']."->".$row['date_modified']." = ".$interval."<br>";
+		}
+		echo "</td>";
+		echo "</tr>";
+        };
+	echo "</table>";
+}
+
 function graph_redmine( $t_days_from = '', $t_days_to = '' ){
 /*
 	$query1 = "select mantis_bug_table.id, mantis_custom_field_string_table.field_id, "\
@@ -26,7 +113,7 @@ function graph_redmine( $t_days_from = '', $t_days_to = '' ){
 	$query = "SELECT bug.id, custom.field_id ".
 		 "FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ".
 		 "WHERE bug.id=custom.bug_id ".
-		 "AND custom.field_id=5 AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+		 "AND custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 
 	$results = db_query_bound( $query );
 	$res_ids = db_num_rows($results);

@@ -45,11 +45,31 @@ $(document).ready( function (){
                 });
         });
 
+        $( function() {
+                $( "#sla_by_severity_from" ).datepicker({
+                        defaultDate: "-5d",
+                        constrainInput: true,
+                        maxDate: "0",
+                        showOtherMonths: true,
+                });
+        });
+        $( function() {
+                $( "#sla_by_severity_to" ).datepicker({
+                        defaultDate: null,
+                        constrainInput: true,
+                        maxDate: "0",
+                        showOtherMonths: true,
+                });
+        });
+
+
+
 	$( function() {
 		$('#summary_by_severity').change(function(){
 			$('#summary_by_severity_form').submit();
 		});
 	});
+
 } );
 
 addEventListener("submit", function (event){

@@ -288,11 +288,11 @@ print_summary_submenu();
 <div class="col-md-6 col-xs-12">
 <?php
 summary_by_severity_form( $f_project_id );
-echo "\n";
+echo "\n<div class='space-10'></div>\n";
 summary_life_time( $f_project_id );
-echo "\n";
+echo "\n<div class='space-10'></div>\n";
 ?>
-<p/>
+<div class="space-10"></div>
 	<table class="table table-hover table-bordered table-condensed table-striped">
         	<thead>
                 	<tr><th>
@@ -310,6 +310,7 @@ echo "\n";
                 <?php graph_redmine( gpc_get_string('period_from', ''), gpc_get_string('period_to', '') ); ?>
 		</td></tr>
         </table>
+	<div class="space-10"></div>
 <?php
 //phpinfo();
 ?>
@@ -419,12 +420,27 @@ echo "\n";
 		<?php summary_print_reporter_effectiveness( config_get( 'severity_enum_string' ), config_get( 'resolution_enum_string' ) ) ?>
 	</table>
 	</div>
-
-</div>
 -->
+</div>
+
 <!-- BOTTOM -->
 <div class="col-md-12 col-xs-12">
-
+<div class="space-10"></div>
+<div class="widget-box table-responsive">
+        <form name="select_date_sla" action="summary_page.php" method="post">
+                From:
+                <input type="text" size = "10" id="sla_by_severity_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+                to:
+                <input type="text" size = "10" id="sla_by_severity_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+                <input type="submit" value="Show"></input>
+        </form>
+                        </th></tr>
+                </thead>
+                <tr><td align='center'>
+                <?php summary_sla_by_severity( $f_project_id, gpc_get_string('period_from', ''), gpc_get_string('period_to', '') ); ?>
+                </td></tr>
+        </table>
+</div>
 	<!-- REPORTER BY RESOLUTION -->
 <!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
