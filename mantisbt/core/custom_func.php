@@ -91,7 +91,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
                                 $interval = round(($row2['date_modified'] - $row1['date_modified'])/(3600*3*8),2); // 60 sec * 60 min * whours * wdays
 				$sla_bound_var_name = 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) );
 				if( custom_field_get_id_from_name( $sla_bound_var_name ) ) {
-					if( (int)custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) )['default_value'] < $interval) {
+					if( (int)custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) )/*['default_value']*/ < $interval) {
 //			                        echo $interval; // work hours
 						$sla_errs ++;
 					}
