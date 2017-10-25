@@ -26,51 +26,73 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 
 	echo "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";
-	echo "<th style='width: 120px;'>" . lang_get('by_severity') ."</th>";
-        echo "<th style='width: 120px;'>" . 'Новый' . "</th>";
-        echo "<th style='width: 120px;'>" . 'В работе' . "</th>";
-        echo "<th style='width: 120px;'>" . 'Решено' . "</th>";
-	echo "<th style='width: 120px;'>" . 'Передано на L3' . "</th>";
-	echo "<th style='width: 120px;'>" . 'Превышение по SLA, заявок' . "</th>";
+	echo "<th style='width: 100px;'>" . lang_get('by_severity') ."</th>";
+	echo "<th style='width: 100px;'>" . 'Заведено' ."</th>";
+        echo "<th style='width: 100px;'>" . 'Новый' . "</th>";
+        echo "<th style='width: 100px;'>" . 'В работе' . "</th>";
+        echo "<th style='width: 100px;'>" . 'Решено' . "</th>";
+	echo "<th style='width: 100px;'>" . 'Передано на L3' . "</th>";
+	echo "<th style='width: 100px;'>" . 'Превышение по SLA, заявок' . "</th>";
 	echo "</thead></tr>";
 
 	unset($t_enum_values[0]);
+
+	$total = array(
+		'total' => 0,
+		'new' => 0,
+		'in progress' => 0,
+		'resolved' => 0,
+		'l3 support' => 0,
+	);
+
         foreach ( array_reverse($t_enum_values) as $t_key ) {
                 $t_elem2 = get_enum_element( $p_enum_name, $t_key );
 
 		echo "<tr><td>". get_enum_element( $p_enum_name, $t_key ) ."</td>";
+
+		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
+                         " AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+		$results_row = db_query_bound( $query );
+		$total_row = db_num_rows($results_row);
+		echo "<td>". $total_row ."</td>";
+		$total['total'] += $total_row;
+
+
 		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
 			 " AND (status=10 OR status=20) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
-
 		$results = db_query_bound( $query );
 		echo "<td>". db_num_rows($results) ."</td>";
+		$total['new'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
                          " AND (status=30 OR status=40 OR status=50) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
-
                 $results = db_query_bound( $query );
                 echo "<td>". db_num_rows($results) ."</td>";
+		$total['in progress'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
                          " AND (status=80 OR status=90) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
-
                 $results = db_query_bound( $query );
                 echo "<td>". db_num_rows($results) ."</td>";
+		$total['resolved'] += db_num_rows($results);
 
-		$query = "SELECT custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
+		$query = "SELECT bug.id, custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
 			 "WHERE custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
 			 "AND bug.severity=". $t_key ." AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results = db_query_bound( $query );
-		echo "<td>";
-		echo db_num_rows($results)."</td>";
+		echo "<td>". db_num_rows($results) ."</td>";
+		$total['l3 support'] += db_num_rows($results);
 
-		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
-		$results = db_query_bound( $query );
-		$total = db_num_rows( $results );
+		$l3_bug_ids = array();
+		while( $row = db_fetch_array($results) )
+			array_push($l3_bug_ids, $row['id']);
+
 		$sla_errs = 0;
+		$sla_l3_errs = 0;
 
 		echo "<td>";
-		while ( $row = db_fetch_array($results) ){
+
+		while ( $row = db_fetch_array($results_row) ){
 			$query1 = "SELECT history.date_modified ".
 	                          "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
         	                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=20 AND new_value>20 ".
@@ -89,23 +111,45 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 			if ( isset($row1['date_modified']) && isset($row2['date_modified']) ) {
 //				echo $row1['date_modified']." ".$row2['date_modified']." ";
                                 $interval = round(($row2['date_modified'] - $row1['date_modified'])/(3600*3*8),2); // 60 sec * 60 min * whours * wdays
-				$sla_bound_var_name = 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) );
+
+				$sla_bound_var_name = 'sla_';
+				if( in_array($row['id'], $l3_bug_ids) )
+					$sla_bound_var_name .= "l3_";
+				$sla_bound_var_name .= strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) );
 				if( custom_field_get_id_from_name( $sla_bound_var_name ) ) {
-					if( (int)custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) )/*['default_value']*/ < $interval) {
+					$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) );
+					if( $sla_bound['default_value'] < $interval) {
 //			                        echo $interval; // work hours
-						$sla_errs ++;
+						if( in_array($row['id'], $l3_bug_ids) )
+							$sla_l3_errs ++;
+						else
+							$sla_errs ++;
 					}
 				}
 			}
 		}
-
+		echo "<table border=0>";
 		if ( $sla_errs>0 ) {
-			$percent = round($sla_errs*100/$total,2);
-			echo "$sla_errs (". $percent ."%)";
+			$percent = round($sla_errs*100/$total_row,2);
+			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
+			$limit = $sla_bound['default_value']/8;
+			echo "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%,</td><td>Время решения >". $limit ." дней)</td></tr>";
 		}
+		if ( $sla_l3_errs>0 ) {
+                        $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
+			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
+			$limit = $sla_bound['default_value']/8;
+                        echo "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%,</td><td>Время решения >". $limit ." дней)</td></tr>";
+                }
+		echo "</table>";
 
 		echo "</td></tr>";
         };
+
+        echo "<tr><td>Всего:</td><td>". $total['total'] .
+	     "</td><td>". $total['new'] ."</td><td>". $total['in progress'] .
+	     "</td><td>". $total['resolved'] ."</td><td>". $total['l3 support'] ."</td><td></td></tr>";
+
 	echo "</table>";
 }
 
