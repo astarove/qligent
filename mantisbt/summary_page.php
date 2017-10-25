@@ -299,15 +299,15 @@ echo "\n<div class='space-10'></div>\n";
 			<?php echo lang_get( 'summary_redmine_title' ); ?>
         <form name="select_date_for_redmine" action="summary_page.php" method="post">
                 From:
-                <input type="text" size = "10" id="stat_by_redmine_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+                <input type="text" size = "10" id="stat_by_redmine_from" name="redmine_period_from" value="<?php echo gpc_get_string('redmine_period_from', ''); ?>"></input>
                 to:
-                <input type="text" size = "10" id="stat_by_redmine_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+                <input type="text" size = "10" id="stat_by_redmine_to" name="redmine_period_to" value="<?php echo gpc_get_string('redmine_period_to', ''); ?>"></input>
                 <input type="submit" value="Show"></input>
         </form>
                         </th></tr>
                 </thead>
 		<tr><td align='center'>
-                <?php graph_redmine( gpc_get_string('period_from', ''), gpc_get_string('period_to', '') ); ?>
+                <?php graph_redmine( gpc_get_string('redmine_period_from', ''), gpc_get_string('redmine_period_to', '') ); ?>
 		</td></tr>
         </table>
 	<div class="space-10"></div>
@@ -429,15 +429,15 @@ echo "\n<div class='space-10'></div>\n";
 <div class="widget-box table-responsive">
         <form name="select_date_sla" action="summary_page.php" method="post">
                 From:
-                <input type="text" size = "10" id="sla_by_severity_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
+                <input type="text" size = "10" id="sla_by_severity_from" name="sla_period_from" value="<?php echo gpc_get_string('sla_period_from', ''); ?>"></input>
                 to:
-                <input type="text" size = "10" id="sla_by_severity_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
+                <input type="text" size = "10" id="sla_by_severity_to" name="sla_period_to" value="<?php echo gpc_get_string('sla_period_to', ''); ?>"></input>
                 <input type="submit" value="Show"></input>
         </form>
                         </th></tr>
                 </thead>
                 <tr><td align='center'>
-                <?php summary_sla_by_severity( $f_project_id, gpc_get_string('period_from', ''), gpc_get_string('period_to', '') ); ?>
+                <?php summary_sla_by_severity( $f_project_id, gpc_get_string('sla_period_from', ''), gpc_get_string('sla_period_to', '') ); ?>
                 </td></tr>
         </table>
 </div>
