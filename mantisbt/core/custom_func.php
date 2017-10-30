@@ -92,14 +92,18 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 		echo "<td>";
 
+//                                "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=20 AND new_value>20 ".
+//                                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<80 AND new_value>=80 ".
+
+
 		while ( $row = db_fetch_array($results_row) ){
 			$query1 = "SELECT history.date_modified ".
 	                          "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-        	                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=20 AND new_value>20 ".
+				  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND history.old_value<=20 AND new_value>20 ".
                 	          "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 			$query2 = "SELECT history.date_modified ".
                                   "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<80 AND new_value>=80 ".
+				  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND history.old_value<80 AND new_value>=80 ".
                                   "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 
 			$results1 = db_query_bound( $query1 );
@@ -108,9 +112,11 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 			$row1 = db_fetch_array($results1);
 			$row2 = db_fetch_array($results2);
 
-			if ( isset($row1['date_modified']) && isset($row2['date_modified']) ) {
-//				echo $row1['date_modified']." ".$row2['date_modified']." ";
-                                $interval = round(($row2['date_modified'] - $row1['date_modified'])/(3600*3*8),2); // 60 sec * 60 min * whours * wdays
+			if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
+//				echo $row1['date_modified']." ".$row2['date_modified']."<br>";
+				$resolved_date = ($row2['date_modified']?$row2['date_modified']:$t_to_date);
+//				echo $resolved_date."<br>";
+                                $interval = round(($resolved_date - $row1['date_modified'])/(3600*3*8),2); // 60 sec * 60 min * whours * wdays
 
 				$sla_bound_var_name = 'sla_';
 				if( in_array($row['id'], $l3_bug_ids) )
