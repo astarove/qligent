@@ -432,12 +432,17 @@ echo "\n<div class='space-10'></div>\n";
                 <input type="text" size = "10" id="sla_by_severity_from" name="sla_period_from" value="<?php echo gpc_get_string('sla_period_from', ''); ?>"></input>
                 to:
                 <input type="text" size = "10" id="sla_by_severity_to" name="sla_period_to" value="<?php echo gpc_get_string('sla_period_to', ''); ?>"></input>
-                <input type="submit" value="Show"></input>
-        </form>
-                        </th></tr>
-                </thead>
-                <tr><td align='center'>
-                <?php summary_sla_by_severity( $f_project_id, gpc_get_string('sla_period_from', ''), gpc_get_string('sla_period_to', '') ); ?>
+                <input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="Show"></input>
+		<?php
+			session_start();
+			$_SESSION['sla_from'] = gpc_get_string('sla_period_from', '');
+			$_SESSION['sla_to'] = gpc_get_string('sla_period_to', '');
+			session_commit();
+			print_small_button( 'cgi-bin/csv_export_sla_stat.php', lang_get( 'csv_export' ) ); ?>
+	</form>
+	<table>
+                <tr>
+                <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string('sla_period_from', ''), gpc_get_string('sla_period_to', '') ); ?>
                 </td></tr>
         </table>
 </div>

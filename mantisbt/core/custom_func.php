@@ -8,6 +8,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 // $s_status_enum_string = '10:новая,20:запрос информации,30:рассматривается,40:подтверждена,50:назначена,80:решена,90:закрыта';
 // '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:Urgent, 80:Immediate';
+	$t_table = '';
 
 	$p_enum_name = "severity";
 	$p_val = 0;
@@ -25,15 +26,15 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
         $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
 
-	echo "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";
-	echo "<th style='width: 100px;'>" . lang_get('by_severity') ."</th>";
-	echo "<th style='width: 100px;'>" . 'Заведено' ."</th>";
-        echo "<th style='width: 100px;'>" . 'Новый' . "</th>";
-        echo "<th style='width: 100px;'>" . 'В работе' . "</th>";
-        echo "<th style='width: 100px;'>" . 'Решено' . "</th>";
-	echo "<th style='width: 100px;'>" . 'Передано на L3' . "</th>";
-	echo "<th style='width: 100px;'>" . 'Превышение по SLA, заявок' . "</th>";
-	echo "</thead></tr>";
+	$t_table .= "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";
+	$t_table .= "<th style='width: 100px;'>" . lang_get('by_severity') ."</th>";
+	$t_table .= "<th style='width: 100px;'>" . 'Заведено' ."</th>";
+        $t_table .= "<th style='width: 100px;'>" . 'Новый' . "</th>";
+        $t_table .= "<th style='width: 100px;'>" . 'В работе' . "</th>";
+        $t_table .= "<th style='width: 100px;'>" . 'Решено' . "</th>";
+	$t_table .= "<th style='width: 100px;'>" . 'Передано на L3' . "</th>";
+	$t_table .= "<th style='width: 100px;'>" . 'Превышение по SLA (заявок)' . "</th>";
+	$t_table .= "</thead></tr>";
 
 	unset($t_enum_values[0]);
 
@@ -48,39 +49,39 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
         foreach ( array_reverse($t_enum_values) as $t_key ) {
                 $t_elem2 = get_enum_element( $p_enum_name, $t_key );
 
-		echo "<tr><td>". get_enum_element( $p_enum_name, $t_key ) ."</td>";
+		$t_table .= "<tr><td id='sla'>". get_enum_element( $p_enum_name, $t_key ) ."</td>";
 
 		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
                          " AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results_row = db_query_bound( $query );
 		$total_row = db_num_rows($results_row);
-		echo "<td>". $total_row ."</td>";
+		$t_table .= "<td id='sla'>". $total_row ."</td>";
 		$total['total'] += $total_row;
 
 
 		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
 			 " AND (status=10 OR status=20) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results = db_query_bound( $query );
-		echo "<td>". db_num_rows($results) ."</td>";
+		$t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['new'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
                          " AND (status=30 OR status=40 OR status=50) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
                 $results = db_query_bound( $query );
-                echo "<td>". db_num_rows($results) ."</td>";
+                $t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['in progress'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
                          " AND (status=80 OR status=90) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
                 $results = db_query_bound( $query );
-                echo "<td>". db_num_rows($results) ."</td>";
+                $t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['resolved'] += db_num_rows($results);
 
 		$query = "SELECT bug.id, custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
 			 "WHERE custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
 			 "AND bug.severity=". $t_key ." AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results = db_query_bound( $query );
-		echo "<td>". db_num_rows($results) ."</td>";
+		$t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['l3 support'] += db_num_rows($results);
 
 		$l3_bug_ids = array();
@@ -90,7 +91,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$sla_errs = 0;
 		$sla_l3_errs = 0;
 
-		echo "<td>";
+		$t_table .= "<td id='sla'>";
 
 //                                "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=20 AND new_value>20 ".
 //                                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<80 AND new_value>=80 ".
@@ -134,29 +135,30 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 				}
 			}
 		}
-		echo "<table border=0>";
+		$t_table .= "<table border=0>";
 		if ( $sla_errs>0 ) {
 			$percent = round($sla_errs*100/$total_row,2);
 			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
 			$limit = $sla_bound['default_value']/8;
-			echo "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%,</td><td>Время решения >". $limit ." дней)</td></tr>";
+			$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr>";
 		}
 		if ( $sla_l3_errs>0 ) {
                         $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
 			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
 			$limit = $sla_bound['default_value']/8;
-                        echo "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%,</td><td>Время решения >". $limit ." дней)</td></tr>";
+                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr>";
                 }
-		echo "</table>";
+		$t_table .= "</table>";
 
-		echo "</td></tr>";
+		$t_table .= "</td></tr>";
         };
 
-        echo "<tr><td>Всего:</td><td>". $total['total'] .
-	     "</td><td>". $total['new'] ."</td><td>". $total['in progress'] .
-	     "</td><td>". $total['resolved'] ."</td><td>". $total['l3 support'] ."</td><td></td></tr>";
+        $t_table .= "<tr><td id='sla'>Всего:</td><td>". $total['total'] .
+	     "</td><td id='sla'>". $total['new'] ."</td><td id='sla'>". $total['in progress'] .
+	     "</td><td id='sla'>". $total['resolved'] ."</td><td id='sla'>". $total['l3 support'] ."</td><td id='sla'></td></tr>";
 
-	echo "</table>";
+	$t_table .= "</table>";
+	return $t_table;
 }
 
 function graph_redmine( $t_days_from = '', $t_days_to = '' ){
