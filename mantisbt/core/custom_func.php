@@ -140,13 +140,13 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 			$percent = round($sla_errs*100/$total_row,2);
 			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
 			$limit = $sla_bound['default_value']/8;
-			$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr>";
+			$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
 		}
 		if ( $sla_l3_errs>0 ) {
                         $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
 			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
 			$limit = $sla_bound['default_value']/8;
-                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr>";
+                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
                 }
 		$t_table .= "</table>";
 

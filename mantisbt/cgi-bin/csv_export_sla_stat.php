@@ -33,7 +33,7 @@
  */
 
 # Prevent output of HTML in the content if errors occur
- define( 'DISABLE_INLINE_ERROR_REPORTING', true );
+define( 'DISABLE_INLINE_ERROR_REPORTING', true );
 
 include( '../core.php' );
 require_api( 'authentication_api.php' );
@@ -54,7 +54,8 @@ helper_begin_long_process();
 $t_nl = csv_get_newline();
 $t_sep = csv_get_separator();
 
-session_start(['read_and_close'=>1]);
+//session_start(['read_and_close'=>1]);
+session_start();
 
 csv_start( csv_get_default_filename() );
 
