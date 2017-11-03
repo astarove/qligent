@@ -153,7 +153,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$t_table .= "</td></tr>";
         };
 
-        $t_table .= "<tr><td id='sla'>Всего:</td><td>". $total['total'] .
+        $t_table .= "<tr><td id='sla'>Всего:</td><td id='sla'>". $total['total'] .
 	     "</td><td id='sla'>". $total['new'] ."</td><td id='sla'>". $total['in progress'] .
 	     "</td><td id='sla'>". $total['resolved'] ."</td><td id='sla'>". $total['l3 support'] ."</td><td id='sla'></td></tr>";
 

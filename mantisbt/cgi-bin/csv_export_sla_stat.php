@@ -59,7 +59,13 @@ session_start();
 
 csv_start( csv_get_default_filename() );
 
-$t_table = summary_sla_by_severity( $f_project_id, $_SESSION['sla_from'], $_SESSION['sla_to'] );
+$today = getdate();
+
+$t_from_date = $_SESSION['sla_from'] ? $_SESSION['sla_from'] : $today['mon'].'/'.$today['mday'].'/'.$today['year'];
+$t_to_date = $_SESSION['sla_to'] ? $_SESSION['sla_to'] : $today['mon'].'/'.$today['mday'].'/'.$today['year'];
+
+$t_table = lang_get( 'start_date_label' ).' '.$t_from_date. $t_sep .lang_get( 'end_date_label' ).' '.$t_to_date. $t_nl;
+$t_table .= summary_sla_by_severity( $f_project_id, $t_from_date, $t_to_date );
 $t_table = preg_replace("/(<\/td><td id='sla'>)|(<\/th>)/", $t_sep, $t_table);
 $t_table = preg_replace("/(<\/td><\/tr>)|(<\/thead><\/tr>)/", $t_nl, $t_table);
 $t_table = preg_replace("/\&\#160;/", ' ', $t_table);
