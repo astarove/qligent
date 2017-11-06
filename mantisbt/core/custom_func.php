@@ -4,6 +4,13 @@ function simple_function(){
 	echo "Here!";
 }
 
+function dates_selector($form_name, $from_name, $to_name) {
+        echo "From:";
+        echo "<input type='text' size='10' id='".$form_name."_from' name='".$from_name."' value='".gpc_get_string($from_name, '')."'/>";
+	echo "to:";
+	echo "<input type='text' size='10' id='".$form_name."_to' name='".$to_name."' value='".gpc_get_string($to_name, '')."'/>";
+}
+
 function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
 
 // $s_status_enum_string = '10:новая,20:запрос информации,30:рассматривается,40:подтверждена,50:назначена,80:решена,90:закрыта';
@@ -79,7 +86,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 		$query = "SELECT bug.id, custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
 			 "WHERE custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
-			 "AND bug.severity=". $t_key ." AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+			 "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results = db_query_bound( $query );
 		$t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['l3 support'] += db_num_rows($results);

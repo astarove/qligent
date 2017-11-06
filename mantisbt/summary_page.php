@@ -127,6 +127,12 @@ layout_page_begin( __FILE__ );
 
 print_summary_menu( 'summary_page.php' );
 print_summary_submenu();
+
+$t_use_common_dates = $_POST['use_common_dates'];
+if( $t_use_common_dates ) {
+        $from_name = "period_from";
+	$to_name = "period_to";
+}
 ?>
 
 <div class="col-md-12 col-xs-12">
@@ -143,6 +149,21 @@ print_summary_submenu();
 <div class="widget-body">
 <div class="widget-main no-padding">
 
+<div class="col-md-12 col-xs-12">
+<div class="space-10"></div>
+<div class="widget-box table-responsive">
+<form name="summary_config" action="summary_page.php" method="post">
+<?php
+	echo '<input type="checkbox" title="Common dates" name="use_common_dates"';
+	echo ( isset($t_use_common_dates) ? " checked":"");
+	echo '/><label>Common dates</label></input>';
+?>
+<input type="submit"/>
+</form>
+</div>
+</div>
+
+
 
 <!-- LEFT COLUMN -->
 <div class="col-md-6 col-xs-12">
@@ -152,11 +173,17 @@ print_summary_submenu();
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 	<form name="select_date" action="summary_page.php" method="post">
-		From:
-		<input type="text" size = "8" id="stat_by_project_dp_from" name="period_from" value="<?php echo gpc_get_string('period_from', ''); ?>"></input>
-		to:
-		<input type="text" size = "8" id="stat_by_project_dp_to" name="period_to" value="<?php echo gpc_get_string('period_to', ''); ?>"></input>
-		<input type="submit" value="Show"></input>
+	<?php
+		if( !$t_use_common_dates ) {
+			$from_name = "prj_period_from";
+			$to_name = "prj_period_to";
+		}
+		else {
+			echo '<input type="hidden" name="use_common_dates" value="on"/>';
+		}
+		dates_selector('stat_by_project_dp', $from_name, $to_name);
+	?>
+	<input type="submit"/>
 	</form>
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -298,16 +325,22 @@ echo "\n<div class='space-10'></div>\n";
                 	<tr><th>
 			<?php echo lang_get( 'summary_redmine_title' ); ?>
         <form name="select_date_for_redmine" action="summary_page.php" method="post">
-                From:
-                <input type="text" size = "10" id="stat_by_redmine_from" name="redmine_period_from" value="<?php echo gpc_get_string('redmine_period_from', ''); ?>"></input>
-                to:
-                <input type="text" size = "10" id="stat_by_redmine_to" name="redmine_period_to" value="<?php echo gpc_get_string('redmine_period_to', ''); ?>"></input>
+	<?php
+                if( !$t_use_common_dates ) {
+                        $from_name = "redmine_period_from";
+                        $to_name = "redmine_period_to";
+                }
+                else {
+                        echo '<input type="hidden" name="use_common_dates" value="on"/>';
+                }
+		dates_selector('stat_by_redmine', $from_name, $to_name);
+	?>
                 <input type="submit" value="Show"></input>
         </form>
                         </th></tr>
                 </thead>
 		<tr><td align='center'>
-                <?php graph_redmine( gpc_get_string('redmine_period_from', ''), gpc_get_string('redmine_period_to', '') ); ?>
+                <?php graph_redmine( gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); ?>
 		</td></tr>
         </table>
 	<div class="space-10"></div>
@@ -428,21 +461,28 @@ echo "\n<div class='space-10'></div>\n";
 <div class="space-10"></div>
 <div class="widget-box table-responsive">
         <form name="select_date_sla" action="summary_page.php" method="post">
-                From:
-                <input type="text" size = "10" id="sla_by_severity_from" name="sla_period_from" value="<?php echo gpc_get_string('sla_period_from', ''); ?>"></input>
-                to:
-                <input type="text" size = "10" id="sla_by_severity_to" name="sla_period_to" value="<?php echo gpc_get_string('sla_period_to', ''); ?>"></input>
-                <input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="Show"></input>
+		<?php
+	                if( !$t_use_common_dates ) {
+        	                $from_name = "sla_period_from";
+                	        $to_name = "sla_period_to";
+	                }
+        	        else {
+                	        echo '<input type="hidden" name="use_common_dates" value="on"/>';
+	                }
+
+			dates_selector('sla_by_severity', $from_name, $to_name);
+		?>
+                <input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="Show"/>
 		<?php
 			session_start();
-			$_SESSION['sla_from'] = gpc_get_string('sla_period_from', '');
-			$_SESSION['sla_to'] = gpc_get_string('sla_period_to', '');
+			$_SESSION['sla_from'] = gpc_get_string($from_name, '');
+			$_SESSION['sla_to'] = gpc_get_string($to_name, '');
 			session_commit();
 			print_small_button( 'cgi-bin/csv_export_sla_stat.php', lang_get( 'csv_export' ) ); ?>
 	</form>
 	<table>
                 <tr>
-                <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string('sla_period_from', ''), gpc_get_string('sla_period_to', '') ); ?>
+                <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); ?>
                 </td></tr>
         </table>
 </div>
