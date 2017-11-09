@@ -185,6 +185,13 @@ if( $t_use_common_dates ) {
 	?>
 	<input type="submit"/>
 	</form>
+        <table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>
+        <th style='width: 100px;'><?php echo lang_get('by_project') ?>
+        <th style='width: 100px;'>Заведено</th>
+        <th style='width: 100px;'>В работе</th>
+        <th style='width: 100px;'>Решено</th>
+        </thead></tr>
+<!--
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
 			<tr>
@@ -192,7 +199,8 @@ if( $t_use_common_dates ) {
 				<?php echo $t_orcttab ?>
 			</tr>
 		</thead>
-		<?php summary_print_by_project(array(), 0, null, gpc_get_string('period_from', ''), gpc_get_string('period_to', '')); ?>
+-->
+		<?php summary_print_by_project(array(), 0, null, gpc_get_string($from_name, ''), gpc_get_string($to_name, '')); ?>
 	</table>
 	</div>
 	<?php } ?>

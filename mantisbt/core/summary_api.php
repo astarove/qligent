@@ -797,6 +797,125 @@ function summary_print_by_category() {
  * @return void
  */
 function summary_print_by_project(array $p_projects = array(), $p_level = 0, array $p_cache = null, $t_days_from = 0, $t_days_to = 0) {
+        $t_project_id = helper_get_current_project();
+
+        if( empty( $p_projects ) ) {
+                if( ALL_PROJECTS == $t_project_id ) {
+                        $p_projects = current_user_get_accessible_projects();
+                } else {
+                        $p_projects = array(
+                                $t_project_id,
+                        );
+                }
+        }
+        $today = getdate();
+        $t_start_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_finish_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_base_date = strtotime("-1 day", $t_start_date);
+
+        if( null === $p_cache ) {
+
+		$p_cache = array();
+		$p_cache = summary_print_by_project_get_data($t_finish_date, $t_start_date);
+		$p_cache_base = summary_print_by_project_get_data($t_finish_date);
+/*
+                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                           " history.new_value>50 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
+                           " GROUP BY bug.project_id, history.bug_id";
+
+                $t_result = db_query( $t_query );
+                while ( $t_row = db_fetch_array( $t_result ) ) {
+                        $t_project_id = $t_row['project_id'];
+                        $p_cache[$t_project_id]['resolved'] += ($t_row['id']?1:0);
+			$p_cache[$t_project_id]['bug_id_resolved'] .= ",".$t_row['id'];
+                }
+
+                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                           " history.new_value>=30 AND history.new_value<=50 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
+                           " GROUP BY bug.project_id, history.bug_id";
+
+                $t_result = db_query( $t_query );
+                while ( $t_row = db_fetch_array( $t_result ) ) {
+                        $t_project_id = $t_row['project_id'];
+			$t_resolved_issues = preg_split("/,/", $p_cache[$t_project_id]['bug_id_resolved']);
+			if( !in_array($t_row['id'], $t_resolved_issues ) ) {
+	                        $p_cache[$t_project_id]['in progress'] += ($t_row['id']?1:0);
+			}
+		}
+
+                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                           " history.new_value<30 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
+                           " GROUP BY bug.project_id, history.bug_id";
+
+                $t_result = db_query( $t_query );
+                while ( $t_row = db_fetch_array( $t_result ) ) {
+                        $t_project_id = $t_row['project_id'];
+                        $p_cache[$t_project_id]['new'] += ($t_row['id']?1:0);
+		}
+*/
+		foreach( $p_projects as $p_project ) {
+			echo "<tr>";
+			echo "<td>". project_get_name( $p_project) ,"</td>";
+			echo "<td>". $p_cache_base[$p_project]['new'] . ( $p_cache[$p_project]['new']?" (+". $p_cache[$p_project]['new'] .")": "" ) ."</td>";
+			echo "<td>". $p_cache_base[$p_project]['in progress'] . ( $p_cache[$p_project]['in progress']?" (+". $p_cache[$p_project]['in progress'] .")":"" ) ."</td>";
+                        echo "<td>". $p_cache_base[$p_project]['resolved'] . ( $p_cache[$p_project]['resolved']?" (+". $p_cache[$p_project]['resolved'] .")":"" ) ."</td>";
+			echo "</tr>";
+		}
+
+	}
+}
+
+function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
+        $cache = array();
+
+	$t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                   " history.field_name='status' AND history.new_value>50";
+	if( $p_date_from ) {
+		$t_query .= " AND history.date_modified>=". $p_date_from;
+	}
+	$t_query .= " AND history.date_modified<". $p_date_to ." GROUP BY bug.project_id, history.bug_id";
+
+        $t_result = db_query( $t_query );
+        while ( $t_row = db_fetch_array( $t_result ) ) {
+        	$t_project_id = $t_row['project_id'];
+                $cache[$t_project_id]['resolved'] += ($t_row['id']?1:0);
+                $cache[$t_project_id]['bug_id_resolved'] .= ",".$t_row['id'];
+        }
+
+        $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                   " history.field_name='status' AND history.new_value>=30 AND history.new_value<=50";
+	if( $p_date_from ) {
+		$t_query .= " AND history.date_modified>=". $p_date_from;
+	}
+	$t_query .= " AND history.date_modified<". $p_date_to ." GROUP BY bug.project_id, history.bug_id";
+
+        $t_result = db_query( $t_query );
+        while ( $t_row = db_fetch_array( $t_result ) ) {
+                $t_project_id = $t_row['project_id'];
+                $t_resolved_issues = preg_split("/,/", $cache[$t_project_id]['bug_id_resolved']);
+                if( !in_array($t_row['id'], $t_resolved_issues ) ) {
+                        $cache[$t_project_id]['in progress'] += ($t_row['id']?1:0);
+                }
+        }
+
+        $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+		   "bug.date_submitted<=".$p_date_to;
+
+        if( $p_date_from ) {
+                $t_query .= " AND bug.date_submitted>=". $p_date_from;
+        }
+        $t_query .= " GROUP BY bug.project_id, history.bug_id";
+
+
+        $t_result = db_query( $t_query );
+        while ( $t_row = db_fetch_array( $t_result ) ) {
+                $t_project_id = $t_row['project_id'];
+                $cache[$t_project_id]['new'] += ($t_row['id']?1:0);
+        }
+	return $cache;
+}
+
+function summary_print_by_project_old(array $p_projects = array(), $p_level = 0, array $p_cache = null, $t_days_from = 0, $t_days_to = 0) {
 	$t_project_id = helper_get_current_project();
 
 	if( empty( $p_projects ) ) {
@@ -808,6 +927,7 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 			);
 		}
 	}
+
 	$today = getdate();
 #	$t_start_date = mktime( 0, 0, 0, date( 'm' ), ( date( 'd' ) - $t_days ), date( 'Y' ) );
 	$t_start_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
@@ -817,7 +937,7 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 	# Retrieve statistics one time to improve performance.
 	if( null === $p_cache ) {
 		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
-					FROM {bug} WHERE last_updated BETWEEN '.$t_start_date . ' AND '. strtotime("+1 day", $t_finish_date) .
+					FROM {bug} WHERE last_updated BETWEEN '.$t_start_date . ' AND '. strtotime("+1 day", $t_finish_date).
 					' GROUP BY project_id, status, last_updated';
 		$t_result = db_query( $t_query );
 		$p_cache = array();
@@ -851,6 +971,7 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 			}
 		}
 	# Retrieve statistics one time to improve performance - base for comparison.
+
 		$t_query = 'SELECT project_id, status, last_updated, COUNT( status ) AS bugcount
 					FROM {bug} WHERE last_updated >= '.$t_base_date . ' AND last_updated < ' .$t_start_date. 
 					' GROUP BY project_id, status, last_updated';
@@ -885,8 +1006,9 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 				}
 			}
 		}
+
 	}
-/* */	
+/* */
 	foreach( $p_projects as $t_project ) {
 		$t_name = str_repeat( '&raquo; ', $p_level ) . project_get_name( $t_project );
 
