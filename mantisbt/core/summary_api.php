@@ -836,7 +836,7 @@ function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
         $cache = array();
 
 	$t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-                   " history.field_name='status' AND history.new_value>50";
+                   " history.field_name='status' AND history.new_value>=80";
 	if( $p_date_from ) {
 		$t_query .= " AND history.date_modified>=". $p_date_from;
 	}
@@ -850,7 +850,7 @@ function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
         }
 
         $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-                   " history.field_name='status' AND history.new_value>=30 AND history.new_value<=50";
+                   " history.field_name='status' AND history.new_value>=30 AND history.new_value<80";
 	if( $p_date_from ) {
 		$t_query .= " AND history.date_modified>=". $p_date_from;
 	}
