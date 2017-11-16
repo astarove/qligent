@@ -85,7 +85,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$total['resolved'] += db_num_rows($results);
 
 		$query = "SELECT bug.id, custom.value FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ON bug.id=custom.bug_id ".
-			 "WHERE custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
+			 "WHERE severity=". $t_key ." AND custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' ".
 			 "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 		$results = db_query_bound( $query );
 		$t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
@@ -142,20 +142,25 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 				}
 			}
 		}
-		$t_table .= "<table border=0>";
-		if ( $sla_errs>0 ) {
-			$percent = round($sla_errs*100/$total_row,2);
-			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
-			$limit = $sla_bound['default_value']/8;
-			$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
+		if( ($sla_errs>0) && ($sla_l3_errs>0) ) {
+			$t_table .= "<table border=0>";
+			if ( $sla_errs>0 ) {
+				$percent = round($sla_errs*100/$total_row,2);
+				$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
+				$limit = $sla_bound['default_value']/8;
+				$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
+			}
+			if ( $sla_l3_errs>0 ) {
+        	                $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
+				$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
+				$limit = $sla_bound['default_value']/8;
+	                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
+        	        }
+			$t_table .= "</table>";
 		}
-		if ( $sla_l3_errs>0 ) {
-                        $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
-			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
-			$limit = $sla_bound['default_value']/8;
-                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
-                }
-		$t_table .= "</table>";
+		else {
+			$t_table .= "0";
+		}
 
 		$t_table .= "</td></tr>";
         };
@@ -177,13 +182,13 @@ function graph_redmine( $t_days_from = '', $t_days_to = '' ){
 
 	$query = "SELECT bug.id, custom.field_id ".
 		 "FROM mantis_bug_table AS bug JOIN mantis_custom_field_string_table AS custom ".
-		 "WHERE bug.id=custom.bug_id ".
+		 "WHERE bug.id=custom.bug_id AND bug.severity<>10 ".
 		 "AND custom.field_id=".custom_field_get_id_from_name( 'RedMineID' )." AND custom.value<>'' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 
 	$results = db_query_bound( $query );
 	$res_ids = db_num_rows($results);
 
-	$query ="SELECT id FROM mantis_bug_table AS bug WHERE bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+	$query ="SELECT id FROM mantis_bug_table AS bug WHERE bug.severity<>10 AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 	$results = db_query_bound( $query );
 	$res_total = db_num_rows($results);
 

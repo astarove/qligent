@@ -188,6 +188,7 @@ if( $t_use_common_dates ) {
         <table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>
         <th style='width: 100px;'><?php echo lang_get('by_project') ?>
         <th style='width: 100px;'>Заведено</th>
+	<th style='width: 100px;'>Новый</th>
         <th style='width: 100px;'>В работе</th>
         <th style='width: 100px;'>Решено</th>
         </thead></tr>

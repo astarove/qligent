@@ -2242,7 +2242,7 @@ function filter_cache_result( array $p_rows, array $p_id_array_lastmod ) {
 }
 
 /**
- * Mainly based on _se_selection_area2() but adds the support for the collapsible
+ * Mainly based on filter_draw_selection_area2() but adds the support for the collapsible
  * filter display.
  * @param integer $p_page_number Page number.
  * @param boolean $p_for_screen  Whether output is for screen view.

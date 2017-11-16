@@ -818,44 +818,11 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 		$p_cache = array();
 		$p_cache = summary_print_by_project_get_data($t_finish_date, $t_start_date);
 		$p_cache_base = summary_print_by_project_get_data($t_finish_date);
-/*
-                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-                           " history.new_value>50 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
-                           " GROUP BY bug.project_id, history.bug_id";
 
-                $t_result = db_query( $t_query );
-                while ( $t_row = db_fetch_array( $t_result ) ) {
-                        $t_project_id = $t_row['project_id'];
-                        $p_cache[$t_project_id]['resolved'] += ($t_row['id']?1:0);
-			$p_cache[$t_project_id]['bug_id_resolved'] .= ",".$t_row['id'];
-                }
-
-                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-                           " history.new_value>=30 AND history.new_value<=50 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
-                           " GROUP BY bug.project_id, history.bug_id";
-
-                $t_result = db_query( $t_query );
-                while ( $t_row = db_fetch_array( $t_result ) ) {
-                        $t_project_id = $t_row['project_id'];
-			$t_resolved_issues = preg_split("/,/", $p_cache[$t_project_id]['bug_id_resolved']);
-			if( !in_array($t_row['id'], $t_resolved_issues ) ) {
-	                        $p_cache[$t_project_id]['in progress'] += ($t_row['id']?1:0);
-			}
-		}
-
-                $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-                           " history.new_value<30 AND history.date_modified BETWEEN ". $t_start_date ." AND ". strtotime("+1 day", $t_finish_date).
-                           " GROUP BY bug.project_id, history.bug_id";
-
-                $t_result = db_query( $t_query );
-                while ( $t_row = db_fetch_array( $t_result ) ) {
-                        $t_project_id = $t_row['project_id'];
-                        $p_cache[$t_project_id]['new'] += ($t_row['id']?1:0);
-		}
-*/
 		foreach( $p_projects as $p_project ) {
 			echo "<tr>";
 			echo "<td>". project_get_name( $p_project) ,"</td>";
+			echo "<td>". $p_cache_base[$p_project]['total'] . ( $p_cache[$p_project]['total']?" (+". $p_cache[$p_project]['total'] .")": "" ) ."</td>";
 			echo "<td>". $p_cache_base[$p_project]['new'] . ( $p_cache[$p_project]['new']?" (+". $p_cache[$p_project]['new'] .")": "" ) ."</td>";
 			echo "<td>". $p_cache_base[$p_project]['in progress'] . ( $p_cache[$p_project]['in progress']?" (+". $p_cache[$p_project]['in progress'] .")":"" ) ."</td>";
                         echo "<td>". $p_cache_base[$p_project]['resolved'] . ( $p_cache[$p_project]['resolved']?" (+". $p_cache[$p_project]['resolved'] .")":"" ) ."</td>";
@@ -899,7 +866,7 @@ function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
         }
 
         $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
-		   "bug.date_submitted<=".$p_date_to;
+		   "(status=10 OR status=20) AND bug.date_submitted<=".$p_date_to;
 
         if( $p_date_from ) {
                 $t_query .= " AND bug.date_submitted>=". $p_date_from;
@@ -911,6 +878,21 @@ function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
         while ( $t_row = db_fetch_array( $t_result ) ) {
                 $t_project_id = $t_row['project_id'];
                 $cache[$t_project_id]['new'] += ($t_row['id']?1:0);
+        }
+
+        $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                   "bug.date_submitted<=".$p_date_to;
+
+        if( $p_date_from ) {
+                $t_query .= " AND bug.date_submitted>=". $p_date_from;
+        }
+        $t_query .= " GROUP BY bug.project_id, history.bug_id";
+
+
+        $t_result = db_query( $t_query );
+        while ( $t_row = db_fetch_array( $t_result ) ) {
+                $t_project_id = $t_row['project_id'];
+                $cache[$t_project_id]['total'] += ($t_row['id']?1:0);
         }
 	return $cache;
 }
