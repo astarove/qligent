@@ -1589,7 +1589,7 @@ function email_format_bugnote( $p_bugnote, $p_project_id, $p_show_time_tracking,
 
 	$t_private = ( $p_bugnote->view_state == VS_PUBLIC ) ? '' : ' (' . lang_get( 'private' ) . ')';
 
-	$t_string = ' (' . $t_formatted_bugnote_id . ') ' . user_get_name( $p_bugnote->reporter_id ) .
+	$t_string = ' (' . $t_formatted_bugnote_id . ') ' . user_get_name( $p_bugnote->reporter_id ) . " \r\n" . $t_horizontal_separator . " \r\n" .
 		$t_access_level_string . ' - ' . $t_last_modified . $t_private . "\n" .
 		$t_time_tracking . ' ' . $t_bugnote_link;
 
