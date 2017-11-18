@@ -5,10 +5,10 @@ function simple_function(){
 }
 
 function dates_selector($form_name, $from_name, $to_name) {
-        echo "From:";
-        echo "<input type='text' size='10' id='".$form_name."_from' name='".$from_name."' value='".gpc_get_string($from_name, '')."'/>";
-	echo "to:";
-	echo "<input type='text' size='10' id='".$form_name."_to' name='".$to_name."' value='".gpc_get_string($to_name, '')."'/>";
+        echo lang_get( 'from_date' )."&#160";
+        echo "<input type='text' class='input-xm' size='10' id='".$form_name."_from' name='".$from_name."' value='".gpc_get_string($from_name, '')."'/>";
+	echo lang_get( 'to_date' )."&#160";
+	echo "<input type='text' class='input-xm' size='10' id='".$form_name."_to' name='".$to_name."' value='".gpc_get_string($to_name, '')."'/>";
 }
 
 function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
@@ -35,12 +35,12 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 	$t_table .= "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";
 	$t_table .= "<th style='width: 100px;'>" . lang_get('by_severity') ."</th>";
-	$t_table .= "<th style='width: 100px;'>" . 'Заведено' ."</th>";
-        $t_table .= "<th style='width: 100px;'>" . 'Новый' . "</th>";
-        $t_table .= "<th style='width: 100px;'>" . 'В работе' . "</th>";
-        $t_table .= "<th style='width: 100px;'>" . 'Решено' . "</th>";
-	$t_table .= "<th style='width: 100px;'>" . 'Передано на L3' . "</th>";
-	$t_table .= "<th style='width: 100px;'>" . 'Превышение по SLA (заявок)' . "</th>";
+	$t_table .= "<th style='width: 100px;'>" . lang_get('submitted') /*'Заведено'*/ ."</th>";
+        $t_table .= "<th style='width: 100px;'>" . lang_get('new_issues') /*'Новый'*/ . "</th>";
+        $t_table .= "<th style='width: 100px;'>" . lang_get('in_progress') /*'В работе'*/ . "</th>";
+        $t_table .= "<th style='width: 100px;'>" . lang_get('resolved') /*'Решено'*/ . "</th>";
+	$t_table .= "<th style='width: 100px;'>" . lang_get('l3_support') /*'Передано на L3'*/ . "</th>";
+	$t_table .= "<th style='width: 100px;'>" . lang_get('overflow_sla') /*'Превышение по SLA (заявок)'*/ . "</th>";
 	$t_table .= "</thead></tr>";
 
 	unset($t_enum_values[0]);
@@ -165,7 +165,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$t_table .= "</td></tr>";
         };
 
-        $t_table .= "<tr><td id='sla'>Всего:</td><td id='sla'>". $total['total'] .
+        $t_table .= "<tr><td id='sla'>". lang_get( 'total' ) .":</td><td id='sla'>". $total['total'] .
 	     "</td><td id='sla'>". $total['new'] ."</td><td id='sla'>". $total['in progress'] .
 	     "</td><td id='sla'>". $total['resolved'] ."</td><td id='sla'>". $total['l3 support'] ."</td><td id='sla'></td></tr>";
 
@@ -284,7 +284,7 @@ function summary_by_severity_form( $p_current_project ){
 	$affected_rows = summary_by_severity( $p_current_project, gpc_get_string('severity', 80) );
 	echo '</td></tr>';
 	echo '<tr><td><b>';
-	echo 'Найдено записей: '. $affected_rows;
+	echo lang_get( 'found_issues' ) .":&#160 ". $affected_rows;
 	echo '</b></td></tr>';
 	echo '</table>';
 }

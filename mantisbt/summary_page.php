@@ -156,9 +156,10 @@ if( $t_use_common_dates ) {
 <?php
 	echo '<input type="checkbox" title="Common dates" name="use_common_dates"';
 	echo ( isset($t_use_common_dates) ? " checked":"");
-	echo '/><label>Common dates</label></input>';
+	echo '/><label>&#160'. lang_get('common_dates') .'&#160</label></input>';
+
+	echo '<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="'. lang_get( 'apply_filter_button' ) .'"/>';
 ?>
-<input type="submit"/>
 </form>
 </div>
 </div>
@@ -182,15 +183,19 @@ if( $t_use_common_dates ) {
 			echo '<input type="hidden" name="use_common_dates" value="on"/>';
 		}
 		dates_selector('stat_by_project_dp', $from_name, $to_name);
-	?>
-	<input type="submit"/>
+
+		echo '<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="'. lang_get( 'show_dates' ) .'"/>';
+		?>
 	</form>
         <table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>
-        <th style='width: 100px;'><?php echo lang_get('by_project') ?>
-        <th style='width: 100px;'>Заведено</th>
-	<th style='width: 100px;'>Новый</th>
-        <th style='width: 100px;'>В работе</th>
-        <th style='width: 100px;'>Решено</th>
+	<?php
+		echo "<th style='width: 100px;'>". lang_get('by_project') ."</th>";
+        	echo "<th style='width: 100px;'>" . lang_get('submitted') /*'Заведено'*/ ."</th>";
+        	echo "<th style='width: 100px;'>" . lang_get('new_issues') /*'Новый'*/ . "</th>";
+        	echo "<th style='width: 100px;'>" . lang_get('in_progress') /*'В работе'*/ . "</th>";
+        	echo "<th style='width: 100px;'>" . lang_get('resolved') /*'Решено'*/ . "</th>";
+	?>
+
         </thead></tr>
 <!--
 		<table class="table table-hover table-bordered table-condensed table-striped">
@@ -343,8 +348,9 @@ echo "\n<div class='space-10'></div>\n";
                         echo '<input type="hidden" name="use_common_dates" value="on"/>';
                 }
 		dates_selector('stat_by_redmine', $from_name, $to_name);
+
+                echo '<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="'. lang_get( 'show_dates' ) .'"/>';
 	?>
-                <input type="submit" value="Show"></input>
         </form>
                         </th></tr>
                 </thead>
@@ -480,9 +486,8 @@ echo "\n<div class='space-10'></div>\n";
 	                }
 
 			dates_selector('sla_by_severity', $from_name, $to_name);
-		?>
-                <input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="Show"/>
-		<?php
+
+			echo '<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="'. lang_get( 'show_dates' ) .'"/>';
 			session_start();
 			$_SESSION['sla_from'] = gpc_get_string($from_name, '');
 			$_SESSION['sla_to'] = gpc_get_string($to_name, '');
