@@ -73,13 +73,13 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$total['new'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
-                         " AND (status>=30 OR status<=80) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+                         " AND status>=30 AND status<80 AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
                 $results = db_query_bound( $query );
                 $t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['in progress'] += db_num_rows($results);
 
                 $query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
-                         " AND (status=80 OR status=90) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+                         " AND status>=80 AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
                 $results = db_query_bound( $query );
                 $t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['resolved'] += db_num_rows($results);
@@ -115,17 +115,19 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 				  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND history.old_value<80 AND new_value>=80 ".
                                   "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 */
+
                         $query1 = "SELECT history.date_modified ".
                                   "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<=20 AND new_value<80 ".
-                                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
+                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<=20 AND history.new_value<80 ".
+                                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date).
+				  ";";
 
                         $query2 = "SELECT history.date_modified ".
                                   "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<80 AND new_value>=80 ".
+                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<80 AND history.new_value>=80 ".
                                   "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date).
 				  " ORDER BY history.date_modified DESC;";
-
+// $t_table .= " ||| ".$query1. " ||| " .$query2." ||| ";
 			$results1 = db_query_bound( $query1 );
 			$results2 = db_query_bound( $query2 );
 
