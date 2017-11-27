@@ -73,7 +73,7 @@ function summary_helper_print_row( $p_label, $p_open, $p_resolved, $p_closed, $p
 
 		$p_begin_date = preg_split("/-/", date('Y-m-d', $p_start_date) );
 		$p_finish_date = preg_split("/-/", date('Y-m-d', $p_end_date) );
-		
+
 		$t_bug_link = '<a class="subtle" href="view_all_set.php?type=1&amp;temporary=y';
 		$t_bug_link .= '&amp;'. FILTER_PROPERTY_FILTER_BY_DATE . '=y';
 		$t_bug_link .= '&amp;'. FILTER_PROPERTY_START_DAY . '='. $p_begin_date[2];
@@ -826,6 +826,7 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 			echo "<td>". $p_cache_base[$p_project]['new'] . ( $p_cache[$p_project]['new']?" (+". $p_cache[$p_project]['new'] .")": "" ) ."</td>";
 			echo "<td>". $p_cache_base[$p_project]['in progress'] . ( $p_cache[$p_project]['in progress']?" (+". $p_cache[$p_project]['in progress'] .")":"" ) ."</td>";
                         echo "<td>". $p_cache_base[$p_project]['resolved'] . ( $p_cache[$p_project]['resolved']?" (+". $p_cache[$p_project]['resolved'] .")":"" ) ."</td>";
+                        echo "<td><b><font color=#A60000>". $p_cache_base[$p_project]['reopened'] . ( $p_cache[$p_project]['reopened']?" (+". $p_cache[$p_project]['reopened'] .")":"" ) ."</font></b></td>";
 			echo "</tr>";
 		}
 
@@ -834,6 +835,21 @@ function summary_print_by_project(array $p_projects = array(), $p_level = 0, arr
 
 function summary_print_by_project_get_data($p_date_to, $p_date_from = '') {
         $cache = array();
+
+
+        $t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
+                   " history.field_name='status' AND history.new_value<80 and history.old_value>=80";
+        if( $p_date_from ) {
+                $t_query .= " AND history.date_modified>=". $p_date_from;
+        }
+        $t_query .= " AND history.date_modified<". strtotime("+1 day", $p_date_to) ." GROUP BY bug.project_id, history.bug_id";
+
+        $t_result = db_query( $t_query );
+        while ( $t_row = db_fetch_array( $t_result ) ) {
+                $t_project_id = $t_row['project_id'];
+                $cache[$t_project_id]['reopened'] += ($t_row['id']?1:0);
+                $cache[$t_project_id]['bug_id_reopened'] .= ",".$t_row['id'];
+        }
 
 	$t_query = "SELECT bug.project_id, bug.id, history.bug_id FROM {bug_history} AS history JOIN {bug} AS bug ON history.bug_id=bug.id WHERE ".
                    " history.field_name='status' AND history.new_value>=80";

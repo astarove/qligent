@@ -1651,4 +1651,4 @@ $s_in_progress = 'В работе';
 $s_l3_support = 'Передано на L3';
 $s_overflow_sla = 'Превышение по SLA (заявок)';
 $s_found_issues = 'Количество найденных проблем';
-
+$s_reopened = 'Переоткрыто';

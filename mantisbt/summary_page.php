@@ -194,9 +194,10 @@ if( $t_use_common_dates ) {
         	echo "<th style='width: 100px;'>" . lang_get('new_issues') /*'Новый'*/ . "</th>";
         	echo "<th style='width: 100px;'>" . lang_get('in_progress') /*'В работе'*/ . "</th>";
         	echo "<th style='width: 100px;'>" . lang_get('resolved') /*'Решено'*/ . "</th>";
+		echo "<th style='width: 100px;'>" . lang_get('reopened') /*'Переоткрыто'*/ . "</th>";
 	?>
 
-        </thead></tr>
+        </tr></thead>
 <!--
 		<table class="table table-hover table-bordered table-condensed table-striped">
 		<thead>
@@ -267,6 +268,7 @@ if( $t_use_common_dates ) {
 		<?php # summary_print_by_enum( 'severity' ) ?>
 	</table>
 	</div>
+-->
 	<!-- BY CATEGORY -->
 	<?php
 	if( $g_show_stat_by_category ) {
@@ -311,6 +313,7 @@ if( $t_use_common_dates ) {
 	</div>
 
 	<!-- DEVELOPER STATS -->
+<!--
 	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
 		<table class="table table-hover table-bordered table-condensed table-striped">
@@ -321,9 +324,13 @@ if( $t_use_common_dates ) {
 			</tr>
 		</thead>
 		<?php summary_print_by_developer() ?>
+
 	</table>
+
 </div>
+-->
 </div>
+
 
 <!-- RIGHT COLUMN -->
 <div class="col-md-6 col-xs-12">
@@ -494,11 +501,7 @@ echo "\n<div class='space-10'></div>\n";
 			session_commit();
 			print_small_button( 'cgi-bin/csv_export_sla_stat.php', lang_get( 'csv_export' ) ); ?>
 	</form>
-	<table>
-                <tr>
-                <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); ?>
-                </td></tr>
-        </table>
+        <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); ?>
 </div>
 	<!-- REPORTER BY RESOLUTION -->
 <!--	<div class="space-10"></div>
