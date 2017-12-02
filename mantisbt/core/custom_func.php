@@ -4,6 +4,20 @@ function simple_function(){
 	echo "Here!";
 }
 
+function get_default_handler( $p_project_id ){
+
+	$param_name = 'handler_by_default';
+
+	switch( project_get_name($p_project_id) ){
+		case 'Test2': $param_name = 'handler_test2_prj';
+			      break;
+		case 'US project': $param_name = 'handler_us_prj';
+	}
+	$t_def = custom_field_get_definition( custom_field_get_id_from_name($param_name) );
+	return user_get_id_by_name($t_def["default_value"]);
+}
+
+
 function dates_selector($form_name, $from_name, $to_name) {
         echo lang_get( 'from_date' )."&#160";
         echo "<input type='text' class='input-xm' size='10' id='".$form_name."_from' name='".$from_name."' value='".gpc_get_string($from_name, '')."'/>";
