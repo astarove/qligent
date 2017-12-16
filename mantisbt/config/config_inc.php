@@ -24,12 +24,14 @@ $g_smtp_username = 'support.qligent';
 $g_smtp_password = 'Qwerty12345'; 
 $g_smtp_connection_mode = 'ssl';
 $g_smtp_port = '465';
-$g_administrator_email = 'support.qligent@yandex.ru';  
+// $g_administrator_email = 'support.qligent@yandex.ru';  
 $g_webmaster_email = 'support.qligent@yandex.ru';  
 $g_from_email = 'support.qligent@yandex.ru'; 
 $g_return_path_email = 'support.qligent@yandex.ru'; 
 $g_log_level = LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_DATABASE;  
 $g_from_name = 'Support'; 
+
+// $g_debug_email = 'avstaroverov@gmail.com';
 
 ##########################
 # Mantis global settings #
