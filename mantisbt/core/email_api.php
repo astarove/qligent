@@ -1526,13 +1526,13 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 	}
 
 	if( ( $t_message !== null ) && ( !is_blank( $t_message ) ) ) {
-		if( $p_message_id == 'email_notification_title_for_action_bugnote_submitted' ) {
+//		if( $p_message_id == 'email_notification_title_for_action_bugnote_submitted' ) {
 			# format latest bugnote
 			$p_bugnote = end($p_visible_bug_data['bugnotes']);
 #			$p_bugnote = array_reverse($t_bugnote);
-			$t_message .= user_get_name( $p_bugnote->reporter_id ).":\n";
+			$t_message .= " ".user_get_name( $p_bugnote->reporter_id ).":\n\n";
 			$t_message .= $p_bugnote->note . " \n";
-		}
+//		}
 		$t_message .= " \n";
 	}
 

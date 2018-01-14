@@ -31,7 +31,7 @@ $g_return_path_email = 'support.qligent@yandex.ru';
 $g_log_level = LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_DATABASE;  
 $g_from_name = 'Support'; 
 
-// $g_debug_email = 'avstaroverov@gmail.com';
+$g_debug_email = 'avstaroverov@gmail.com';
 
 ##########################
 # Mantis global settings #
@@ -244,7 +244,7 @@ $g_notify_flags['new']['threshold_max'] = SUPPORT;
  *
  * @global integer $g_log_level
  */
-$g_log_level = LOG_EMAIL;
+$g_log_level = LOG_ALL;
 
 /**
  * @global bool $g_show_stat_by_priority
