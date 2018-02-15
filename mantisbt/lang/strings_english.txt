@@ -1813,3 +1813,6 @@ $s_overflow_sla = 'Overflow by SLA';
 $s_found_issues = 'Number of found issues';
 $s_summary_redmine_title = 'Stats by levels of support';
 $s_reopened = 'Reopened';
+$s_project = 'Project';
+$s_opened_days = 'Opened Days';
+$s_life_time = 'Time of life (average), days';
