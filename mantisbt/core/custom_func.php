@@ -295,7 +295,7 @@ function summary_life_time( $p_current_project ){
 	echo "</tbody></table>";
 }
 
-function summary_by_severity_form( $p_current_project , $p_use_common_dates = false){
+function summary_by_severity_form( $p_current_project , $p_use_common_dates = false, $p_from_name = '', $p_to_name = '' ){
 	echo '<p/>';
 
 	echo '<table class="table table-hover table-bordered table-condensed table-striped">';
@@ -303,6 +303,8 @@ function summary_by_severity_form( $p_current_project , $p_use_common_dates = fa
         echo '<form name="select_severity" id="summary_by_severity_form" action="summary_page.php" method="post">';
 	if( $p_use_common_dates ) {
                 echo '<input type="hidden" name="use_common_dates" value="on"/>';
+	        echo "<input type='hidden' name='".$p_from_name."' value='".gpc_get_string($p_from_name, '')."'/>";
+	        echo "<input type='hidden' name='".$p_to_name."' value='".gpc_get_string($p_to_name, '')."'/>";
         }
 	echo lang_get( 'by_severity' ).':&#160<select ';
 	echo helper_get_tab_index();

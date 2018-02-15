@@ -335,7 +335,7 @@ if( $t_use_common_dates ) {
 <!-- RIGHT COLUMN -->
 <div class="col-md-6 col-xs-12">
 <?php
-summary_by_severity_form( $f_project_id, $t_use_common_dates );
+summary_by_severity_form( $f_project_id, $t_use_common_dates, $from_name, $to_name );
 echo "\n<div class='space-10'></div>\n";
 summary_life_time( $f_project_id );
 echo "\n<div class='space-10'></div>\n";
