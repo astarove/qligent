@@ -170,7 +170,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 				}
 			}
 		}
-		if( ($sla_errs>0) && ($sla_l3_errs>0) ) {
+		if( ($sla_errs>0) || ($sla_l3_errs>0) ) {
 			$t_table .= "<table border=0>";
 			if ( $sla_errs>0 ) {
 				$percent = round($sla_errs*100/$total_row,2);
@@ -295,12 +295,15 @@ function summary_life_time( $p_current_project ){
 	echo "</tbody></table>";
 }
 
-function summary_by_severity_form( $p_current_project ){
+function summary_by_severity_form( $p_current_project , $p_use_common_dates = false){
 	echo '<p/>';
 
 	echo '<table class="table table-hover table-bordered table-condensed table-striped">';
 	echo '<thead><tr><th>';
         echo '<form name="select_severity" id="summary_by_severity_form" action="summary_page.php" method="post">';
+	if( $p_use_common_dates ) {
+                echo '<input type="hidden" name="use_common_dates" value="on"/>';
+        }
 	echo lang_get( 'by_severity' ).':&#160<select ';
 	echo helper_get_tab_index();
 	echo ' id="summary_by_severity" name="severity" class="input-sm">';
