@@ -671,6 +671,7 @@ foreach ( $t_related_custom_field_ids as $t_id ) {
 	$t_def = custom_field_get_definition( $t_id );
 	if( ( $t_def['display_update'] || $t_def['require_update'] ) && custom_field_has_write_access( $t_id, $t_bug_id ) ) {
 		if( $t_def['name'] == 'configuration' ||
+			$t_def['name'] == 'type' ||
 			$t_def['name'] == 'version_bk' ||
 			$t_def['name'] == 'version_sa' ) {
 
@@ -743,6 +744,7 @@ foreach ( $t_related_custom_field_ids as $t_id ) {
 	$t_def = custom_field_get_definition( $t_id );
 	if( ( $t_def['display_update'] || $t_def['require_update'] ) && custom_field_has_write_access( $t_id, $t_bug_id ) ) {
 		if( $t_def['name'] != 'configuration' &&
+			$t_def['name'] != 'type' &&
 			$t_def['name'] != 'version_bk' &&
 			$t_def['name'] != 'version_sa' ) {
 			$t_custom_fields_found = true;

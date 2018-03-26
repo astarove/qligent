@@ -269,19 +269,38 @@ layout_page_begin();
 	}
 
 	$t_related_custom_field_ids = custom_field_get_linked_ids( $t_bug->project_id );
-
 	foreach( $t_related_custom_field_ids as $t_id ) {
 		$t_def = custom_field_get_definition( $t_id );
 		$t_display = $t_def['display_' . $t_custom_status_label];
 		$t_require = $t_def['require_' . $t_custom_status_label];
+                $t_has_write_access = custom_field_has_write_access( $t_id, $f_bug_id );
 
 		if( ( 'update' == $t_custom_status_label ) && ( !$t_require ) ) {
+			if( ( $f_new_status == 30 ) && ( $t_def['name'] == 'type' ) ){
+?>
+        <tr>
+                <th class="category">
+                        <?php echo lang_get_defaulted( $t_def['name'] ) ?>
+                </th>
+                <td>
+<?php
+                        if( $t_has_write_access ) {
+                                print_custom_field_input( $t_def, $f_bug_id );
+                        } elseif( custom_field_has_read_access( $t_id, $f_bug_id ) ) {
+                                print_custom_field_value( $t_def, $t_id, $f_bug_id );
+                        }
+?>
+                </td>
+        </tr>
+
+<?php
+			}
 			continue;
 		}
 		if( in_array( $t_custom_status_label, array( 'resolved', 'closed' ) ) && !( $t_display || $t_require ) ) {
 			continue;
 		}
-		$t_has_write_access = custom_field_has_write_access( $t_id, $f_bug_id );
+//		$t_has_write_access = custom_field_has_write_access( $t_id, $f_bug_id );
 		$t_class_required = $t_require && $t_has_write_access ? 'class="required"' : '';
 ?>
 	<tr>

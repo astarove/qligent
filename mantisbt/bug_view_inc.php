@@ -663,6 +663,7 @@ foreach( $t_related_custom_field_ids as $t_id ) {
 	} # has read access
 	$t_def = custom_field_get_definition( $t_id );
 	if( $t_def['name'] == 'configuration' ||
+		$t_def['name'] == 'type' ||
 		$t_def['name'] == 'version_bk' ||
 		$t_def['name'] == 'version_sa' ) {
 		$t_custom_fields_found = true;
@@ -740,6 +741,7 @@ foreach( $t_related_custom_field_ids as $t_id ) {
 
 	$t_def = custom_field_get_definition( $t_id );
 	if( $t_def['name'] != 'configuration' &&
+		$t_def['name'] != 'type' &&
 		$t_def['name'] != 'version_bk' &&
 		$t_def['name'] != 'version_sa' ) {
 

@@ -247,7 +247,7 @@ if( $t_use_common_dates ) {
 		</thead>
 		<?php
 			if ( !helper_get_current_project() ) {
-				summary_print_by_severity(); #summary_print_by_enum( 'severity' );
+				summary_print_by_severity(); //summary_print_by_enum( 'severity' );
 			} else {
 				summary_print_by_enum( 'severity' );
 			}
@@ -501,7 +501,12 @@ echo "\n<div class='space-10'></div>\n";
 			session_commit();
 			print_small_button( 'cgi-bin/csv_export_sla_stat.php', lang_get( 'csv_export' ) ); ?>
 	</form>
-        <?php echo summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); ?>
+        <?php
+		$data = summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') );
+		echo $data[0];
+		echo "<input type='button' value='Show fileterd issues' id='show_filetered_issues'/>";
+		print_filterd_issues_modal_window( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); //$data[1]);
+	 ?>
 </div>
 	<!-- REPORTER BY RESOLUTION -->
 <!--	<div class="space-10"></div>

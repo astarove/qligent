@@ -4,6 +4,61 @@ function simple_function(){
 	echo "Here!";
 }
 
+function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
+
+        $today = getdate();
+
+        $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+
+        $query = "SELECT id FROM mantis_bug_table WHERE date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). " AND severity>10;";
+        $results_row = db_query_bound( $query );
+        $total_row = db_num_rows($results_row);
+
+	$t_filtered = array();
+        array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "SLA days left", "Delivery date"));
+	while( $row = db_fetch_array($results_row) ) {
+                                                $tpl_bug = bug_get($row['id']);
+                                                array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
+                                                                             $tpl_bug->summary,
+                                                                             project_get_name( $tpl_bug->project_id ),
+                                                                             custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
+                                                                             get_enum_element('status',$tpl_bug->status),
+                                                                             round( ($sla_bound['default_value'] - $interval)/8 ),
+									     custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ) ) );
+//                                                                             date( config_get( 'normal_date_format' ), $tpl_bug->due_date ) ) );
+	}
+
+/* Наше модальное всплывающее окно */
+        echo '<div style="text-align: center" id="popupWin" class="modalwin">';
+	echo '<div class="widget-box table-responsive">';
+	echo "<table class='table table-hover table-bordered table-condensed table-striped scrolling-table'><thead>";
+	$p_header = array_shift( $t_filtered );
+	echo "<tr>";
+	foreach( $p_header as $cell ) {
+		echo "<th>".$cell."</th>";
+	}
+	echo "</tr></thead><tbody>";
+	foreach( $t_filtered as $row ) {
+		echo "<tr>";
+		foreach( $row as $cell ) {
+			echo "<td>".$cell."</td>";
+		}
+		echo "</tr>";
+	}
+	echo "</tbody></table>";
+	echo "</div>";
+
+//        echo '<h3>'. lang_get( 'compl_nds_title' ) .'</h3>';
+//        echo '<form><input id="custom_nds_value" value=""><p/>';
+
+//        echo '<div align=center><table border=0><tr><td ><input type="button" id="submit_modal_win" value="'. lang_get( 'input' ) .'"></td>';
+//        echo '<td width=10%></td>';
+        echo '<input type="button" id="close_modal_win" value="Close"></div>';
+//        echo '<hr><font size=-2>'. lang_get( 'compl_nds_notice' ) .'</font>';
+//        echo '</form></div>';
+}
+
 function get_default_handler( $p_project_id ){
 
 	$param_name = 'handler_by_default';
@@ -66,7 +121,8 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		'resolved' => 0,
 		'l3 support' => 0,
 	);
-
+	$filtered = array();
+	array_push($filtered, array("ID", "Name", "Project", "Type", "Status", "SLA days left", "Due date"));
         foreach ( array_reverse($t_enum_values) as $t_key ) {
                 $t_elem2 = get_enum_element( $p_enum_name, $t_key );
 
@@ -78,7 +134,6 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$total_row = db_num_rows($results_row);
 		$t_table .= "<td id='sla'>". $total_row ."</td>";
 		$total['total'] += $total_row;
-
 
 		$query = "SELECT id FROM mantis_bug_table WHERE severity=". $t_key ." ".
 			 " AND (status=10 OR status=20) AND date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
@@ -152,7 +207,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 //				echo $row1['date_modified']." ".$row2['date_modified']."<br>";
 				$resolved_date = ($row2['date_modified']?$row2['date_modified']:$t_to_date);
 //				echo $resolved_date."<br>";
-                                $interval = round(($resolved_date - $row1['date_modified'])/(3600*3*8),2); // 60 sec * 60 min * whours * wdays
+                                $interval = round(($resolved_date - $row1['date_modified'])/(3600*8*5),2); // 60 sec * 60 min * whours * wdays
 
 				$sla_bound_var_name = 'sla_';
 				if( in_array($row['id'], $l3_bug_ids) )
@@ -166,6 +221,19 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 							$sla_l3_errs ++;
 						else
 							$sla_errs ++;
+					}
+					else {
+						$tpl_bug = bug_get($row['id']);
+						$type = 'SLA2';
+						if( in_array($row['id'], $l3_bug_ids) )
+                                                        $type = 'SLA3';
+						array_push($filtered, array( string_get_bug_view_link($tpl_bug->id),
+									     $tpl_bug->summary,
+									     project_get_name( $tpl_bug->project_id ),
+									     custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
+									     get_enum_element('status',$tpl_bug->status),
+									     round( ($sla_bound['default_value'] - $interval)/8 ),
+									     date( config_get( 'normal_date_format' ), $tpl_bug->due_date ) ) );
 					}
 				}
 			}
@@ -198,7 +266,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 	     "</td><td id='sla'>". $total['resolved'] ."</td><td id='sla'>". $total['l3 support'] ."</td><td id='sla'></td></tr>";
 
 	$t_table .= "</table>";
-	return $t_table;
+	return array($t_table, $filtered);
 }
 
 function graph_redmine( $t_days_from = '', $t_days_to = '' ){
