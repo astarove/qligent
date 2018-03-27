@@ -16,29 +16,31 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
         $total_row = db_num_rows($results_row);
 
 	$t_filtered = array();
-        array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "SLA days left", "Delivery date"));
+        array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "Line type", "SLA days left", "Delivery date"));
 	while( $row = db_fetch_array($results_row) ) {
-                                                $tpl_bug = bug_get($row['id']);
-                                                array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
-                                                                             $tpl_bug->summary,
-                                                                             project_get_name( $tpl_bug->project_id ),
-                                                                             custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
-                                                                             get_enum_element('status',$tpl_bug->status),
-                                                                             round( ($sla_bound['default_value'] - $interval)/8 ),
-									     custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ) ) );
-//                                                                             date( config_get( 'normal_date_format' ), $tpl_bug->due_date ) ) );
+	        $tpl_bug = bug_get($row['id']);
+                array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
+                                                                        $tpl_bug->summary,
+                                                                        project_get_name( $tpl_bug->project_id ),
+                                                                        custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
+                                                                        get_enum_element('status',$tpl_bug->status),
+								        ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
+                                                                        round( ($sla_bound['default_value'] - $interval)/8 ),
+									custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ) ) );
 	}
 
 /* Наше модальное всплывающее окно */
         echo '<div style="text-align: center" id="popupWin" class="modalwin">';
 	echo '<div class="widget-box table-responsive">';
-	echo "<table class='table table-hover table-bordered table-condensed table-striped scrolling-table'><thead>";
+	echo '<input type="checkbox" id="filter_sla2" value="SLA2"/>SLA2';
+	echo '<input type="checkbox" id="filter_sla3" value="SLA3"/>SLA3';
+	echo "<table class='table table-hover table-bordered table-condensed table-striped scrolling-table' id='sla_stat_table'><thead>";
 	$p_header = array_shift( $t_filtered );
 	echo "<tr>";
 	foreach( $p_header as $cell ) {
 		echo "<th>".$cell."</th>";
 	}
-	echo "</tr></thead><tbody>";
+	echo "</tr></thead><tbody id='sla_stat_table1'>";
 	foreach( $t_filtered as $row ) {
 		echo "<tr>";
 		foreach( $row as $cell ) {
@@ -49,14 +51,7 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
 	echo "</tbody></table>";
 	echo "</div>";
 
-//        echo '<h3>'. lang_get( 'compl_nds_title' ) .'</h3>';
-//        echo '<form><input id="custom_nds_value" value=""><p/>';
-
-//        echo '<div align=center><table border=0><tr><td ><input type="button" id="submit_modal_win" value="'. lang_get( 'input' ) .'"></td>';
-//        echo '<td width=10%></td>';
         echo '<input type="button" id="close_modal_win" value="Close"></div>';
-//        echo '<hr><font size=-2>'. lang_get( 'compl_nds_notice' ) .'</font>';
-//        echo '</form></div>';
 }
 
 function get_default_handler( $p_project_id ){
@@ -169,10 +164,6 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 
 		$t_table .= "<td id='sla'>";
 
-//                                "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<=20 AND new_value>20 ".
-//                                  "WHERE bug.id=". $row['id'] . " AND bug.severity=". $t_key ." AND bug.status>=80 AND history.old_value<80 AND new_value>=80 ".
-
-
 		while ( $row = db_fetch_array($results_row) ){
 /*
 			$query1 = "SELECT history.date_modified ".
@@ -196,7 +187,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
                                   "WHERE bug.id=". $row['id'] . " AND history.old_value<80 AND history.new_value>=80 ".
                                   "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date).
 				  " ORDER BY history.date_modified DESC;";
-// $t_table .= " ||| ".$query1. " ||| " .$query2." ||| ";
+
 			$results1 = db_query_bound( $query1 );
 			$results2 = db_query_bound( $query2 );
 
@@ -204,9 +195,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 			$row2 = db_fetch_array($results2);
 
 			if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
-//				echo $row1['date_modified']." ".$row2['date_modified']."<br>";
 				$resolved_date = ($row2['date_modified']?$row2['date_modified']:$t_to_date);
-//				echo $resolved_date."<br>";
                                 $interval = round(($resolved_date - $row1['date_modified'])/(3600*8*5),2); // 60 sec * 60 min * whours * wdays
 
 				$sla_bound_var_name = 'sla_';
@@ -221,19 +210,6 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 							$sla_l3_errs ++;
 						else
 							$sla_errs ++;
-					}
-					else {
-						$tpl_bug = bug_get($row['id']);
-						$type = 'SLA2';
-						if( in_array($row['id'], $l3_bug_ids) )
-                                                        $type = 'SLA3';
-						array_push($filtered, array( string_get_bug_view_link($tpl_bug->id),
-									     $tpl_bug->summary,
-									     project_get_name( $tpl_bug->project_id ),
-									     custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
-									     get_enum_element('status',$tpl_bug->status),
-									     round( ($sla_bound['default_value'] - $interval)/8 ),
-									     date( config_get( 'normal_date_format' ), $tpl_bug->due_date ) ) );
 					}
 				}
 			}
