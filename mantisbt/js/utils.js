@@ -60,7 +60,7 @@ $(document).ready( function (){
         $('#filter_sla2').change(function(){
                 if( this.checked ){
                         filters = [];
-                        apply_filter('#sla_stat_table tbody', 6, 'SLA2');
+                        apply_filter('#sla_stat_table tbody', 6, 'L2');
                         $('#filter_sla3').removeAttr("checked");
                 } else {
                         filters = [];
@@ -71,7 +71,7 @@ $(document).ready( function (){
         $('#filter_sla3').click(function(){
                 if( this.checked ){
                         filters = [];
-                        apply_filter('#sla_stat_table tbody', 6, 'SLA3');
+                        apply_filter('#sla_stat_table tbody', 6, 'L3');
                         $('#filter_sla2').removeAttr("checked");
                 } else {
                         filters = [];

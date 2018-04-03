@@ -4,8 +4,17 @@ function simple_function(){
 	echo "Here!";
 }
 
+function calculate_sla_border($p_bug_id, $p_date = '' ) {
+	$p_date = get_date();
+
+}
+
+
 function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
 
+        $t_config_var_name = "severity_enum_string";
+
+        $t_config_var_value = config_get( $t_config_var_name );
         $today = getdate();
 
         $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
@@ -19,6 +28,12 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
         array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "Line type", "SLA days left", "Delivery date"));
 	while( $row = db_fetch_array($results_row) ) {
 	        $tpl_bug = bug_get($row['id']);
+		$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $tpl_bug->severity ) ) ) );
+		if( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ) {
+			$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $tpl_bug->severity ) ) ) );
+		}
+	        $interval = get_sla_interval($tpl_bug->id, $t_from_date, $t_to_date);
+
                 array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
                                                                         $tpl_bug->summary,
                                                                         project_get_name( $tpl_bug->project_id ),
@@ -32,8 +47,8 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
 /* Наше модальное всплывающее окно */
         echo '<div style="text-align: center" id="popupWin" class="modalwin">';
 	echo '<div class="widget-box table-responsive">';
-	echo '<input type="checkbox" id="filter_sla2" value="SLA2"/>SLA2';
-	echo '<input type="checkbox" id="filter_sla3" value="SLA3"/>SLA3';
+	echo '<input type="checkbox" id="filter_sla2" value="SLA2"/>Line type 2';
+	echo '<input type="checkbox" id="filter_sla3" value="SLA3"/>Line type 3';
 	echo "<table class='table table-hover table-bordered table-condensed table-striped scrolling-table' id='sla_stat_table'><thead>";
 	$p_header = array_shift( $t_filtered );
 	echo "<tr>";
@@ -73,6 +88,34 @@ function dates_selector($form_name, $from_name, $to_name) {
         echo "<input type='text' class='input-xm' size='10' id='".$form_name."_from' name='".$from_name."' value='".gpc_get_string($from_name, '')."'/>";
 	echo lang_get( 'to_date' )."&#160";
 	echo "<input type='text' class='input-xm' size='10' id='".$form_name."_to' name='".$to_name."' value='".gpc_get_string($to_name, '')."'/>";
+}
+
+function get_sla_interval($p_id, $p_date_from, $p_date_to) {
+	$interval = 0;
+
+        $query1 = "SELECT history.date_modified ".
+                  "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
+                  "WHERE bug.id=". $p_id . " AND history.old_value<=20 AND history.new_value<80 ".
+                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $p_date_from ." AND ". strtotime("+1 day", $p_date_to).
+                  ";";
+
+        $query2 = "SELECT history.date_modified ".
+                  "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
+                  "WHERE bug.id=". $p_id . " AND history.old_value<80 AND history.new_value>=80 ".
+                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $p_date_from ." AND ". strtotime("+1 day", $p_date_to).
+                  " ORDER BY history.date_modified DESC;";
+
+        $results1 = db_query_bound( $query1 );
+        $results2 = db_query_bound( $query2 );
+
+        $row1 = db_fetch_array($results1);
+        $row2 = db_fetch_array($results2);
+
+	if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
+		$resolved_date = ($row2['date_modified']?$row2['date_modified']:$p_date_to);
+		$interval = round(($resolved_date - $row1['date_modified'])/(3600*8*5),2); // 60 sec * 60 min * whours * wdays
+	}
+	return $interval;
 }
 
 function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
@@ -116,8 +159,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		'resolved' => 0,
 		'l3 support' => 0,
 	);
-	$filtered = array();
-	array_push($filtered, array("ID", "Name", "Project", "Type", "Status", "SLA days left", "Due date"));
+
         foreach ( array_reverse($t_enum_values) as $t_key ) {
                 $t_elem2 = get_enum_element( $p_enum_name, $t_key );
 
@@ -154,10 +196,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 		$results = db_query_bound( $query );
 		$t_table .= "<td id='sla'>". db_num_rows($results) ."</td>";
 		$total['l3 support'] += db_num_rows($results);
-
-		$l3_bug_ids = array();
-		while( $row = db_fetch_array($results) )
-			array_push($l3_bug_ids, $row['id']);
+		$l3_bug_ids_count = db_num_rows($results);
 
 		$sla_errs = 0;
 		$sla_l3_errs = 0;
@@ -176,41 +215,16 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
                                   "AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). ";";
 */
 
-                        $query1 = "SELECT history.date_modified ".
-                                  "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<=20 AND history.new_value<80 ".
-                                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date).
-				  ";";
+			$interval = get_sla_interval($row['id'], $t_from_date, $t_to_date);
 
-                        $query2 = "SELECT history.date_modified ".
-                                  "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                                  "WHERE bug.id=". $row['id'] . " AND history.old_value<80 AND history.new_value>=80 ".
-                                  "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date).
-				  " ORDER BY history.date_modified DESC;";
-
-			$results1 = db_query_bound( $query1 );
-			$results2 = db_query_bound( $query2 );
-
-			$row1 = db_fetch_array($results1);
-			$row2 = db_fetch_array($results2);
-
-			if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
-				$resolved_date = ($row2['date_modified']?$row2['date_modified']:$t_to_date);
-                                $interval = round(($resolved_date - $row1['date_modified'])/(3600*8*5),2); // 60 sec * 60 min * whours * wdays
-
-				$sla_bound_var_name = 'sla_';
-				if( in_array($row['id'], $l3_bug_ids) )
-					$sla_bound_var_name .= "l3_";
-				$sla_bound_var_name .= strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) );
-				if( custom_field_get_id_from_name( $sla_bound_var_name ) ) {
-					$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) );
-					if( $sla_bound['default_value'] < $interval) {
-//			                        echo $interval; // work hours
-						if( in_array($row['id'], $l3_bug_ids) )
-							$sla_l3_errs ++;
-						else
-							$sla_errs ++;
-					}
+			$sla_bound_var_name = 'sla_';
+			if( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $row['id'] ) )
+				$sla_bound_var_name .= "l3_";
+			$sla_bound_var_name .= strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) );
+			if( custom_field_get_id_from_name( $sla_bound_var_name ) ) {
+				$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( $sla_bound_var_name ) );
+				if( $sla_bound['default_value'] < $interval) {
+					( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $row['id'] ) ? $sla_l3_errs ++ : $sla_errs ++ );
 				}
 			}
 		}
@@ -223,7 +237,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
 				$t_table .= "<tr><td style='width: 30px;'>L2:</td><td>". $sla_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
 			}
 			if ( $sla_l3_errs>0 ) {
-        	                $percent = round($sla_l3_errs*100/count($l3_bug_ids),2);
+				$percent = round($sla_l3_errs*100/$l3_bug_ids_count,2);
 				$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_l3_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $t_key ) ) ) );
 				$limit = $sla_bound['default_value']/8;
 	                        $t_table .= "<tr><td style='width: 30px;'>L3:</td><td>". $sla_l3_errs ." (". $percent ."%</td><td>&#160;-&#160;Время решения >". $limit ." дней)</td></tr id='sla_stat'>";
