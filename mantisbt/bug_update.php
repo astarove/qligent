@@ -50,6 +50,7 @@ require_api( 'bugnote_api.php' );
 require_api( 'config_api.php' );
 require_api( 'constant_inc.php' );
 require_api( 'custom_field_api.php' );
+require_api( 'custom_func.php' );
 require_api( 'email_api.php' );
 require_api( 'error_api.php' );
 require_api( 'event_api.php' );
@@ -126,6 +127,7 @@ $t_reopen_resolution = config_get( 'bug_reopen_resolution' );
 $t_resolve_issue = false;
 $t_close_issue = false;
 $t_reopen_issue = false;
+$t_redmine_id = false;
 if( $t_existing_bug->status < $t_resolved_status &&
 	$t_updated_bug->status >= $t_resolved_status &&
 	$t_updated_bug->status < $t_closed_status
@@ -295,6 +297,9 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 		}
 	}
 
+	if ( custom_field_get_field( $t_cf_id, 'name' ) == 'RedMineID' )
+                $t_redmine_id = true;
+
 	# Otherwise, if not present then skip it.
 	if ( !custom_field_is_present( $t_cf_id ) ) {
 		continue;
@@ -321,6 +326,15 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 	# validated).
 	$t_custom_fields_to_set[] = array( 'id' => $t_cf_id, 'value' => $t_new_custom_field_value );
 }
+
+// Validate Due Date
+$sla_time_left = calculate_sla_duedate( $f_bug_id, $t_redmine_id );
+//                $t_date = date( config_get( 'normal_date_format' ), time()+$sla_time_left );
+// From NEW to ACKNOWLEGEMENT:
+if ( $t_existing_bug->status == 10 && $t_updated_bug->status == 30 ) {
+	$t_updated_bug->due_date = time()+$sla_time_left;
+}
+
 
 # Perform validation of the duplicate ID of the bug.
 if( $t_updated_bug->duplicate_id != 0 ) {

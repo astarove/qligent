@@ -4010,7 +4010,7 @@ $g_due_date_update_threshold = NOBODY;
  * threshold to see due date
  * @global integer $g_due_date_view_threshold
  */
-$g_due_date_view_threshold = NOBODY;
+$g_due_date_view_threshold = DEVELOPER;
 
 /**
  * Default due date value for newly submitted issues:

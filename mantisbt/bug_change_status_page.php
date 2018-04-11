@@ -49,6 +49,7 @@ require_api( 'authentication_api.php' );
 require_api( 'bug_api.php' );
 require_api( 'config_api.php' );
 require_api( 'constant_inc.php' );
+require_api( 'custom_func.php' );
 require_api( 'custom_field_api.php' );
 require_api( 'date_api.php' );
 require_api( 'event_api.php' );
@@ -139,10 +140,8 @@ layout_page_begin();
 			<?php echo lang_get( $t_status_label . '_bug_title' ) ?>
 		</h4>
 	</div>
-
 	<div class="widget-body">
 	<div class="widget-main no-padding">
-
 	<div class="table-responsive">
 	<table class="table table-bordered table-condensed table-striped">
 		<thead>
@@ -249,7 +248,21 @@ layout_page_begin();
 	</tr>
 
 <?php
-	}
+/*	} else {
+	        $sla_time_left = calculate_sla_duedate( $f_bug_id );
+        	echo " ".$f_bug_id;
+	        echo " ".time()." ".date( config_get( 'normal_date_format' ), time()+$sla_time_left );
+        	$t_date = date( config_get( 'normal_date_format' ), time()+$sla_time_left );
+
+		if ( $f_new_status == 30 &&
+		     $t_bug->status == 10 ) {
+			echo '<input type="hidden" id="due_date" name="due_date" data-picker-locale="'.
+			     lang_get_current_datetime_locale().
+			     '" data-picker-format="'.
+			     config_get( 'datetime_picker_format' ).
+			     '" value="'. $t_date .'" />';
+		}
+*/	}
 ?>
 
 	<!-- Custom Fields -->

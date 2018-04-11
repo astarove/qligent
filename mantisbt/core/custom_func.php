@@ -4,15 +4,40 @@ function simple_function(){
 	echo "Here!";
 }
 
-function calculate_sla_border($p_bug_id, $p_date = '' ) {
-	$p_date = get_date();
+function calculate_sla_duedate($p_bug_id, $p_l3 = false ) {
+/*
+1. Взять интервал из истории
+2. если бага новая, то отсчитывается с момента перевода в ask
+3. если бага переоткрыта, высчитывается разница, находится остаток времени на SLA
+4. остаток прибавляется к текущей дате
+5. если остаток отрицательный (SLA превышен), дата не меняется
+6. возвращаем DueDate
+*/
+//	$today = get_date();
+//	$p_date_to = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
+	$tpl_bug = bug_get($p_bug_id);
+
+	$t_config_var_name = "severity_enum_string";
+	$t_config_var_value = config_get( $t_config_var_name );
+
+	// SLA in hours!
+	$pref = 'sla_';
+	if( $p_l3 )
+		$pref = 'sla_l3_';
+	$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( $pref.strtolower( MantisEnum::getLabel( $t_config_var_value, $tpl_bug->severity ) ) ) );
+	// 1.
+	// $p_date_to - current_date
+//	$p_interval = get_sla_interval( $p_bug_id, $p_date_from, $p_date_to );
+
+	// 6.
+	return $sla_bound['default_value']*3600; // *60 min * 60 sec
 }
 
 
 function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
 
-        $t_config_var_name = "severity_enum_string";
+	$t_config_var_name = "severity_enum_string";
 
         $t_config_var_value = config_get( $t_config_var_name );
         $today = getdate();
@@ -20,7 +45,7 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
         $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
         $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
-        $query = "SELECT id FROM mantis_bug_table WHERE date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). " AND severity>10;";
+        $query = "SELECT id FROM mantis_bug_table WHERE date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). " AND severity>30;";
         $results_row = db_query_bound( $query );
         $total_row = db_num_rows($results_row);
 
