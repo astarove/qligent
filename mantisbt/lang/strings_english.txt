@@ -1798,6 +1798,7 @@ $s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';
  *******************/
 $s_configuration = "Configuration";
 $s_severity_enum_string = '10:Enhancement, 30:Consultation, 50:Low, 60:High, 70:Urgent, 80:Immediate';
+$s_severity_enum_string_2 = '50:Low, 60:Medium, 70:Urgent, 80:Immediate';
 $s_version_bk = "Probe version";
 $s_version_sa = "Server version";
 $s_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60: support,70:manager,90:administrator';

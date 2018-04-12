@@ -4114,6 +4114,7 @@ $g_display_errors = array(
 # Note: intentionally not using SERVER_ADDR as it's not guaranteed to exist
 if( isset( $_SERVER['SERVER_NAME'] ) && ( strcasecmp( $_SERVER['SERVER_NAME'], 'localhost' ) == 0
  || $_SERVER['SERVER_NAME'] == '127.0.0.1'
+ || $_SERVER['SERVER_NAME'] == '192.168.192.171'
 ) ) {
 	$g_display_errors[E_WARNING] = DISPLAY_ERROR_HALT;
 	$g_display_errors[E_ALL]     = DISPLAY_ERROR_INLINE;
@@ -4130,7 +4131,7 @@ if( isset( $_SERVER['SERVER_NAME'] ) && ( strcasecmp( $_SERVER['SERVER_NAME'], '
  *
  * @global integer $g_show_detailed_errors
  */
-$g_show_detailed_errors = OFF;
+$g_show_detailed_errors = ON;
 
 /**
  * Debug messages
@@ -4158,7 +4159,7 @@ $g_stop_on_errors = OFF;
  *
  * @global integer $g_log_level
  */
-$g_log_level = LOG_NONE;
+$g_log_level = LOG_ALL;
 
 /**
  * Specifies where the log data goes

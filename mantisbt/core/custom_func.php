@@ -13,8 +13,8 @@ function calculate_sla_duedate($p_bug_id, $p_l3 = false ) {
 5. если остаток отрицательный (SLA превышен), дата не меняется
 6. возвращаем DueDate
 */
-//	$today = get_date();
-//	$p_date_to = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+	$today = getdate();
+	$p_date_to = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
 	$tpl_bug = bug_get($p_bug_id);
 
@@ -23,15 +23,25 @@ function calculate_sla_duedate($p_bug_id, $p_l3 = false ) {
 
 	// SLA in hours!
 	$pref = 'sla_';
-	if( $p_l3 )
+	if( $p_l3 ) {
 		$pref = 'sla_l3_';
+	}
 	$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( $pref.strtolower( MantisEnum::getLabel( $t_config_var_value, $tpl_bug->severity ) ) ) );
 	// 1.
 	// $p_date_to - current_date
-//	$p_interval = get_sla_interval( $p_bug_id, $p_date_from, $p_date_to );
-
+	// Returns quantity of wor days
+	$p_interval = get_sla_interval( $p_bug_id, 1, $p_date_to );
+/**
+                error_parameters( $p_interval );
+                trigger_error( ERROR_DB_FIELD_NOT_FOUND, ERROR );
+/**/
 	// 6.
-	return $sla_bound['default_value']*3600; // *60 min * 60 sec
+	$utime_left = ($sla_bound['default_value'])*3*3600 - $p_interval*3600*24;
+	// add time for weekends
+	while( date('N', $utime_left)>5 ) {
+		$utime_left += 24*3600;
+	}
+	return $utime_left; //$sla_bound['default_value']*3600; // *60 min * 60 sec
 }
 
 
@@ -138,7 +148,7 @@ function get_sla_interval($p_id, $p_date_from, $p_date_to) {
 
 	if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
 		$resolved_date = ($row2['date_modified']?$row2['date_modified']:$p_date_to);
-		$interval = round(($resolved_date - $row1['date_modified'])/(3600*8*5),2); // 60 sec * 60 min * whours * wdays
+		$interval = round(($resolved_date - $row1['date_modified'])/(3600*8*3),2); // 60 sec * 60 min * whours * wdays
 	}
 	return $interval;
 }
