@@ -30,7 +30,7 @@ function calculate_sla_duedate($p_bug_id, $p_l3 = false ) {
 	// 1.
 	// $p_date_to - current_date
 	// Returns quantity of wor days
-	$p_interval = get_sla_interval( $p_bug_id, 1, $p_date_to );
+	$p_interval =  floor( get_sla_interval( $p_bug_id, 1, $p_date_to ) );
 /**
                 error_parameters( $p_interval );
                 trigger_error( ERROR_DB_FIELD_NOT_FOUND, ERROR );

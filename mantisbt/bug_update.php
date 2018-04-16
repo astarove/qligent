@@ -329,10 +329,11 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 
 // Validate Due Date
 $sla_time_left = calculate_sla_duedate( $f_bug_id, $t_redmine_id );
-//                $t_date = date( config_get( 'normal_date_format' ), time()+$sla_time_left );
 // From NEW to ACKNOWLEGEMENT:
-if ( $t_existing_bug->status == 10 && $t_updated_bug->status == 30 ) {
-	$t_updated_bug->due_date = time()+$sla_time_left;
+if ( ( $t_existing_bug->status == 10 || $t_existing_bug->status >= 80 ) && $t_updated_bug->status == 30 ) {
+	if( $sla_time_left > 0 ) {
+		$t_updated_bug->due_date = round( (time() + $sla_time_left)/(3600*24)) * 3600 * 24;
+	}
 }
 
 
