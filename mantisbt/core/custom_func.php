@@ -45,22 +45,18 @@ function calculate_sla_duedate($p_bug_id, $p_l3 = false ) {
 }
 
 
-function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
+function print_filterd_issues_data( $f_project_id, $t_from_date, $t_to_date, $prepare_csv_stat ) {
 
 	$t_config_var_name = "severity_enum_string";
 
         $t_config_var_value = config_get( $t_config_var_name );
-        $today = getdate();
-
-        $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
-        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
 
         $query = "SELECT id FROM mantis_bug_table WHERE date_submitted BETWEEN ". $t_from_date ." AND ". strtotime("+1 day", $t_to_date). " AND severity>30;";
         $results_row = db_query_bound( $query );
         $total_row = db_num_rows($results_row);
 
 	$t_filtered = array();
-        array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "Line type", "SLA days left", "Delivery date"));
+        array_push($t_filtered, array("ID", "Name", "Project", "Type", "Status", "Line type", "SLA days left", "Delivery date", "Due Date"));
 	while( $row = db_fetch_array($results_row) ) {
 	        $tpl_bug = bug_get($row['id']);
 		$sla_bound = custom_field_get_definition( custom_field_get_id_from_name( 'sla_'.strtolower( MantisEnum::getLabel( $t_config_var_value, $tpl_bug->severity ) ) ) );
@@ -69,15 +65,41 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
 		}
 	        $interval = get_sla_interval($tpl_bug->id, $t_from_date, $t_to_date);
 
-                array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
-                                                                        $tpl_bug->summary,
-                                                                        project_get_name( $tpl_bug->project_id ),
-                                                                        custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
-                                                                        get_enum_element('status',$tpl_bug->status),
-								        ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
-                                                                        round( ($sla_bound['default_value'] - $interval)/8 ),
-									custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ) ) );
+		if( $prepare_csv_stat ) {
+			array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
+										$tpl_bug->summary,
+										project_get_name( $tpl_bug->project_id ),
+                        	                                                custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
+                                	                                        get_enum_element('status',$tpl_bug->status),
+                                        	                                ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
+                                                	                        round( ($sla_bound['default_value'] - $interval)/8 ),
+                                                        	                custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ),
+                                                                	        ( ($tpl_bug->due_date != 1) ? date( config_get( 'normal_date_format' ), $tpl_bug->due_date) : "" ) )
+			);
+		} else {
+			if( ($tpl_bug->status > 20) && ($tpl_bug->status < 80) )
+		                array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
+        		                                                                $tpl_bug->summary,
+                		                                                        project_get_name( $tpl_bug->project_id ),
+                        		                                                custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
+                                		                                        get_enum_element('status',$tpl_bug->status),
+										        ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
+                                                		                        round( ($sla_bound['default_value'] - $interval)/8 ),
+											custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ),
+											( ($tpl_bug->due_date != 1) ? date( config_get( 'normal_date_format' ), $tpl_bug->due_date) : "" ) )
+				);
+		}
 	}
+	return $t_filtered;
+}
+
+function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t_days_to = '' ) {
+
+	$today = getdate();
+        $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+
+	$t_filtered = print_filterd_issues_data($f_project_id, $t_from_date, $t_to_date, false);
 
 /* Наше модальное всплывающее окно */
         echo '<div style="text-align: center" id="popupWin" class="modalwin">';
@@ -101,7 +123,9 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
 	echo "</tbody></table>";
 	echo "</div>";
 
-        echo '<input type="button" id="close_modal_win" value="Close"></div>';
+        echo '<input type="button" id="close_modal_win" value="Close">';
+	print_small_button( 'cgi-bin/csv_export_filtered.php', lang_get( 'csv_export' ) );
+	echo '</div>';
 }
 
 function get_default_handler( $p_project_id ){

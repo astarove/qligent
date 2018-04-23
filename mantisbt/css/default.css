@@ -164,7 +164,7 @@ td.print-overdue    { font-weight: bold; }
 
 .modalwin { 
         height: 440px;  
-        width: 700px;
+        width: 900px;
         border: 3px outset gray; 
         background: #DDDDDD;
         top: 20%; /* отступ сверху */

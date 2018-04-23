@@ -162,6 +162,39 @@ if( $t_use_common_dates ) {
 ?>
 </form>
 </div>
+
+<div class="space-10"></div>
+<div class="widget-box table-responsive">
+        <form name="select_date_sla" action="summary_page.php" method="post">
+                <?php
+                        if( !$t_use_common_dates ) {
+                                $from_name = "sla_period_from";
+                                $to_name = "sla_period_to";
+                        }
+                        else {
+                                echo '<input type="hidden" name="use_common_dates" value="on"/>';
+                        }
+
+                        dates_selector('sla_by_severity', $from_name, $to_name);
+
+                        echo '<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" value="'. lang_get( 'show_dates' ) .'"/>';
+                        session_start();
+                        $_SESSION['sla_from'] = gpc_get_string($from_name, '');
+                        $_SESSION['sla_to'] = gpc_get_string($to_name, '');
+                        session_commit();
+                        print_small_button( 'cgi-bin/csv_export_sla_stat.php', lang_get( 'csv_export' ) ); ?>
+        </form>
+        <?php
+                $data = summary_sla_by_severity( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') );
+                echo $data[0];
+                echo "<input type='button' value='Show fileterd issues' id='show_filetered_issues'/>";
+                print_filterd_issues_modal_window( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); //$data[1]);
+         ?>
+</div>
+
+
+
+
 </div>
 
 
@@ -480,6 +513,7 @@ echo "\n<div class='space-10'></div>\n";
 
 <!-- BOTTOM -->
 <div class="col-md-12 col-xs-12">
+<!--
 <div class="space-10"></div>
 <div class="widget-box table-responsive">
         <form name="select_date_sla" action="summary_page.php" method="post">
@@ -508,6 +542,7 @@ echo "\n<div class='space-10'></div>\n";
 		print_filterd_issues_modal_window( $f_project_id, gpc_get_string($from_name, ''), gpc_get_string($to_name, '') ); //$data[1]);
 	 ?>
 </div>
+-->
 	<!-- REPORTER BY RESOLUTION -->
 <!--	<div class="space-10"></div>
 	<div class="widget-box table-responsive">
