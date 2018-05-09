@@ -1532,7 +1532,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 			if ( user_pref_get_pref( $p_user_id, 'bugnote_order' ) == 'DESC' )
 				$p_bugnote = $p_visible_bug_data['bugnotes'][0];
 //			$p_bugnote = array_reverse($t_bugnote);
-			$t_message .= " ".user_get_name( $p_bugnote->reporter_id ).":\n\n";
+			$t_message .= " ".user_get_realname( $p_bugnote->reporter_id ).":\n\n";
 			$t_message .= $p_bugnote->note . "\n";
 //		}
 		$t_message .= " \n";

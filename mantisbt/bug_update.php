@@ -330,9 +330,12 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 // Validate Due Date
 $sla_time_left = calculate_sla_duedate( $f_bug_id, $t_redmine_id );
 // From NEW to ACKNOWLEGEMENT:
-if ( ( $t_existing_bug->status == 10 || $t_existing_bug->status >= 80 ) && $t_updated_bug->status == 30 ) {
-	if( $sla_time_left > 0 ) {
-		$t_updated_bug->due_date = round( (time() + $sla_time_left)/(3600*24)) * 3600 * 24;
+if( $t_updated_bug->severity > 30 ) {
+//	if ( ( $t_existing_bug->status == 10 || $t_existing_bug->status >= 80 ) && $t_updated_bug->status == 30 ) {
+	if ( $t_updated_bug->status == 30 ) {
+		if( $sla_time_left > 0 ) {
+			$t_updated_bug->due_date = round( (time() + $sla_time_left)/(3600*24)) * 3600 * 24;
+		}
 	}
 }
 

@@ -65,6 +65,8 @@ function print_filterd_issues_data( $f_project_id, $t_from_date, $t_to_date, $pr
 		}
 	        $interval = get_sla_interval($tpl_bug->id, $t_from_date, $t_to_date);
 
+		$interval = ((($interval/24)/7)*5)*8;
+
 		if( $prepare_csv_stat ) {
 			array_push($t_filtered, array( string_get_bug_view_link($tpl_bug->id),
 										$tpl_bug->summary,
@@ -72,7 +74,7 @@ function print_filterd_issues_data( $f_project_id, $t_from_date, $t_to_date, $pr
                         	                                                custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
                                 	                                        get_enum_element('status',$tpl_bug->status),
                                         	                                ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
-                                                	                        round( ($sla_bound['default_value'] - $interval)/8 ),
+                                                	                        ceil( ($sla_bound['default_value'] - $interval)/(8 * 7)*5),
                                                         	                custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ),
                                                                 	        ( ($tpl_bug->due_date != 1) ? date( config_get( 'normal_date_format' ), $tpl_bug->due_date) : "" ) )
 			);
@@ -84,7 +86,7 @@ function print_filterd_issues_data( $f_project_id, $t_from_date, $t_to_date, $pr
                         		                                                custom_field_get_value( custom_field_get_id_from_name('type'), $tpl_bug->id ),
                                 		                                        get_enum_element('status',$tpl_bug->status),
 										        ( custom_field_get_value( custom_field_get_id_from_name( 'RedMineID' ), $tpl_bug->id ) ? "L3" : "L2"),
-                                                		                        round( ($sla_bound['default_value'] - $interval)/8 ),
+                                                		                        ceil( ($sla_bound['default_value'] - $interval)/(8 * 7)*5),
 											custom_field_get_value( custom_field_get_id_from_name('DeliveryDate'), $tpl_bug->id ),
 											( ($tpl_bug->due_date != 1) ? date( config_get( 'normal_date_format' ), $tpl_bug->due_date) : "" ) )
 				);
@@ -97,7 +99,8 @@ function print_filterd_issues_modal_window( $f_project_id, $t_days_from = '', $t
 
 	$today = getdate();
         $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
-        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+//        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year'].' '.$today['hours'].':'.$today['minutes']);
 
 	$t_filtered = print_filterd_issues_data($f_project_id, $t_from_date, $t_to_date, false);
 
@@ -154,13 +157,14 @@ function get_sla_interval($p_id, $p_date_from, $p_date_to) {
 
         $query1 = "SELECT history.date_modified ".
                   "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                  "WHERE bug.id=". $p_id . " AND history.old_value<=20 AND history.new_value<80 ".
+                  "WHERE bug.id=". $p_id . " AND (history.old_value<30 OR history.old_value>=80) AND history.new_value=30 ".
                   "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $p_date_from ." AND ". strtotime("+1 day", $p_date_to).
                   ";";
 
         $query2 = "SELECT history.date_modified ".
                   "FROM mantis_bug_table AS bug JOIN mantis_bug_history_table AS history ON bug.id=history.bug_id ".
-                  "WHERE bug.id=". $p_id . " AND history.old_value<80 AND history.new_value>=80 ".
+//                  "WHERE bug.id=". $p_id . " AND history.old_value<80 AND history.new_value>=80 ".
+"WHERE bug.id=". $p_id . " AND (history.new_value<30 OR history.new_value>=80) AND history.old_value=30 ".
                   "AND history.field_name='status' AND bug.date_submitted BETWEEN ". $p_date_from ." AND ". strtotime("+1 day", $p_date_to).
                   " ORDER BY history.date_modified DESC;";
 
@@ -172,7 +176,9 @@ function get_sla_interval($p_id, $p_date_from, $p_date_to) {
 
 	if ( isset($row1['date_modified']) ) { //&& isset($row2['date_modified']) ) {
 		$resolved_date = ($row2['date_modified']?$row2['date_modified']:$p_date_to);
-		$interval = round(($resolved_date - $row1['date_modified'])/(3600*8*3),2); // 60 sec * 60 min * whours * wdays
+//		$date_from = new DateTime(date( config_get( 'normal_date_format' ), $resolved_date ) );
+//		$interval = $date_from->diff(new DateTime( date( config_get( 'normal_date_format' ), $row1['date_modified']) ) )->format("%d");
+		$interval = round(($resolved_date - $row1['date_modified'])/3600,2); // 60 sec * 60 min * whours * wdays
 	}
 	return $interval;
 }
@@ -196,7 +202,7 @@ function summary_sla_by_severity( $f_project_id, $t_days_from = '', $t_days_to =
         $today = getdate();
 
         $t_from_date = strtotime($t_days_from?$t_days_from : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
-        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year']);
+        $t_to_date = strtotime($t_days_to?$t_days_to : $today['mon'].'/'.$today['mday'].'/'.$today['year'].' '.$today['hours'].':'.$today['minutes']);
 
 
 	$t_table .= "<table  class='table table-hover table-bordered table-condensed table-striped'><thead><tr>";

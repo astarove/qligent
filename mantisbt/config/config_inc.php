@@ -121,6 +121,47 @@ $g_bug_update_page_fields = array (
 	'support',
 );
 
+/**
+ * CSV Export
+ * Set the csv separator
+ * @global string $g_csv_separator
+ */
+$g_csv_separator = '|';
+
+####################
+# Mantis wiki
+####################
+/**
+ * Wiki Integration Enabled?
+ * @global integer $g_wiki_enable
+ */
+$g_wiki_enable = ON;
+
+/**
+ * Wiki Engine.
+ * Supported engines: 'dokuwiki', 'mediawiki', 'twiki', 'wikka', 'xwiki'
+ * @global string $g_wiki_engine
+ */
+$g_wiki_engine = 'dokuwiki';
+
+/**
+ * Wiki namespace to be used as root for all pages relating to this MantisBT
+ * installation.
+ * @global string $g_wiki_root_namespace
+ */
+$g_wiki_root_namespace = 'qligent';
+
+/**
+ * URL under which the wiki engine is hosted.
+ * Must be on the same server as MantisBT, requires trailing '/'.
+ * By default, this is derived from the global MantisBT path ($g_path),
+ * replacing the URL's path component by the wiki engine string (i.e. if
+ * $g_path = 'http://example.com/mantis/' and $g_wiki_engine = 'dokuwiki',
+ * the wiki URL will be 'http://example.com/dokuwiki/')
+ * @global string $g_wiki_engine_url
+ */
+$g_wiki_engine_url = 'http://192.168.192.171/mantisbt/dokuwiki/';
+
 #########################
 # MantisBT Enum Strings #
 #########################

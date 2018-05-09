@@ -121,7 +121,7 @@ td.print-overdue    { font-weight: bold; }
 
 #modal_form
 {
-        width: 500px; 
+        width: 1200px; 
         height: 500px; /* Рaзмеры дoлжны быть фиксирoвaны */
         border-radius: 5px;
         border: 3px #000 solid;
@@ -163,8 +163,8 @@ td.print-overdue    { font-weight: bold; }
 }
 
 .modalwin { 
-        height: 440px;  
-        width: 900px;
+        height: 420px;  
+        width: 1300px;
         border: 3px outset gray; 
         background: #DDDDDD;
         top: 20%; /* отступ сверху */
